@@ -1,6 +1,5 @@
 package blo.spau.excel;
 
-import blo.spau.excel.bean.Basic;
 import blo.spau.excel.read.Read;
 import blo.spau.tool.ToolImpl;
 import blo.spau.excel.output.Output;
@@ -23,7 +22,14 @@ public class ExcelUtil implements Read, Output {
     private final Map<Integer, String> titles = new HashMap<>();
     private List<Map<String, Object>> list = new ArrayList<>();
     static ToolImpl fileValidation = new ToolImpl();
-    Basic basic = new Basic();
+    //日期格式，默认yyyy-MM-dd
+    private  String dateformat="yyyy-MM-dd";
+
+
+    //设置日期格式
+    public void setDateformat(String dateformat) {
+        this.dateformat = dateformat;
+    }
     private int maxRow = 0;
     private int maxCol = 0;
 
@@ -85,11 +91,11 @@ public class ExcelUtil implements Read, Output {
                 if (DateUtil.isCellDateFormatted(cell)) { // 处理日期格式、时间格式
                     SimpleDateFormat sdf = null;
                     if (DateUtil.isADateFormat(-1, cell.getCellStyle().getDataFormat() + "")) {
-                        sdf = new SimpleDateFormat(basic.getDateformat());
+                        sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    } else {
+                        sdf = new SimpleDateFormat(dateformat);
                     }
-                    if (sdf != null) {
-                        cellValue = sdf.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
-                    }
+                    cellValue = sdf.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
                 } else if ("@".equals(cell.getCellStyle().getDataFormatString())) {
                     DecimalFormat df = new DecimalFormat("#");//转换成整型
                     cellValue = df.format(cell.getNumericCellValue());
