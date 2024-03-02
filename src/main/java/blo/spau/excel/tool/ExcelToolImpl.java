@@ -1,7 +1,7 @@
-package blo.spau.tool;
+package blo.spau.excel.tool;
 
 
-import blo.spau.FileReadAndOutPutUtil;;
+import blo.spau.excel.FileReadAndOutPutUtil;;
 
 
 import java.io.File;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 //用继承的方式实现的
-public class ToolImpl extends Tool implements FileReadAndOutPutUtil {
+public class ExcelToolImpl extends ExcelTool implements FileReadAndOutPutUtil {
     private final List<Map<String, Object>> list = new ArrayList<>();
 
 

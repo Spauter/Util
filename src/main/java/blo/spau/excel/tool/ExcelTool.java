@@ -1,4 +1,4 @@
-package blo.spau.tool;
+package blo.spau.excel.tool;
 
 
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.Map;
  * <tr><td>conformity</td><td>数据类型转换</td></tr>
  *</tbody></table>
  */
-abstract class Tool {
+abstract class ExcelTool {
     /**
      * 检查文件后缀名
      * @param file

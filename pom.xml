@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>blo.spau</groupId>
-    <artifactId>ExcelUtil</artifactId>
+    <artifactId>Util</artifactId>
     <version>1.145.14</version>
 
     <properties>

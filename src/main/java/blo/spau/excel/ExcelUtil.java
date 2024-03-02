@@ -1,7 +1,7 @@
 package blo.spau.excel;
 
 import blo.spau.excel.read.Read;
-import blo.spau.tool.ToolImpl;
+import blo.spau.excel.tool.ExcelToolImpl;
 import blo.spau.excel.output.Output;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -18,11 +18,10 @@ import java.util.Map;
 
 
 public class ExcelUtil implements Read, Output {
-
     //标题
     private final Map<Integer, String> titles = new HashMap<>();
     private List<Map<String, Object>> list = new ArrayList<>();
-    static ToolImpl fileValidation = new ToolImpl();
+    static ExcelToolImpl fileValidation = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
     private  String dateformat="yyyy-MM-dd";
 
