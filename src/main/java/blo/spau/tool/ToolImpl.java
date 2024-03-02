@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 用继承的方式实现的
- */
+//用继承的方式实现的
 public class ToolImpl extends Tool implements FileReadAndOutPutUtil {
     private final List<Map<String, Object>> list = new ArrayList<>();
 
@@ -48,8 +46,22 @@ public class ToolImpl extends Tool implements FileReadAndOutPutUtil {
         }
     }
 
-
-    @Override
+//  样式
+//      0  空样式
+//      1  粗体
+//      4  下划线
+//      7  反色
+//  颜色：
+//      30  白色
+//      31  红色
+//      32  绿色
+//      33  黄色
+//       34  蓝色
+//      35  紫色
+//      36  浅蓝
+//      37  灰色
+//      背景颜色：40-47 和颜色顺序相同
+//      颜色2：90-97  比颜色1更鲜艳一些
     public String PrintInfo(String content, int color, int type) {
         boolean hasType = type != 1 && type != 3 && type != 4;
         if (hasType) {

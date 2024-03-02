@@ -23,12 +23,14 @@ abstract class Tool {
     /**
      * 检查文件后缀名
      * @param file
+     * @throws IllegalArgumentException 如果文件后缀名不是xls或者xlsx
      */
-    abstract void Ckeck_suffix(File file) throws IOException;
+    abstract void Ckeck_suffix(File file);
 
     /**
-     * 检查文件是否存在
+     * 在读取前检查文件是否存在
      * @param file
+     * @throws FileNotFoundException 如果找不到文件
      */
     abstract void Check_file(File file) throws FileNotFoundException;
 
@@ -37,7 +39,7 @@ abstract class Tool {
      * @param content
      * @param color
      * @param type
-     * @return
+     * @return String
      */
     abstract String PrintInfo(String content, int color, int type);
 

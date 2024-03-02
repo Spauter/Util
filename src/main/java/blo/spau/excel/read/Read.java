@@ -10,15 +10,7 @@ import java.util.Map;
 /**
  * @author Bloduc Spauer
  * @version 1.14.514
- * <h1>blo.spau.excel.FileReadAndOutPutUtil</h1>
- *  <table class="reference notranslate">
- * <tbody><tr><th style="width:30%">头信息</th><th>描述</th></tr>
- * <tr><td>readXlsx</td><td>读取xlsx文档，值<b>String filePath</b>或<b>File</b>是两种常见的值.返回<b>java.util.List</b>。</td></tr>
- * <tr><td>readXls</td><td>读取xls文档，值<b>filePath</b>或<b>File</b>是两种常见的值. 返回<b>java.util.List</b></td>。</tr>
- * <tr><td>readLsx</td><td>读取xlsx文档，值<b>String filePath</b>或<b>File</b> 是两种常见的值.返回<b>Object[][]</b>。</td></tr>
- * <tr><td>readLs</td><td>读取xls文档，值<b>filePath</b>或<b>File</b>是两种常见的值. 返回<b>Object[][]</b>。</td></tr>
- * <tr><td>getTitle</td><td>获取表头（标题）。值<b>excel/xlsx</b>或<b>excel/xls</b>是两种常见的值.返回<b>Object[][]</b><p>。不输入任何值则返回当前读取表格的表头(标题）</p></td></tr>
- */
+  */
 public interface Read extends FileReadAndOutPutUtil {
     /**
      * 返回一个包含当前读取表格的表头的数组

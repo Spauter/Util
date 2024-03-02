@@ -19,6 +19,7 @@ import java.util.Map;
 
 public class ExcelUtil implements Read, Output {
 
+    //标题
     private final Map<Integer, String> titles = new HashMap<>();
     private List<Map<String, Object>> list = new ArrayList<>();
     static ToolImpl fileValidation = new ToolImpl();
@@ -33,6 +34,7 @@ public class ExcelUtil implements Read, Output {
     private int maxRow = 0;
     private int maxCol = 0;
 
+    private  int readSheetNumber =0;
 
     private List<Map<String, Object>> readImpl(String file) throws IOException {
         Sheet sheet = getSheet(file);
@@ -59,7 +61,8 @@ public class ExcelUtil implements Read, Output {
         return list;
     }
 
-    private static Sheet getSheet(String file) throws IOException {
+    //根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook
+    private  Sheet getSheet(String file) throws IOException {
         fileValidation.Ckeck_suffix(file);
         String suffix = file.split("\\.")[1];
         Workbook workbook;
@@ -71,7 +74,11 @@ public class ExcelUtil implements Read, Output {
         }
         // 创建工作簿对象
         // 获取工作簿下sheet的个数
-        sheet = workbook.getSheetAt(0);
+        int totalSheets=workbook.getNumberOfSheets();
+        if (readSheetNumber >totalSheets-1){
+            throw new IllegalArgumentException("Sheet index (" + readSheetNumber + ") is out of range " + totalSheets);
+        }
+        sheet = workbook.getSheetAt(readSheetNumber);
         return sheet;
     }
 
@@ -81,7 +88,7 @@ public class ExcelUtil implements Read, Output {
      * @param cell
      * @return
      */
-    private String getCellValue(Cell cell) {
+    public String getCellValue(Cell cell) {
         String cellValue = "";
         if (cell == null) {
             return "";
@@ -126,7 +133,7 @@ public class ExcelUtil implements Read, Output {
         String[] title;
         if (file == null && list != null) {
             if (list.isEmpty()) {
-                String infos = fileValidation.PrintInfo("WARRING: Failed to get title", 31, 0);
+                String infos = fileValidation.PrintInfo("WARRING: Failed to get title", 33, 0);
                 System.out.println(infos);
             }
             title = new String[titles.size()];
@@ -138,7 +145,7 @@ public class ExcelUtil implements Read, Output {
         assert file != null;
         list = readImpl(file.getAbsolutePath());
         if (list == null || list.isEmpty()) {
-            String infos = fileValidation.PrintInfo("WARRING: Failed to get title", 31, 0);
+            String infos = fileValidation.PrintInfo("Failed to get title", 31, 0);
             System.out.println(infos);
         }
         title = new String[titles.size()];
@@ -255,17 +262,6 @@ public class ExcelUtil implements Read, Output {
     }
 
     @Override
-    public int getMaxRows() {
-        return maxRow;
-    }
-
-    @Override
-    public int getMaxCols() {
-        return maxCol;
-    }
-
-
-    @Override
     public void outPut(String sheetName, Object[][] obj, String[] title, File file) throws IOException {
         outPutImpl(sheetName, obj, title, file);
     }
@@ -316,6 +312,25 @@ public class ExcelUtil implements Read, Output {
     @Override
     public void outPut(Object[][] obj, String[] title, File file) throws IOException {
         outPutImpl(sheetName, obj, title, file);
+    }
 
+    @Override
+    public int getMaxRows() {
+        return maxRow;
+    }
+
+    @Override
+    public int getMaxCols() {
+        return maxCol;
+    }
+
+    //设置需要读取的sheet,最小为一
+    public void readSheetAt(int var){
+        if (var<1){
+            String infos = fileValidation.PrintInfo("WARRING: Invalid sheet number,witch will returns 0", 33, 0);
+            System.out.println(infos);
+            return;
+        }
+       readSheetNumber =var-1;
     }
 }
