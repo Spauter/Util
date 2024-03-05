@@ -22,7 +22,7 @@ public class ExcelToolImpl extends ExcelTool implements FileReadAndOutPutUtil {
         if (fileAndSuffix.length<2){
             throw new IllegalArgumentException("Unsupported suffix.We need 'xls' or 'xlsx' file,but you provide a Unknown suffix file");
         }
-        String suffix = fileAndSuffix[1];
+        String suffix = fileAndSuffix[fileAndSuffix.length-1];
         if (!(suffix.equals(suffix1) || (suffix.equals(suffix2)))) {
             throw new IllegalArgumentException("Unsupported suffix.We need 'xls' or 'xlsx' file,but you provide a '" + suffix + "' file");
         }
@@ -56,7 +56,7 @@ public class ExcelToolImpl extends ExcelTool implements FileReadAndOutPutUtil {
 //      31  红色
 //      32  绿色
 //      33  黄色
-//       34  蓝色
+//      34  蓝色
 //      35  紫色
 //      36  浅蓝
 //      37  灰色

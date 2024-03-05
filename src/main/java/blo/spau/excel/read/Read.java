@@ -57,6 +57,8 @@ public interface Read extends FileReadAndOutPutUtil {
      */
     int getMaxCols();
 
+    public void readSheetAt(int var);
+
     /**
      * 返回List
      * @param path

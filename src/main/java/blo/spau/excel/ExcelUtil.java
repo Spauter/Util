@@ -16,24 +16,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+//总工具
 public class ExcelUtil implements Read, Output {
     //标题
-    private final Map<Integer, String> titles = new HashMap<>();
+    private final Map<Integer, String> titles = new HashMap<>();//表格的标题,也就是首行
     private List<Map<String, Object>> list = new ArrayList<>();
     static ExcelToolImpl fileValidation = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
-    private  String dateformat="yyyy-MM-dd";
+    private String dateformat = "yyyy-MM-dd";
 
 
     //设置日期格式
     public void setDateformat(String dateformat) {
         this.dateformat = dateformat;
     }
+
     private int maxRow = 0;
     private int maxCol = 0;
-
-    private  int readSheetNumber =0;
+    //需要读取的Sheet
+    private int readSheetNumber = 0;
 
     private List<Map<String, Object>> readImpl(String file) throws IOException {
         Sheet sheet = getSheet(file);
@@ -56,12 +57,11 @@ public class ExcelUtil implements Read, Output {
         for (Map<String, Object> m : list) {
             System.out.println(m);
         }
-
         return list;
     }
 
     //根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook
-    private  Sheet getSheet(String file) throws IOException {
+    private Sheet getSheet(String file) throws IOException {
         fileValidation.Ckeck_suffix(file);
         String suffix = file.split("\\.")[1];
         Workbook workbook;
@@ -195,6 +195,11 @@ public class ExcelUtil implements Read, Output {
         System.out.println("The file is successfully exported and saved to:" + file.getAbsolutePath());
     }
 
+    /**
+     * 通过已经获取的List<Map<String,Onject>>集合来获取标题,返回数组
+     * @param list
+     * @return
+     */
     @Override
     public String[] getTitle(List<Map<String, Object>> list) {
         String[] title = new String[list.get(0).size()];
@@ -323,13 +328,14 @@ public class ExcelUtil implements Read, Output {
         return maxCol;
     }
 
+    @Override
     //设置需要读取的sheet,最小为一
-    public void readSheetAt(int var){
-        if (var<1){
+    public void readSheetAt(int var) {
+        if (var < 1) {
             String infos = fileValidation.PrintInfo("WARRING: Invalid sheet number,witch will returns 0", 33, 0);
             System.out.println(infos);
             return;
         }
-       readSheetNumber =var-1;
+        readSheetNumber = var - 1;
     }
 }
