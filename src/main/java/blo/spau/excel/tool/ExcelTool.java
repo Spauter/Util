@@ -25,7 +25,7 @@ abstract class ExcelTool {
      * @param file
      * @throws IllegalArgumentException 如果文件后缀名不是xls或者xlsx
      */
-    abstract void Ckeck_suffix(File file);
+    abstract void Ckeck_suffix(File file) throws IOException;
 
     /**
      * 在读取前检查文件是否存在

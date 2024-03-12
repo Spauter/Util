@@ -25,7 +25,6 @@ public class ExcelUtil implements Read, Output {
     //日期格式，默认yyyy-MM-dd
     private String dateformat = "yyyy-MM-dd";
 
-
     //设置日期格式
     public void setDateformat(String dateformat) {
         this.dateformat = dateformat;
@@ -242,6 +241,7 @@ public class ExcelUtil implements Read, Output {
         return fileValidation.conformity(list, titles);
     }
 
+
     @Override
     public Object[][] readToArray(String Path) throws IOException {
         File file = fileValidation.conformity(Path);
@@ -317,6 +317,7 @@ public class ExcelUtil implements Read, Output {
     public void outPut(Object[][] obj, String[] title, File file) throws IOException {
         outPutImpl(sheetName, obj, title, file);
     }
+
 
     @Override
     public int getMaxRows() {

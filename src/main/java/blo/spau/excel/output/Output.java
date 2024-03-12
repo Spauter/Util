@@ -1,7 +1,6 @@
 package blo.spau.excel.output;
 
 
-
 import blo.spau.excel.FileReadAndOutPutUtil;
 
 import java.io.File;
@@ -31,7 +30,6 @@ public interface Output extends FileReadAndOutPutUtil {
 
 
     /**
-     *
      * @param sheetName
      * @param obj
      * @param title
@@ -41,7 +39,6 @@ public interface Output extends FileReadAndOutPutUtil {
     void outPut(String sheetName, Object[][] obj, String[] title, File file) throws IOException;
 
     /**
-     *
      * @param sheetName
      * @param list
      * @param Path
@@ -50,7 +47,6 @@ public interface Output extends FileReadAndOutPutUtil {
     void outPut(String sheetName, List<Map<String, Object>> list, String Path) throws IOException;
 
     /**
-     *
      * @param sheetName
      * @param list
      * @param file
@@ -59,7 +55,6 @@ public interface Output extends FileReadAndOutPutUtil {
     void outPut(String sheetName, List<Map<String, Object>> list, File file) throws IOException;
 
     /**
-     *
      * @param list
      * @param Path
      * @throws IOException
@@ -67,7 +62,6 @@ public interface Output extends FileReadAndOutPutUtil {
     void outPut(List<Map<String, Object>> list, String Path) throws IOException;
 
     /**
-     *
      * @param list
      * @param file
      * @throws IOException
@@ -75,7 +69,6 @@ public interface Output extends FileReadAndOutPutUtil {
     void outPut(List<Map<String, Object>> list, File file) throws IOException;
 
     /**
-     *
      * @param obj
      * @param title
      * @param Path
@@ -84,11 +77,12 @@ public interface Output extends FileReadAndOutPutUtil {
     void outPut(Object[][] obj, String[] title, String Path) throws IOException;
 
     /**
-     *
      * @param obj
      * @param title
      * @param file
      * @throws IOException
      */
     void outPut(Object[][] obj, String[] title, File file) throws IOException;
+
+
 }
