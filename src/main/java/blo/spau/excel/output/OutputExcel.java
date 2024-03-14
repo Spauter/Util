@@ -1,7 +1,7 @@
 package blo.spau.excel.output;
 
 
-import blo.spau.excel.FileReadAndOutPutUtil;
+import blo.spau.FileReadAndOutPutUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.Map;
  * </table>
  * </tbody>
  */
-public interface Output extends FileReadAndOutPutUtil {
+public interface OutputExcel extends FileReadAndOutPutUtil {
 
     /**
      * @param sheetName
@@ -83,6 +83,10 @@ public interface Output extends FileReadAndOutPutUtil {
      * @throws IOException
      */
     void outPut(Object[][] obj, String[] title, File file) throws IOException;
+
+    void outPut(String path) throws IOException;
+
+    void outPut(File file) throws IOException;
 
 
 }

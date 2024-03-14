@@ -1,8 +1,8 @@
 package blo.spau.excel;
 
-import blo.spau.excel.read.Read;
+import blo.spau.excel.read.ReadExcel;
 import blo.spau.excel.tool.ExcelToolImpl;
-import blo.spau.excel.output.Output;
+import blo.spau.excel.output.OutputExcel;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
@@ -17,13 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 //总工具
-public class ExcelUtil implements Read, Output {
+public class ExcelUtil implements ReadExcel, OutputExcel {
     //标题
     private final Map<Integer, String> titles = new HashMap<>();//表格的标题,也就是首行
     private List<Map<String, Object>> list = new ArrayList<>();
     static ExcelToolImpl fileValidation = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
     private String dateformat = "yyyy-MM-dd";
+
+    private Object[][] arrayData;
 
     //设置日期格式
     public void setDateformat(String dateformat) {
@@ -56,6 +58,7 @@ public class ExcelUtil implements Read, Output {
         for (Map<String, Object> m : list) {
             System.out.println(m);
         }
+        arrayData = fileValidation.conformity(list, titles);
         return list;
     }
 
@@ -65,15 +68,15 @@ public class ExcelUtil implements Read, Output {
         String suffix = file.split("\\.")[1];
         Workbook workbook;
         Sheet sheet;
-        if (suffix.equals(suffix1)) {
+        if (suffix.equals(SUFFIX_1)) {
             workbook = new XSSFWorkbook(new FileInputStream(file));
         } else {
             workbook = new HSSFWorkbook(new FileInputStream(file));
         }
         // 创建工作簿对象
         // 获取工作簿下sheet的个数
-        int totalSheets=workbook.getNumberOfSheets();
-        if (readSheetNumber >totalSheets-1){
+        int totalSheets = workbook.getNumberOfSheets();
+        if (readSheetNumber > totalSheets - 1) {
             throw new IllegalArgumentException("Sheet index (" + readSheetNumber + ") is out of range " + totalSheets);
         }
         sheet = workbook.getSheetAt(readSheetNumber);
@@ -157,7 +160,7 @@ public class ExcelUtil implements Read, Output {
         fileValidation.Ckeck_suffix(file);
         fileValidation.conformity(obj, title);
         Workbook wb;
-        if (file.getName().endsWith(suffix2)) {
+        if (file.getName().endsWith(SUFFIX_2)) {
             wb = new HSSFWorkbook();
         } else {
             wb = new XSSFWorkbook();
@@ -196,6 +199,7 @@ public class ExcelUtil implements Read, Output {
 
     /**
      * 通过已经获取的List<Map<String,Onject>>集合来获取标题,返回数组
+     *
      * @param list
      * @return
      */
@@ -237,8 +241,11 @@ public class ExcelUtil implements Read, Output {
 
     @Override
     public Object[][] readToArray(File file) throws IOException {
-        list = readImpl(file.getAbsolutePath());
-        return fileValidation.conformity(list, titles);
+        if (arrayData == null) {
+            list = readImpl(file.getAbsolutePath());
+            arrayData = fileValidation.conformity(list, titles);
+        }
+        return arrayData;
     }
 
 
@@ -297,25 +304,36 @@ public class ExcelUtil implements Read, Output {
         File file = fileValidation.conformity(Path);
         String[] title = getTitle(list);
         Object[][] obj = fileValidation.conformity(list, titles);
-        outPutImpl(sheetName, obj, title, file);
+        outPutImpl(SHEET_NAME, obj, title, file);
     }
 
     @Override
     public void outPut(List<Map<String, Object>> list, File file) throws IOException {
         String[] title = getTitle(list);
         Object[][] obj = fileValidation.conformity(list, titles);
-        outPutImpl(sheetName, obj, title, file);
+        outPutImpl(SHEET_NAME, obj, title, file);
     }
 
     @Override
     public void outPut(Object[][] obj, String[] title, String Path) throws IOException {
         File file = fileValidation.conformity(Path);
-        outPutImpl(sheetName, obj, title, file);
+        outPutImpl(SHEET_NAME, obj, title, file);
     }
 
     @Override
     public void outPut(Object[][] obj, String[] title, File file) throws IOException {
-        outPutImpl(sheetName, obj, title, file);
+        outPutImpl(SHEET_NAME, obj, title, file);
+    }
+
+    @Override
+    public void outPut(String path) throws IOException {
+        outPut(new File(path));
+    }
+
+    @Override
+    public void outPut(File file) throws IOException {
+        String[] title = getTitle();
+        outPutImpl(SHEET_NAME, arrayData, title, file);
     }
 
 
@@ -338,5 +356,12 @@ public class ExcelUtil implements Read, Output {
             return;
         }
         readSheetNumber = var - 1;
+    }
+
+    @Override
+    public void clearAll() {
+        list.clear();
+        arrayData = null;
+        titles.clear();
     }
 }

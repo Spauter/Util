@@ -1,8 +1,7 @@
 package blo.spau.excel.read;
 
 
-import blo.spau.excel.FileReadAndOutPutUtil;
-import org.apache.poi.ss.formula.functions.T;
+import blo.spau.FileReadAndOutPutUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.util.Map;
  * @author Bloduc Spauer
  * @version 1.14.514
   */
-public interface Read extends FileReadAndOutPutUtil {
+public interface ReadExcel extends FileReadAndOutPutUtil {
     /**
      * 返回一个包含当前读取表格的表头的数组
      * @return

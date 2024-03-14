@@ -1,7 +1,7 @@
 package blo.spau.excel.tool;
 
 
-import blo.spau.excel.FileReadAndOutPutUtil;
+import blo.spau.FileReadAndOutPutUtil;
 
 
 import java.io.File;
@@ -24,7 +24,7 @@ public class ExcelToolImpl extends ExcelTool implements FileReadAndOutPutUtil {
             throw new IllegalArgumentException("Unsupported suffix.We need 'xls' or 'xlsx' file,but you provide a Unknown suffix file");
         }
         String suffix = fileAndSuffix[fileAndSuffix.length-1];
-        if (!(suffix.equals(suffix1) || (suffix.equals(suffix2)))) {
+        if (!(suffix.equals(SUFFIX_1) || (suffix.equals(SUFFIX_2)))) {
             throw new IllegalArgumentException("Unsupported suffix.We need 'xls' or 'xlsx' file,but you provide a '" + suffix + "' file");
         }
 
@@ -115,4 +115,8 @@ public class ExcelToolImpl extends ExcelTool implements FileReadAndOutPutUtil {
         return list;
     }
 
+    @Override
+    public void clearAll() {
+        list.clear();
+    }
 }
