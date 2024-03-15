@@ -1,4 +1,4 @@
-package blo.spau.excel.tool;
+package blo.spau;
 
 
 import java.io.File;
@@ -19,20 +19,20 @@ import java.util.Map;
  * <tr><td>conformity</td><td>数据类型转换</td></tr>
  *</tbody></table>
  */
-abstract class ExcelTool {
+public abstract class MyTool {
     /**
      * 检查文件后缀名
      * @param file
      * @throws IllegalArgumentException 如果文件后缀名不是xls或者xlsx
      */
-    abstract void Ckeck_suffix(File file) throws IOException;
+    public abstract void Ckeck_suffix(File file) throws IOException;
 
     /**
      * 在读取前检查文件是否存在
      * @param file
      * @throws FileNotFoundException 如果找不到文件
      */
-    abstract void Check_file(File file) throws FileNotFoundException;
+    public abstract void Check_file(File file) throws FileNotFoundException;
 
     /**
      * 打印特殊文字信息
@@ -41,13 +41,13 @@ abstract class ExcelTool {
      * @param type
      * @return String
      */
-    abstract String PrintInfo(String content, int color, int type);
+    public abstract String PrintInfo(String content, int color, int type);
 
     /**
      * 检查文件是否为目录
      * @param file
      */
-    abstract void Check_IsDirectory(File file) throws IOException;
+    public abstract void Check_IsDirectory(File file) throws IOException;
 
 
     /**
@@ -56,17 +56,17 @@ abstract class ExcelTool {
      * @param titles
      * @return
      */
-    abstract Object[][] conformity(List<Map<String, Object>> list,Map<Integer,String> titles);
+    public abstract Object[][] conformity(List<Map<String, Object>> list,Map<Integer,String> titles);
 
     /**
      *
      * @param path
      * @return
      */
-    abstract File conformity(String path);
+    public  abstract File conformity(String path);
 
 
-    abstract List<Map<String,Object>>conformity(Object[][] obj,String[] title)throws IndexOutOfBoundsException,NullPointerException;
+    public abstract List<Map<String,Object>>conformity(Object[][] obj,String[] title)throws IndexOutOfBoundsException,NullPointerException;
 
 
 }

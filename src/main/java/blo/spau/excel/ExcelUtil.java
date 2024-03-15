@@ -68,6 +68,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         String suffix = file.split("\\.")[1];
         Workbook workbook;
         Sheet sheet;
+//        判断文件类型
         if (suffix.equals(SUFFIX_1)) {
             workbook = new XSSFWorkbook(new FileInputStream(file));
         } else {
@@ -160,6 +161,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         fileValidation.Ckeck_suffix(file);
         fileValidation.conformity(obj, title);
         Workbook wb;
+//        判断文件类型
         if (file.getName().endsWith(SUFFIX_2)) {
             wb = new HSSFWorkbook();
         } else {

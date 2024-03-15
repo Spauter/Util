@@ -6,7 +6,7 @@
 
     <groupId>blo.spau</groupId>
     <artifactId>Util</artifactId>
-    <version>1.145.14</version>
+    <version>1.15</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -34,5 +34,28 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.kbdct.swing.frame.panelSysAuth.test.TestMainSecond</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
