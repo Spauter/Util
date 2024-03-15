@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *<h1>Tool</h1>
  * <table class="reference notranslate">
  *<tbody><tr><th style="width:30%">头信息</th><th>描述</th></tr>
  *<tr><td>Ckeck_suffix</td><td>检查文件后缀名是否符合</td></tr>
