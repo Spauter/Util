@@ -1,8 +1,9 @@
-package blo.spau.excel;
+package com.bloducspauter.excel;
 
-import blo.spau.excel.read.ReadExcel;
-import blo.spau.excel.tool.ExcelToolImpl;
-import blo.spau.excel.output.OutputExcel;
+import com.bloducspauter.MyTool;
+import com.bloducspauter.excel.read.ReadExcel;
+import com.bloducspauter.excel.tool.ExcelToolImpl;
+import com.bloducspauter.excel.output.OutputExcel;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
@@ -11,65 +12,68 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //总工具
 public class ExcelUtil implements ReadExcel, OutputExcel {
     //标题
     private final Map<Integer, String> titles = new HashMap<>();//表格的标题,也就是首行
     private List<Map<String, Object>> list = new ArrayList<>();
-    static ExcelToolImpl fileValidation = new ExcelToolImpl();
+    static MyTool excelTool = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
     private String dateformat = "yyyy-MM-dd";
 
-    private Object[][] arrayData;
+    private int titleLine=0;
 
-    //设置日期格式
-    public void setDateformat(String dateformat) {
-        this.dateformat = dateformat;
-    }
+    private Object[][] arrayData;
 
     private int maxRow = 0;
     private int maxCol = 0;
     //需要读取的Sheet
     private int readSheetNumber = 0;
 
+    private void readTitle(Sheet sheet) {
+        excelTool.check_titleLine(titleLine,maxRow);
+        int maxCol=sheet.getRow(titleLine).getLastCellNum();
+        for (int col = 0; col < maxCol; col++) {
+            Cell title = sheet.getRow(titleLine).getCell(col);
+            if (title == null) {
+                throw new NullPointerException("Empty column in row "+(titleLine+1)+",column "+col);
+            }
+            String titleInfo = String.valueOf(title);
+            this.titles.put(col, titleInfo);
+        }
+    }
+
     private List<Map<String, Object>> readImpl(String file) throws IOException {
         Sheet sheet = getSheet(file);
         // 获取最后一行的num，即总行数。此处从0开始
         this.maxRow = sheet.getLastRowNum();
+        readTitle(sheet);
         for (int row = 1; row <= maxRow; row++) {
             Map<String, Object> map = new HashMap<>();
             this.maxCol = sheet.getRow(row).getLastCellNum();
-            for (int rol = 0; rol < maxCol; rol++) {
-                Cell title = sheet.getRow(0).getCell(rol);
-                String titleInfo = String.valueOf(title);
-                if (row == 1) {
-                    this.titles.put(rol, titleInfo);
-                }
+            for (int rol = 0; rol < this.maxCol; rol++) {
                 Cell info = sheet.getRow(row).getCell(rol);
-                map.put(titleInfo, getCellValue(info));
+                map.put(titles.get(rol), getCellValue(info));
             }
             list.add(map);
         }
         for (Map<String, Object> m : list) {
             System.out.println(m);
         }
-        arrayData = fileValidation.conformity(list, titles);
+        arrayData = excelTool.conformity(list, titles);
         return list;
     }
 
     //根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook
     private Sheet getSheet(String file) throws IOException {
-        fileValidation.Ckeck_suffix(file);
-        String suffix = file.split("\\.")[1];
+        excelTool.Check_suffix(file);
+        excelTool.Check_file(new File(file));
         Workbook workbook;
         Sheet sheet;
+        if (file.endsWith(SUFFIX_1)) {
 //        判断文件类型
-        if (suffix.equals(SUFFIX_1)) {
             workbook = new XSSFWorkbook(new FileInputStream(file));
         } else {
             workbook = new HSSFWorkbook(new FileInputStream(file));
@@ -135,7 +139,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         String[] title;
         if (file == null && list != null) {
             if (list.isEmpty()) {
-                String infos = fileValidation.PrintInfo("WARRING: Failed to get title", 33, 0);
+                String infos = excelTool.PrintInfo("WARRING: Failed to get title", 33, 0);
                 System.out.println(infos);
             }
             title = new String[titles.size()];
@@ -147,7 +151,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         assert file != null;
         list = readImpl(file.getAbsolutePath());
         if (list == null || list.isEmpty()) {
-            String infos = fileValidation.PrintInfo("Failed to get title", 31, 0);
+            String infos = excelTool.PrintInfo("Failed to get title", 31, 0);
             System.out.println(infos);
         }
         title = new String[titles.size()];
@@ -158,8 +162,13 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     private void outPutImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException {
-        fileValidation.Ckeck_suffix(file);
-        fileValidation.conformity(obj, title);
+        excelTool.Check_suffix(file);
+        if (file.exists()){
+            throw new IOException("This file is already exists");
+        }
+        if (obj == null || obj.length == 0 || title == null || title.length == 0) {
+            throw new NullPointerException("Unable to invoke an empty data. Did you forgot to read file or clean it?");
+        }
         Workbook wb;
 //        判断文件类型
         if (file.getName().endsWith(SUFFIX_2)) {
@@ -196,7 +205,8 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         } catch (IOException e) {
             throw new IOException("File export failure.");
         }
-        System.out.println("The file is successfully exported and saved to:" + file.getAbsolutePath());
+        String info="The file is successfully exported and saved to:\t" + file.getAbsolutePath();
+        System.out.println(info);
     }
 
     /**
@@ -245,7 +255,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     public Object[][] readToArray(File file) throws IOException {
         if (arrayData == null) {
             list = readImpl(file.getAbsolutePath());
-            arrayData = fileValidation.conformity(list, titles);
+            arrayData = excelTool.conformity(list, titles);
         }
         return arrayData;
     }
@@ -253,7 +263,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     @Override
     public Object[][] readToArray(String Path) throws IOException {
-        File file = fileValidation.conformity(Path);
+        File file = excelTool.conformity(Path);
         return readToArray(file);
     }
 
@@ -265,7 +275,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     @Override
     public String[] getTitle(String Path) throws IOException {
-        File file = fileValidation.conformity(Path);
+        File file = excelTool.conformity(Path);
         return getTitleImpl(file);
     }
 
@@ -281,44 +291,44 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     @Override
     public void outPut(String sheetName, Object[][] obj, String[] title, String Path) throws IOException {
-        File file = fileValidation.conformity(Path);
+        File file = excelTool.conformity(Path);
         outPutImpl(sheetName, obj, title, file);
     }
 
 
     @Override
     public void outPut(String sheetName, List<Map<String, Object>> list, String Path) throws IOException {
-        File file = fileValidation.conformity(Path);
+        File file = excelTool.conformity(Path);
         String[] title = getTitle(list);
-        Object[][] obj = fileValidation.conformity(list, titles);
+        Object[][] obj = excelTool.conformity(list, titles);
         outPutImpl(sheetName, obj, title, file);
     }
 
     @Override
     public void outPut(String sheetName, List<Map<String, Object>> list, File file) throws IOException {
         String[] title = getTitle(list);
-        Object[][] obj = fileValidation.conformity(list, titles);
+        Object[][] obj = excelTool.conformity(list, titles);
         outPutImpl(sheetName, obj, title, file);
     }
 
     @Override
     public void outPut(List<Map<String, Object>> list, String Path) throws IOException {
-        File file = fileValidation.conformity(Path);
+        File file = excelTool.conformity(Path);
         String[] title = getTitle(list);
-        Object[][] obj = fileValidation.conformity(list, titles);
+        Object[][] obj = excelTool.conformity(list, titles);
         outPutImpl(SHEET_NAME, obj, title, file);
     }
 
     @Override
     public void outPut(List<Map<String, Object>> list, File file) throws IOException {
         String[] title = getTitle(list);
-        Object[][] obj = fileValidation.conformity(list, titles);
+        Object[][] obj = excelTool.conformity(list, titles);
         outPutImpl(SHEET_NAME, obj, title, file);
     }
 
     @Override
     public void outPut(Object[][] obj, String[] title, String Path) throws IOException {
-        File file = fileValidation.conformity(Path);
+        File file = excelTool.conformity(Path);
         outPutImpl(SHEET_NAME, obj, title, file);
     }
 
@@ -349,15 +359,24 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         return maxCol;
     }
 
+    /**
+     * 将某一行作为标题,输入从1开始
+     * @param titleLine
+     */
+    @Override
+    public void setTitleLine(int titleLine) {
+        this.titleLine=titleLine;
+    }
+
+    //设置日期格式
+    public void setDateformat(String dateformat) {
+        this.dateformat = dateformat;
+    }
+
     @Override
     //设置需要读取的sheet,最小为一
-    public void readSheetAt(int var) {
-        if (var < 1) {
-            String infos = fileValidation.PrintInfo("WARRING: Invalid sheet number,witch will returns 0", 33, 0);
-            System.out.println(infos);
-            return;
-        }
-        readSheetNumber = var - 1;
+    public void readSheetAt(int sheetNumber) {
+        readSheetNumber = sheetNumber;
     }
 
     @Override

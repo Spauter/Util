@@ -11,7 +11,7 @@ target/
 *.iws
 *.iml
 *.ipr
-/src/main/java/blo/spau/test
+/src/main/java/com/bloducspauter/test
 ### Eclipse ###
 .apt_generated
 .classpath

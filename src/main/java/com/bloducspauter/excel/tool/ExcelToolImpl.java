@@ -1,8 +1,7 @@
-package blo.spau.excel.tool;
+package com.bloducspauter.excel.tool;
 
 
-import blo.spau.FileReadAndOutPutUtil;
-import blo.spau.MyTool;
+import com.bloducspauter.MyTool;
 
 
 import java.io.File;
@@ -13,32 +12,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.bloducspauter.FileReadAndOutPutUtil.SUFFIX_1;
+import static com.bloducspauter.FileReadAndOutPutUtil.SUFFIX_2;
+
 //用继承的方式实现的
-public class ExcelToolImpl extends MyTool implements FileReadAndOutPutUtil {
+public class ExcelToolImpl extends MyTool {
     private final List<Map<String, Object>> list = new ArrayList<>();
 
-
-    public void Ckeck_suffix(File file) throws IOException {
+    @Override
+    public void Check_suffix(File file) throws IOException {
         Check_IsDirectory(file);
-        String[] fileAndSuffix=file.getName().split("\\.");
-        if (fileAndSuffix.length<2){
-            throw new IllegalArgumentException("Unsupported suffix.We need 'xls' or 'xlsx' file,but you provide a Unknown suffix file");
-        }
-        String suffix = fileAndSuffix[fileAndSuffix.length-1];
-        if (!(suffix.equals(SUFFIX_1) || (suffix.equals(SUFFIX_2)))) {
-            throw new IllegalArgumentException("Unsupported suffix.We need 'xls' or 'xlsx' file,but you provide a '" + suffix + "' file");
-        }
+        Check_suffix(file.getName());
+    }
 
+    @Override
+    public void Check_suffix(String path) throws IOException {
+        if (!(path.endsWith(SUFFIX_1) || (path.endsWith(SUFFIX_2)))) {
+            throw new IllegalArgumentException("\tUnsupported suffix. It need 'xls' or 'xlsx' file,but you provide a unsupported file");
+        }
     }
-    public void Ckeck_suffix(String path) throws IOException {
-    File file=new File(path);
-        Ckeck_suffix(file);
-    }
+
     @Override
     public void Check_file(File file) throws FileNotFoundException {
         if (!file.exists()) {
-            throw new FileNotFoundException("The file is not found:" + file.getName() + ".");
+            throw new FileNotFoundException("The file is not found:" + file.getAbsoluteFile());
         }
+    }
+
+    @Override
+    public void Check_file(String path) throws FileNotFoundException {
+        Check_file(new File(path));
     }
 
     @Override
@@ -48,7 +51,7 @@ public class ExcelToolImpl extends MyTool implements FileReadAndOutPutUtil {
         }
     }
 
-//  样式
+    //  样式
 //      0  空样式
 //      1  粗体
 //      4  下划线
@@ -94,7 +97,7 @@ public class ExcelToolImpl extends MyTool implements FileReadAndOutPutUtil {
     @Override
     public List<Map<String, Object>> conformity(Object[][] obj, String[] title) throws IndexOutOfBoundsException, NullPointerException {
         if (obj == null || obj.length == 0 || title == null || title.length == 0) {
-            throw new NullPointerException("Unable to invoke an empty data");
+            throw new NullPointerException("Unable to invoke an empty data. Did you forgot to read file or clean it?");
         }
         int lenx = obj[0].length;
         int leny = obj.length;
@@ -107,7 +110,7 @@ public class ExcelToolImpl extends MyTool implements FileReadAndOutPutUtil {
                 if (j < obj[0].length) {
                     map.put(title[j], obj[i][j]);
                 } else {
-                    System.out.println(PrintInfo("WARRING:The data is null and will be replaced with a null character: Row " + (i + 1) + " " + "column " + (j + 1) , 31, 0));
+                    System.out.println(PrintInfo("WARRING:The data is null and will be replaced with a null character: Row " + (i + 1) + " " + "column " + (j + 1), 31, 0));
                     map.put(title[j], "");
                 }
             }
@@ -117,7 +120,9 @@ public class ExcelToolImpl extends MyTool implements FileReadAndOutPutUtil {
     }
 
     @Override
-    public void clearAll() {
-        list.clear();
+    public void check_titleLine(int titleLine, int maxrow) {
+        if (titleLine > maxrow || titleLine < 0) {
+            throw new IndexOutOfBoundsException(titleLine);
+        }
     }
 }
