@@ -1,8 +1,5 @@
 package com.bloducspauter.excel.read;
-
-
-import com.bloducspauter.FileReadAndOutPutUtil;
-
+import com.bloducspauter.ReadFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -12,7 +9,7 @@ import java.util.Map;
  * @author Bloduc Spauer
  * @version 1.14.514
  */
-public interface ReadExcel extends FileReadAndOutPutUtil {
+public interface ReadExcel extends ReadFile {
     /**
      * 返回一个包含当前读取表格的表头的数组
      *
@@ -52,23 +49,6 @@ public interface ReadExcel extends FileReadAndOutPutUtil {
 
 
     void readSheetAt(int var);
-
-    /**
-     * 返回List
-     *
-     * @param path
-     * @return
-     * @throws
-     * @throws IOException
-     */
-    List<Map<String, Object>> readToList(String path) throws IOException;
-
-
-    List<Map<String, Object>> readToList(File file) throws IOException;
-
-    Object[][] readToArray(String path) throws IOException;
-
-    Object[][] readToArray(File file) throws IOException;
 
     void setTitleLine(int titleLine);
 }

@@ -76,4 +76,6 @@ public abstract class MyTool {
     public abstract List<Map<String, Object>> conformity(Object[][] obj, String[] title) throws IndexOutOfBoundsException, NullPointerException;
 
     public abstract void check_titleLine(int titleLine, int maxrow);
+
+    public abstract void check_row_col(int startRow,int startCol,int endWithRow,int endWithCol,int maxRow,int maxCol);
 }

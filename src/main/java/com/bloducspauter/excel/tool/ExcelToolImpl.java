@@ -125,4 +125,17 @@ public class ExcelToolImpl extends MyTool {
             throw new IndexOutOfBoundsException(titleLine);
         }
     }
+
+    @Override
+    public void check_row_col(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol) {
+        if (startCol < 0 || startRow < 0 || endWithRow < 0 || endWithCol < 0) {
+            throw new IndexOutOfBoundsException(-1);
+        }
+        if (startCol > endWithCol || startRow > endWithCol) {
+            throw new IndexOutOfBoundsException(startCol>endWithCol?startCol:startRow);
+        }
+        if (startCol > maxCol || startRow > maxRow) {
+            throw new IndexOutOfBoundsException(startCol>maxCol?startCol:startRow);
+        }
+    }
 }

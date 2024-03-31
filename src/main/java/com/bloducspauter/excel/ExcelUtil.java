@@ -16,6 +16,7 @@ import java.util.*;
 
 //总工具
 public class ExcelUtil implements ReadExcel, OutputExcel {
+    private String path;
     //标题
     private final Map<Integer, String> titles = new HashMap<>();//表格的标题,也就是首行
     private List<Map<String, Object>> list = new ArrayList<>();
@@ -23,22 +24,61 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     //日期格式，默认yyyy-MM-dd
     private String dateformat = "yyyy-MM-dd";
 
-    private int titleLine=0;
+    private int titleLine = 0;
 
     private Object[][] arrayData;
+
+    private int startRow = 0;
+    private int endWithRow = -1;
+    private int startCol = 0;
+
+    private int endWithCOl = -1;
 
     private int maxRow = 0;
     private int maxCol = 0;
     //需要读取的Sheet
     private int readSheetNumber = 0;
 
+    /*
+    无参构造
+     */
+    public ExcelUtil() {
+
+    }
+
+    public ExcelUtil(File file) throws IOException {
+        new ExcelUtil(file.getAbsolutePath());
+    }
+
+    /*
+    提供文件路径后,会读取文件行数和列数信息
+     */
+    public ExcelUtil(String path) throws IOException {
+        this.path = path;
+        Sheet sheet = getSheet(path);
+        getMaxRowsAndCols(sheet);
+        setDefaultEndWithRowsAndCols(-1, -1);
+    }
+
+    /*
+    获取最大行数和列数
+     */
+    private void getMaxRowsAndCols(Sheet sheet) {
+        maxRow = sheet.getLastRowNum();
+        maxCol = sheet.getRow(titleLine).getLastCellNum();
+    }
+
+    private void setDefaultEndWithRowsAndCols(int endWithRow, int endWithCOl) {
+        this.endWithRow = this.endWithRow == -1 ? maxRow : endWithRow;
+        this.endWithCOl = this.endWithCOl == -1 ? maxCol : endWithCOl;
+    }
+
     private void readTitle(Sheet sheet) {
-        excelTool.check_titleLine(titleLine,maxRow);
-        int maxCol=sheet.getRow(titleLine).getLastCellNum();
-        for (int col = 0; col < maxCol; col++) {
+        excelTool.check_titleLine(titleLine, maxRow);
+        for (int col = startCol; col < endWithCOl; col++) {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
-                throw new NullPointerException("Empty column in row "+(titleLine+1)+",column "+col);
+                throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + col);
             }
             String titleInfo = String.valueOf(title);
             this.titles.put(col, titleInfo);
@@ -47,13 +87,18 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     private List<Map<String, Object>> readImpl(String file) throws IOException {
         Sheet sheet = getSheet(file);
-        // 获取最后一行的num，即总行数。此处从0开始
-        this.maxRow = sheet.getLastRowNum();
+        getMaxRowsAndCols(sheet);
+        if (endWithRow == -1 || endWithCOl == -1) {
+            setDefaultEndWithRowsAndCols(endWithRow, endWithCOl);
+        }
         readTitle(sheet);
-        for (int row = 1; row <= maxRow; row++) {
+        for (int row = startRow; row <= endWithRow; row++) {
+            //如果是标题行则跳过
+            if (row == titleLine) {
+                continue;
+            }
             Map<String, Object> map = new HashMap<>();
-            this.maxCol = sheet.getRow(row).getLastCellNum();
-            for (int rol = 0; rol < this.maxCol; rol++) {
+            for (int rol = startCol; rol < endWithCOl; rol++) {
                 Cell info = sheet.getRow(row).getCell(rol);
                 map.put(titles.get(rol), getCellValue(info));
             }
@@ -163,7 +208,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     private void outPutImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException {
         excelTool.Check_suffix(file);
-        if (file.exists()){
+        if (file.exists()) {
             throw new IOException("This file is already exists");
         }
         if (obj == null || obj.length == 0 || title == null || title.length == 0) {
@@ -205,7 +250,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         } catch (IOException e) {
             throw new IOException("File export failure.");
         }
-        String info="The file is successfully exported and saved to:\t" + file.getAbsolutePath();
+        String info = "The file is successfully exported and saved to:\t" + file.getAbsolutePath();
         System.out.println(info);
     }
 
@@ -250,6 +295,11 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         return readImpl(file.getAbsolutePath());
     }
 
+    @Override
+    public List<Map<String, Object>> readToList() throws IOException {
+        return readImpl(this.path);
+    }
+
 
     @Override
     public Object[][] readToArray(File file) throws IOException {
@@ -258,6 +308,11 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             arrayData = excelTool.conformity(list, titles);
         }
         return arrayData;
+    }
+
+    @Override
+    public Object[][] readToArray() throws IOException {
+        return readToArray(path);
     }
 
 
@@ -348,7 +403,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         outPutImpl(SHEET_NAME, arrayData, title, file);
     }
 
-
     @Override
     public int getMaxRows() {
         return maxRow;
@@ -361,14 +415,35 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 将某一行作为标题,输入从1开始
+     *
      * @param titleLine
      */
     @Override
     public void setTitleLine(int titleLine) {
-        this.titleLine=titleLine;
+        this.titleLine = titleLine;
     }
 
-    //设置日期格式
+    @Override
+    public void setStartRow(int startRow) {
+        this.startRow = startRow;
+    }
+
+    @Override
+    public void setStartCol(int startCol) {
+        this.startCol = startCol;
+    }
+
+    @Override
+    public void setEndWithCol(int endWithCol) {
+        this.endWithCOl = endWithCol;
+    }
+
+    @Override
+    public void setEndWithRow(int endWithRow) {
+        this.endWithRow = endWithRow;
+    }
+
+    /* 设置日期格式 */
     public void setDateformat(String dateformat) {
         this.dateformat = dateformat;
     }

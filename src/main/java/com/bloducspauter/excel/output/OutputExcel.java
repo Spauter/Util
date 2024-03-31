@@ -2,6 +2,7 @@ package com.bloducspauter.excel.output;
 
 
 import com.bloducspauter.FileReadAndOutPutUtil;
+import com.bloducspauter.OutputFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +18,7 @@ import java.util.Map;
  * </table>
  * </tbody>
  */
-public interface OutputExcel extends FileReadAndOutPutUtil {
-
+public interface OutputExcel extends OutputFile {
     /**
      * @param sheetName
      * @param obj
@@ -53,41 +53,4 @@ public interface OutputExcel extends FileReadAndOutPutUtil {
      * @throws IOException
      */
     void outPut(String sheetName, List<Map<String, Object>> list, File file) throws IOException;
-
-    /**
-     * @param list
-     * @param Path
-     * @throws IOException
-     */
-    void outPut(List<Map<String, Object>> list, String Path) throws IOException;
-
-    /**
-     * @param list
-     * @param file
-     * @throws IOException
-     */
-    void outPut(List<Map<String, Object>> list, File file) throws IOException;
-
-    /**
-     * @param obj
-     * @param title
-     * @param Path
-     * @throws IOException
-     */
-    void outPut(Object[][] obj, String[] title, String Path) throws IOException;
-
-    /**
-     * @param obj
-     * @param title
-     * @param file
-     * @throws IOException
-     */
-    void outPut(Object[][] obj, String[] title, File file) throws IOException;
-
-    void outPut(String path) throws IOException;
-
-    void outPut(File file) throws IOException;
-
-//    int putPutSheetAt();
-
 }
