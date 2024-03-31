@@ -131,11 +131,14 @@ public class ExcelToolImpl extends MyTool {
         if (startCol < 0 || startRow < 0 || endWithRow < 0 || endWithCol < 0) {
             throw new IndexOutOfBoundsException(-1);
         }
-        if (startCol > endWithCol || startRow > endWithCol) {
+        if (startCol > endWithCol || startRow > endWithRow) {
             throw new IndexOutOfBoundsException(startCol>endWithCol?startCol:startRow);
         }
         if (startCol > maxCol || startRow > maxRow) {
             throw new IndexOutOfBoundsException(startCol>maxCol?startCol:startRow);
+        }
+        if (endWithCol > maxCol || endWithRow > maxRow) {
+            throw new IndexOutOfBoundsException(endWithCol>maxCol?endWithCol:endWithRow);
         }
     }
 }

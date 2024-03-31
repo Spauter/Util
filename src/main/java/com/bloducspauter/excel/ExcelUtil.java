@@ -75,7 +75,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     private void readTitle(Sheet sheet) {
         excelTool.check_titleLine(titleLine, maxRow);
-        for (int col = startCol; col < endWithCOl; col++) {
+        for (int col = startCol; col <= endWithCOl; col++) {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
                 throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + col);
@@ -91,6 +91,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         if (endWithRow == -1 || endWithCOl == -1) {
             setDefaultEndWithRowsAndCols(endWithRow, endWithCOl);
         }
+        excelTool.check_row_col(startRow,startCol,endWithRow,endWithCOl,maxRow,maxCol);
         readTitle(sheet);
         for (int row = startRow; row <= endWithRow; row++) {
             //如果是标题行则跳过
@@ -98,7 +99,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
                 continue;
             }
             Map<String, Object> map = new HashMap<>();
-            for (int rol = startCol; rol < endWithCOl; rol++) {
+            for (int rol = startCol; rol <= endWithCOl; rol++) {
                 Cell info = sheet.getRow(row).getCell(rol);
                 map.put(titles.get(rol), getCellValue(info));
             }
