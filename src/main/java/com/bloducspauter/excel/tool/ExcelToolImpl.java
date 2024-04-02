@@ -28,7 +28,7 @@ public class ExcelToolImpl extends MyTool {
     @Override
     public void Check_suffix(String path) throws IOException {
         if (!(path.endsWith(SUFFIX_1) || (path.endsWith(SUFFIX_2)))) {
-            throw new IllegalArgumentException("\tUnsupported suffix. It need 'xls' or 'xlsx' file,but you provide a unsupported file");
+            throw new IllegalArgumentException("Unsupported suffix. It need 'xls' or 'xlsx' file,but you provide a unsupported file");
         }
     }
 

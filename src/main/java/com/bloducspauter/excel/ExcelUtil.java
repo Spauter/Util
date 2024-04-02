@@ -75,7 +75,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     private void readTitle(Sheet sheet) {
         excelTool.check_titleLine(titleLine, maxRow);
-        for (int col = startCol; col <= endWithCOl; col++) {
+        for (int col = startCol; col < endWithCOl; col++) {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
                 throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + col);
@@ -112,7 +112,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         return list;
     }
 
-    //根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook
+    /* 根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook */
     private Sheet getSheet(String file) throws IOException {
         excelTool.Check_suffix(file);
         excelTool.Check_file(new File(file));
@@ -127,7 +127,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         // 创建工作簿对象
         // 获取工作簿下sheet的个数
         int totalSheets = workbook.getNumberOfSheets();
-        if (readSheetNumber > totalSheets - 1) {
+        if (readSheetNumber > totalSheets) {
             throw new IllegalArgumentException("Sheet index (" + readSheetNumber + ") is out of range " + totalSheets);
         }
         sheet = workbook.getSheetAt(readSheetNumber);
@@ -148,7 +148,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         switch (cell.getCellType()) {
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) { // 处理日期格式、时间格式
-                    SimpleDateFormat sdf = null;
+                    SimpleDateFormat sdf;
                     if (DateUtil.isADateFormat(-1, cell.getCellStyle().getDataFormat() + "")) {
                         sdf = new SimpleDateFormat("yyyy-MM-dd");
                     } else {
@@ -444,7 +444,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         this.endWithRow = endWithRow;
     }
 
-    /* 设置日期格式 */
+    /* 设置日期格式仅在读取时有效 */
     public void setDateformat(String dateformat) {
         this.dateformat = dateformat;
     }
