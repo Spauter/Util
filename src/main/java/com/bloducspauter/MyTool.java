@@ -18,6 +18,7 @@ import java.util.Map;
  * <tr><td>PrintInfo</td><td>打印特殊格式的字体</td></tr>
  * <tr><td>conformity</td><td>数据类型转换</td></tr>
  * </tbody></table>
+ * @author Bloducspauter
  */
 public abstract class MyTool {
     /**
@@ -26,14 +27,14 @@ public abstract class MyTool {
      * @param file 被检查文件，如果是文件路径
      * @throws IllegalArgumentException 如果文件后缀名不符合要求
      */
-    public abstract void Check_suffix(File file) throws IOException;
+    public abstract void checkSuffix(File file) throws IOException;
 
     /**
      * 检查文件后缀名
      * @param path 被检查文件路径
      * @throws IllegalArgumentException 如果文件后缀名不符合要求
      */
-    public abstract void Check_suffix(String path) throws IOException;
+    public abstract void checkSuffix(String path) throws IOException;
 
     /**
      * 在读取前检查文件是否存在
@@ -41,52 +42,22 @@ public abstract class MyTool {
      * @param file  被检查文件
      * @throws FileNotFoundException 如果找不到文件
      */
-    public abstract void Check_file(File file) throws FileNotFoundException;
+    public abstract void checkFile(File file) throws FileNotFoundException;
 
     /**
      * 检查文件后缀名
      * @param path 被检查文件路径
      * @throws FileNotFoundException 如果找不到文件
      */
-    public abstract void Check_file(String path) throws FileNotFoundException;
+    public abstract void checkFile(String path) throws FileNotFoundException;
 
-    /**
-     * 打印特殊文字信息
-     * <p>样式</p>
-     * <p>0  空样式,
-     * 1  粗体,
-     * 4  下划线,
-     * 7  反色;</p>
-     * <p>颜色</p>
-     * 30  白色,
-     * 31  红色,
-     * 32  绿色,
-     * 33  黄色,
-     * 34  蓝色,
-     * 35  紫色,
-     * 36  浅蓝,
-     * 37  灰色
-     * </p>
-     * <p>
-     * 背景颜色：40-47 和颜色顺序相同
-     * 颜色2：90-97  比颜色1更鲜艳一些
-     * </p>
-     *
-     * @param content 文字内容
-     * @param color 颜色
-     * @param type 样式
-     * @return String
-     * @deprecated
-     */
-    @Deprecated(since = "1.7")
-    public abstract String PrintInfo(String content, int color, int type);
 
     /**
      * 检查文件是否为目录
      *
      * @param file 被检查文件
      */
-    public abstract void Check_IsDirectory(File file) throws IOException;
+    public abstract void checkIsDirectory(File file) throws IOException;
 
 
     /**
@@ -120,7 +91,7 @@ public abstract class MyTool {
      * @param maxRow 表格最大行数
      * @throws IndexOutOfBoundsException 如果 titleLine 小于0或者大于表格的最大行数
      * */
-    public abstract void check_titleLine(int titleLine, int maxRow)throws IndexOutOfBoundsException;
+    public abstract void checkTitleLine(int titleLine, int maxRow)throws IndexOutOfBoundsException;
 
     /**
      *  检查表格范围读取是否合法
@@ -132,5 +103,5 @@ public abstract class MyTool {
      * @param maxCol 最大列
      * @throws IndexOutOfBoundsException 读取的范围超过了表格最大范围
      */
-    public abstract void check_row_col(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol)throws IndexOutOfBoundsException;
+    public abstract void checkRowCol(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol)throws IndexOutOfBoundsException;
 }

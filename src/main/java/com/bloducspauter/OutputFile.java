@@ -17,10 +17,10 @@ public interface OutputFile extends FileReadAndOutPutUtil {
      * 将结果输出保持文件中
      *
      * @param list List集合
-     * @param Path 文件路径
+     * @param path 文件路径
      * @throws IOException Io流异常
      */
-    void outPut(List<Map<String, Object>> list, String Path) throws IOException;
+    void outPut(List<Map<String, Object>> list, String path) throws IOException;
 
     /**
      * 将结果输出保持文件中
@@ -36,10 +36,10 @@ public interface OutputFile extends FileReadAndOutPutUtil {
      *
      * @param obj   二维数组
      * @param title 标题
-     * @param Path  文件路径
+     * @param path  文件路径
      * @throws IOException  Io流异常
      */
-    void outPut(Object[][] obj, String[] title, String Path) throws IOException;
+    void outPut(Object[][] obj, String[] title, String path) throws IOException;
 
     /**
      * 将结果输出保持文件中

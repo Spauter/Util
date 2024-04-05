@@ -26,10 +26,10 @@ public interface OutputExcel extends OutputFile {
      * @param sheetName 自定义Sheet名字
      * @param obj 二维数组 {@code Object[][]}
      * @param title 标题{@code String[]}
-     * @param Path 文件路径
+     * @param path 文件路径
      * @throws IOException IO流异常
      */
-    void outPut(String sheetName, Object[][] obj, String[] title, String Path) throws IOException;
+    void outPut(String sheetName, Object[][] obj, String[] title, String path) throws IOException;
 
 
     /**
@@ -46,10 +46,10 @@ public interface OutputExcel extends OutputFile {
      * 将存储结果输出为表格，不需要额外的{@code String[] title}
      * @param sheetName 自定义Sheet名字
      * @param list List集合
-     * @param Path 文件路径
+     * @param path 文件路径
      * @throws IOException IO流异常
      */
-    void outPut(String sheetName, List<Map<String, Object>> list, String Path) throws IOException;
+    void outPut(String sheetName, List<Map<String, Object>> list, String path) throws IOException;
 
     /** 将存储结果输出为表格，不需要额外的{@code String[] title}
      * @param sheetName 自定义Sheet名字

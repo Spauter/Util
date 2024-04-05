@@ -79,7 +79,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     private void readTitle(Sheet sheet) {
-        excelTool.check_titleLine(titleLine, maxRow);
+        excelTool.checkTitleLine(titleLine, maxRow);
         for (int col = startCol; col < endWithCOl; col++) {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
@@ -100,7 +100,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             if (endWithRow == -1 || endWithCOl == -1) {
                 setDefaultEndWithRowsAndCols(endWithRow, endWithCOl);
             }
-            excelTool.check_row_col(startRow, startCol, endWithRow, endWithCOl, maxRow, maxCol);
+            excelTool.checkRowCol(startRow, startCol, endWithRow, endWithCOl, maxRow, maxCol);
             readTitle(sheet);
         } catch (Exception e) {
            log.error(e.getLocalizedMessage());
@@ -133,8 +133,8 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /* 根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook */
     private Sheet getSheet(String file) throws IOException {
-        excelTool.Check_suffix(file);
-        excelTool.Check_file(new File(file));
+        excelTool.checkSuffix(file);
+        excelTool.checkFile(new File(file));
         Workbook workbook;
         Sheet sheet;
         if (file.endsWith(SUFFIX_1)) {
@@ -223,7 +223,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     private void outPutImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException {
-        excelTool.Check_suffix(file);
+        excelTool.checkSuffix(file);
         if (file.exists()) {
             log.warn("The file is already exists.Can you rename this file?");
             throw new IOException("This file is already exists");

@@ -10,39 +10,38 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 文本文件工具
+ * @author Bloduc Spauter
+ */
 public class TxtTool extends MyTool {
     MyTool myTool = new ExcelToolImpl();
 
     @Override
-    public void Check_suffix(File file) {
-        Check_suffix(file.getName());
+    public void checkSuffix(File file) {
+        checkSuffix(file.getName());
     }
 
     @Override
-    public void Check_suffix(String path) {
+    public void checkSuffix(String path) {
         if ((path.endsWith(FileReadAndOutPutUtil.SUFFIX_5))) {
             throw new IllegalArgumentException("\tUnsupported suffix. It need '" + FileReadAndOutPutUtil.SUFFIX_5 + "' file,but you provide a unsupported file");
         }
     }
 
     @Override
-    public void Check_file(File file) throws FileNotFoundException {
-        myTool.Check_file(file);
+    public void checkFile(File file) throws FileNotFoundException {
+        myTool.checkFile(file);
     }
 
     @Override
-    public void Check_file(String path) throws FileNotFoundException {
-        myTool.Check_file(path);
+    public void checkFile(String path) throws FileNotFoundException {
+        myTool.checkFile(path);
     }
 
     @Override
-    public String PrintInfo(String content, int color, int type) {
-        return myTool.PrintInfo(content, color, type);
-    }
-
-    @Override
-    public void Check_IsDirectory(File file) throws IOException {
-        myTool.Check_IsDirectory(file);
+    public void checkIsDirectory(File file) throws IOException {
+        myTool.checkIsDirectory(file);
     }
 
     @Override
@@ -61,12 +60,12 @@ public class TxtTool extends MyTool {
     }
 
     @Override
-    public void check_titleLine(int titleLine, int maxRow) {
-        myTool.check_titleLine(titleLine, maxRow);
+    public void checkTitleLine(int titleLine, int maxRow) {
+        myTool.checkTitleLine(titleLine, maxRow);
     }
 
     @Override
-    public void check_row_col(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol) {
+    public void checkRowCol(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol) {
 
     }
 }

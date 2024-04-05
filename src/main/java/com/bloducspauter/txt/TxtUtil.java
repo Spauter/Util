@@ -26,8 +26,8 @@ public class TxtUtil implements ReadTxt, OutPutTxt {
     }
 
     private List<Map<String,Object>>readImpl(File  file) throws IOException {
-        tool.Check_file(file);
-        tool.Check_suffix(file);
+        tool.checkFile(file);
+        tool.checkSuffix(file);
         FileReader iis = null;
         BufferedReader bfr = null;
         try {
