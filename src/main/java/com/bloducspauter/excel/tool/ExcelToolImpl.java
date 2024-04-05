@@ -15,8 +15,13 @@ import java.util.Map;
 
 import static com.bloducspauter.FileReadAndOutPutUtil.SUFFIX_1;
 import static com.bloducspauter.FileReadAndOutPutUtil.SUFFIX_2;
+
+/**
+ * 表格文档检查
+ *
+ * @see com.bloducspauter.MyTool
+ */
 @Slf4j
-//用继承的方式实现的
 public class ExcelToolImpl extends MyTool {
     private final List<Map<String, Object>> list = new ArrayList<>();
 
@@ -29,20 +34,20 @@ public class ExcelToolImpl extends MyTool {
     @Override
     public void Check_suffix(String path) throws IOException {
         if (!(path.endsWith(SUFFIX_1) || (path.endsWith(SUFFIX_2)))) {
-        log.error("Unsupported suffix");
-        throw new IllegalArgumentException("Unsupported suffix. It need 'xls' or 'xlsx' file,but you provide a unsupported file");
+            log.error("Unsupported suffix");
+            throw new IllegalArgumentException("Unsupported suffix. It need 'xls' or 'xlsx' file,but you provide a unsupported file");
+        }
     }
-}
 
-@Override
-public void Check_file(File file) throws FileNotFoundException {
-    if (!file.exists()) {
-        log.error("File not found");
-        throw new FileNotFoundException("The file is not found:" + file.getAbsoluteFile());
+    @Override
+    public void Check_file(File file) throws FileNotFoundException {
+        if (!file.exists()) {
+            log.error("File not found");
+            throw new FileNotFoundException("The file is not found:" + file.getAbsoluteFile());
+        }
     }
-}
 
-@Override
+    @Override
     public void Check_file(String path) throws FileNotFoundException {
         Check_file(new File(path));
     }
@@ -55,7 +60,7 @@ public void Check_file(File file) throws FileNotFoundException {
         }
     }
 
-
+    @Override
     public String PrintInfo(String content, int color, int type) {
         boolean hasType = type != 1 && type != 3 && type != 4;
         if (hasType) {
@@ -110,7 +115,7 @@ public void Check_file(File file) throws FileNotFoundException {
     }
 
     @Override
-    public void check_titleLine(int titleLine, int maxRow)throws IndexOutOfBoundsException {
+    public void check_titleLine(int titleLine, int maxRow) throws IndexOutOfBoundsException {
         if (titleLine > maxRow || titleLine < 0) {
             log.error("Invalid title");
             throw new IndexOutOfBoundsException(titleLine);
@@ -119,22 +124,22 @@ public void Check_file(File file) throws FileNotFoundException {
 
     @Override
     public void check_row_col(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol) {
-       try{
-           if (startCol < 0 || startRow < 0 || endWithRow < 0 || endWithCol < 0) {
-               throw new IndexOutOfBoundsException(-1);
-           }
-           if (startCol > endWithCol || startRow > endWithRow) {
-               throw new IndexOutOfBoundsException(startCol>endWithCol?startCol:startRow);
-           }
-           if (startCol > maxCol || startRow > maxRow) {
-               throw new IndexOutOfBoundsException(startCol>maxCol?startCol:startRow);
-           }
-           if (endWithCol > maxCol || endWithRow > maxRow) {
-               throw new IndexOutOfBoundsException(endWithCol>maxCol?endWithCol:endWithRow);
-           }
-       }catch (IndexOutOfBoundsException e){
-           log.error("Invalid row or col,read failed");
-           throw e;
-       }
+        try {
+            if (startCol < 0 || startRow < 0 || endWithRow < 0 || endWithCol < 0) {
+                throw new IndexOutOfBoundsException(-1);
+            }
+            if (startCol > endWithCol || startRow > endWithRow) {
+                throw new IndexOutOfBoundsException(startCol > endWithCol ? startCol : startRow);
+            }
+            if (startCol > maxCol || startRow > maxRow) {
+                throw new IndexOutOfBoundsException(startCol > maxCol ? startCol : startRow);
+            }
+            if (endWithCol > maxCol || endWithRow > maxRow) {
+                throw new IndexOutOfBoundsException(endWithCol > maxCol ? endWithCol : endWithRow);
+            }
+        } catch (IndexOutOfBoundsException e) {
+            log.error("Invalid row or col,read failed");
+            throw e;
+        }
     }
 }

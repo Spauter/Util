@@ -11,7 +11,7 @@ import java.util.Map;
  * <h4>检查转换工具</h4>
  * <table class="reference notranslate">
  * <tbody><tr><th style="width:30%">头信息</th><th>描述</th></tr>
- * <tr><td>Ckeck_suffix</td><td>检查文件后缀名是否符合</td></tr>
+ * <tr><td>Check_suffix</td><td>检查文件后缀名是否符合</td></tr>
  * <tr><td>Check_file</td><td>检查文件是否存在</td></tr>
  * <tr><td>Check_IsDirectory</td><td>检查文件是否为目录</td></tr>
  * <tr><td>Check_OutputPath</td><td>检查用户输入的文件输出目录</td></tr>
