@@ -51,39 +51,39 @@ public interface ReadFile extends FileReadAndOutPutUtil{
     Object[][] readToArray(File file) throws IOException;
 
     /**
-     *
-     * @return
-     * @throws IOException
+     * 读取文件将结果存入二维数组中，在提供有参构造后可使用
+     * @return Object[][]
+     * @throws IOException IO流异常
      */
     Object[][] readToArray() throws IOException;
 
     /**
-     * 设置某一列作为标题
-     * @param titleLine
+     * 设置某一列作为标题,默认为0(第一行)
+     * @param titleLine 被设置为标题的哪一行
      */
     void setTitleLine(int titleLine);
 
     /**
      * 设置起始读取的行数
-     * @param startRow
+     * @param startRow  起始行
      */
     void setStartRow(int startRow);
 
     /**
      * 设置起始读取的列数
-     * @param startCol
+     * @param startCol 起始列
      */
     void setStartCol(int startCol);
 
     /**
      * 设置截至读取的列数
-     * @param endWithCol
+     * @param endWithCol 截止列
      */
     void setEndWithCol(int endWithCol);
 
     /**
      * 设置截至读取的行数
-     * @param endWithRow
+     * @param endWithRow 截止行
      */
     void setEndWithRow(int endWithRow);
 }
