@@ -4,6 +4,8 @@ import com.bloducspauter.MyTool;
 import com.bloducspauter.excel.read.ReadExcel;
 import com.bloducspauter.excel.tool.ExcelToolImpl;
 import com.bloducspauter.excel.output.OutputExcel;
+
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
@@ -14,6 +16,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
 //总工具
 public class ExcelUtil implements ReadExcel, OutputExcel {
     private String path;
@@ -39,6 +42,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     //需要读取的Sheet
     private int readSheetNumber = 0;
 
+    private Sheet sheet;
     /*
     无参构造
      */
@@ -54,10 +58,17 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     提供文件路径后,会读取文件行数和列数信息
      */
     public ExcelUtil(String path) throws IOException {
+        log.info("Ready to read file:" + System.getProperty("user.dir")+File.separator+path);
         this.path = path;
-        Sheet sheet = getSheet(path);
-        getMaxRowsAndCols(sheet);
-        setDefaultEndWithRowsAndCols(-1, -1);
+        try {
+            sheet = getSheet(path);
+            getMaxRowsAndCols(sheet);
+            setDefaultEndWithRowsAndCols(-1, -1);
+        }catch (Exception e){
+            log.error(e.getLocalizedMessage());
+            log.error("Reading file failed");
+            throw e;
+        }
     }
 
     /*
@@ -78,6 +89,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         for (int col = startCol; col < endWithCOl; col++) {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
+                log.error("Read title field");
                 throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + col);
             }
             String titleInfo = String.valueOf(title);
@@ -85,23 +97,35 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         }
     }
 
-    private List<Map<String, Object>> readImpl(String file) throws IOException {
-        Sheet sheet = getSheet(file);
-        getMaxRowsAndCols(sheet);
-        if (endWithRow == -1 || endWithCOl == -1) {
-            setDefaultEndWithRowsAndCols(endWithRow, endWithCOl);
+    private List<Map<String, Object>> readImpl(String file) {
+        log.info("Ready to read file:" + System.getProperty("user.dir")+File.separator+file);
+        try {
+            //如果是有参构造获取的Sheet就不要再获取一遍了
+            sheet =sheet==null? getSheet(file):sheet;
+            getMaxRowsAndCols(sheet);
+            if (endWithRow == -1 || endWithCOl == -1) {
+                setDefaultEndWithRowsAndCols(endWithRow, endWithCOl);
+            }
+            excelTool.check_row_col(startRow, startCol, endWithRow, endWithCOl, maxRow, maxCol);
+            readTitle(sheet);
+        } catch (Exception e) {
+           log.error(e.getLocalizedMessage());
+            log.error("Reading file failed");
+            e.printStackTrace();
+           System.exit(-1);
         }
-        excelTool.check_row_col(startRow,startCol,endWithRow,endWithCOl,maxRow,maxCol);
-        readTitle(sheet);
-        for (int row = startRow; row <= endWithRow; row++) {
+        log.info("File check passed,Starting read");
+        for (int row = startRow; row < endWithRow; row++) {
             //如果是标题行则跳过
             if (row == titleLine) {
                 continue;
             }
             Map<String, Object> map = new HashMap<>();
-            for (int rol = startCol; rol <= endWithCOl; rol++) {
+            for (int rol = startCol; rol < endWithCOl; rol++) {
                 Cell info = sheet.getRow(row).getCell(rol);
-                map.put(titles.get(rol), getCellValue(info));
+                Object o=getCellValue(info);
+                String title=titles.get(rol);
+                map.put(title,o);
             }
             list.add(map);
         }
@@ -109,6 +133,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             System.out.println(m);
         }
         arrayData = excelTool.conformity(list, titles);
+        log.info("Reading successfully");
         return list;
     }
 
@@ -128,6 +153,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         // 获取工作簿下sheet的个数
         int totalSheets = workbook.getNumberOfSheets();
         if (readSheetNumber > totalSheets) {
+            log.error("Invalid sheet number");
             throw new IllegalArgumentException("Sheet index (" + readSheetNumber + ") is out of range " + totalSheets);
         }
         sheet = workbook.getSheetAt(readSheetNumber);
@@ -136,9 +162,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 处理表格里面的数据
-     *
-     * @param cell
-     * @return
      */
     public String getCellValue(Cell cell) {
         String cellValue = "";
@@ -185,8 +208,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         String[] title;
         if (file == null && list != null) {
             if (list.isEmpty()) {
-                String infos = excelTool.PrintInfo("WARRING: Failed to get title", 33, 0);
-                System.out.println(infos);
+                log.warn("WARRING: Failed to get title");
             }
             title = new String[titles.size()];
             for (int i = 0; i < titles.size(); i++) {
@@ -197,8 +219,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         assert file != null;
         list = readImpl(file.getAbsolutePath());
         if (list == null || list.isEmpty()) {
-            String infos = excelTool.PrintInfo("Failed to get title", 31, 0);
-            System.out.println(infos);
+            log.warn("WARRING: Failed to get title");
         }
         title = new String[titles.size()];
         for (int i = 0; i < titles.size(); i++) {
@@ -210,6 +231,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     private void outPutImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException {
         excelTool.Check_suffix(file);
         if (file.exists()) {
+            log.warn("The file is already exists.Can you rename this file?");
             throw new IOException("This file is already exists");
         }
         if (obj == null || obj.length == 0 || title == null || title.length == 0) {
@@ -251,15 +273,12 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         } catch (IOException e) {
             throw new IOException("File export failure.");
         }
-        String info = "The file is successfully exported and saved to:\t" + file.getAbsolutePath();
-        System.out.println(info);
+        log.info("The file is successfully exported and saved to:\t" + file.getAbsolutePath());
     }
 
     /**
      * 通过已经获取的List<Map<String,Onject>>集合来获取标题,返回数组
      *
-     * @param list
-     * @return
      */
     @Override
     public String[] getTitle(List<Map<String, Object>> list) {
@@ -417,7 +436,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     /**
      * 将某一行作为标题,输入从1开始
      *
-     * @param titleLine
      */
     @Override
     public void setTitleLine(int titleLine) {

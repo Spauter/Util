@@ -14,13 +14,13 @@ public class TxtTool extends MyTool {
     MyTool myTool = new ExcelToolImpl();
 
     @Override
-    public void Check_suffix(File file) throws IOException {
+    public void Check_suffix(File file) {
         Check_suffix(file.getName());
     }
 
     @Override
-    public void Check_suffix(String path) throws IOException {
-        if ((path.endsWith(FileReadAndOutPutUtil.SUFFIX_3) || path.endsWith(FileReadAndOutPutUtil.SUFFIX_4))) {
+    public void Check_suffix(String path) {
+        if ((path.endsWith(FileReadAndOutPutUtil.SUFFIX_5))) {
             throw new IllegalArgumentException("\tUnsupported suffix. It need '" + FileReadAndOutPutUtil.SUFFIX_5 + "' file,but you provide a unsupported file");
         }
     }
@@ -61,8 +61,8 @@ public class TxtTool extends MyTool {
     }
 
     @Override
-    public void check_titleLine(int titleLine, int maxrow) {
-        myTool.check_titleLine(titleLine, maxrow);
+    public void check_titleLine(int titleLine, int maxRow) {
+        myTool.check_titleLine(titleLine, maxRow);
     }
 
     @Override

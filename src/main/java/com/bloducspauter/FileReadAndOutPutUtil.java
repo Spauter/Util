@@ -3,9 +3,10 @@ package com.bloducspauter;
 
 /**
  * @author Bloduc Spauer
- * @version 1.14.514
+ * @version 1.16
 */
 public interface FileReadAndOutPutUtil {
+
     String SUFFIX_1 = ".xlsx";
     String SUFFIX_2 = ".xls";
     String SUFFIX_3=".docx";
@@ -15,13 +16,13 @@ public interface FileReadAndOutPutUtil {
 
     /**
      * 返回总行数
-     * @return
+     * @return int
      */
     int getMaxRows();
 
     /**
      * 返回总列数
-     * @return
+     * @return int
      */
     int getMaxCols();
     /**

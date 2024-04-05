@@ -5,26 +5,56 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 读取文件
+ * @author Bloduc Spauter
+ * @version 1.6
+ */
 public interface ReadFile extends FileReadAndOutPutUtil{
     /**
-     * 返回List
-     *
-     * @param path
-     * @return
-     * @throws
-     * @throws IOException
+     *  读取文件并把结果保存到List集合中
+     * @param path 文件路径
+     * @return List
+     * @throws IOException IO流异常
      */
     List<Map<String, Object>> readToList(String path) throws IOException;
 
-
+    /**
+     * 读取文件并把结果保存到List集合中
+     * @param file 文件
+     * @return List
+     * @throws IOException IO流异常
+     */
     List<Map<String, Object>> readToList(File file) throws IOException;
 
+    /**
+     *  提供文件后直接读取,不需要额外输入文件路径
+     * @return List
+     * @throws IOException IO流异常
+     */
     List<Map<String, Object>> readToList() throws IOException;
 
+    /**
+     * 读取文件将结果存入二维数组中
+     * @param path 文件路径
+     * @return Object[][]
+     * @throws IOException IO流异常
+     */
     Object[][] readToArray(String path) throws IOException;
 
+    /**
+     * 读取文件将结果存入二维数组中
+     * @param file 读取文件将结果存入二维数组中
+     * @return Object[][]
+     * @throws IOException IO流异常
+     */
     Object[][] readToArray(File file) throws IOException;
 
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
     Object[][] readToArray() throws IOException;
 
     /**

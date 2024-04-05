@@ -5,8 +5,7 @@ import com.bloducspauter.txt.output.ReadTxt;
 import com.bloducspauter.txt.read.OutPutTxt;
 import com.bloducspauter.txt.tool.TxtTool;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +13,42 @@ import java.util.Map;
 public class TxtUtil implements ReadTxt, OutPutTxt {
     List<Map<String,Object>>mapList=new ArrayList<>();
     String[] titles;
+
     private int maxRows;
     private int maxCols;
 
     MyTool tool= new TxtTool();
+
+    List<Map<String,Object>>list=new ArrayList<>();
+
+    private String[] titleLoad(){
+        return null;
+    }
+
+    private List<Map<String,Object>>readImpl(File  file) throws IOException {
+        tool.Check_file(file);
+        tool.Check_suffix(file);
+        FileReader iis = null;
+        BufferedReader bfr = null;
+        try {
+            iis = new FileReader(file);
+            bfr = new BufferedReader(iis);
+            String info = null;
+            while ((info = bfr.readLine()) != null) {
+//                list.add(info);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (null != iis) {
+            try {
+                iis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
 
 
 
