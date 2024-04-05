@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 读取文件
  * @author Bloduc Spauter
- * @version 1.6
+ * @version 1.16
  */
 public interface ReadFile extends FileReadAndOutPutUtil{
     /**

@@ -31,7 +31,7 @@ public abstract class MyTool {
     /**
      * 检查文件后缀名
      * @param path 被检查文件路径
-     * @throws IOException 如果文件后缀名不符合要求
+     * @throws IllegalArgumentException 如果文件后缀名不符合要求
      */
     public abstract void Check_suffix(String path) throws IOException;
 
@@ -57,7 +57,6 @@ public abstract class MyTool {
      * 1  粗体,
      * 4  下划线,
      * 7  反色;</p>
-     * <p>
      * <p>颜色</p>
      * 30  白色,
      * 31  红色,

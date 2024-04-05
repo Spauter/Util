@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 将数据输出保存到文件中
  * @author Bloduc Spauter
- * @since 1.6
+ * @since 1.16
  */
 public interface OutputFile extends FileReadAndOutPutUtil {
 

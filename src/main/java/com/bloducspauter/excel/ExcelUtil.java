@@ -26,22 +26,16 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     static MyTool excelTool = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
     private String dateformat = "yyyy-MM-dd";
-
     private int titleLine = 0;
-
     private Object[][] arrayData;
-
     private int startRow = 0;
     private int endWithRow = -1;
     private int startCol = 0;
-
     private int endWithCOl = -1;
-
     private int maxRow = 0;
     private int maxCol = 0;
     //需要读取的Sheet
     private int readSheetNumber = 0;
-
     private Sheet sheet;
     /*
     无参构造
@@ -305,24 +299,24 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
 
     @Override
-    public List<Map<String, Object>> readToList(String path) throws IOException {
+    public List<Map<String, Object>> readToList(String path) {
         return readImpl(path);
     }
 
 
     @Override
-    public List<Map<String, Object>> readToList(File file) throws IOException {
+    public List<Map<String, Object>> readToList(File file) {
         return readImpl(file.getAbsolutePath());
     }
 
     @Override
-    public List<Map<String, Object>> readToList() throws IOException {
+    public List<Map<String, Object>> readToList() {
         return readImpl(this.path);
     }
 
 
     @Override
-    public Object[][] readToArray(File file) throws IOException {
+    public Object[][] readToArray(File file) {
         if (arrayData == null) {
             list = readImpl(file.getAbsolutePath());
             arrayData = excelTool.conformity(list, titles);
@@ -337,7 +331,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
 
     @Override
-    public Object[][] readToArray(String Path) throws IOException {
+    public Object[][] readToArray(String Path) {
         File file = excelTool.conformity(Path);
         return readToArray(file);
     }
