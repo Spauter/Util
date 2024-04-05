@@ -16,12 +16,15 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * @author Bloduc Spauter
+ */
 @Slf4j
-//总工具
 public class ExcelUtil implements ReadExcel, OutputExcel {
     private String path;
     //标题
-    private final Map<Integer, String> titles = new HashMap<>();//表格的标题,也就是首行
+    //表格的标题,也就是首行
+    private final Map<Integer, String> titles = new HashMap<>();
     private List<Map<String, Object>> list = new ArrayList<>();
     static MyTool excelTool = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
@@ -37,6 +40,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     //需要读取的Sheet
     private int readSheetNumber = 0;
     private Sheet sheet;
+
     /*
     无参构造
      */
@@ -52,13 +56,13 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     提供文件路径后,会读取文件行数和列数信息
      */
     public ExcelUtil(String path) throws IOException {
-        log.info("Ready to read file:" + System.getProperty("user.dir")+File.separator+path);
+        log.info("Ready to read file:" + System.getProperty("user.dir") + File.separator + path);
         this.path = path;
         try {
             sheet = getSheet(path);
             getMaxRowsAndCols(sheet);
             setDefaultEndWithRowsAndCols(-1, -1);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getLocalizedMessage());
             log.error("Reading file failed");
             throw e;
@@ -92,10 +96,10 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     private List<Map<String, Object>> readImpl(String file) {
-        log.info("Ready to read file:" + System.getProperty("user.dir")+File.separator+file);
+        log.info("Ready to read file:" + System.getProperty("user.dir") + File.separator + file);
         try {
             //如果是有参构造获取的Sheet就不要再获取一遍了
-            sheet =sheet==null? getSheet(file):sheet;
+            sheet = sheet == null ? getSheet(file) : sheet;
             getMaxRowsAndCols(sheet);
             if (endWithRow == -1 || endWithCOl == -1) {
                 setDefaultEndWithRowsAndCols(endWithRow, endWithCOl);
@@ -103,10 +107,10 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             excelTool.checkRowCol(startRow, startCol, endWithRow, endWithCOl, maxRow, maxCol);
             readTitle(sheet);
         } catch (Exception e) {
-           log.error(e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
             log.error("Reading file failed");
             e.printStackTrace();
-           System.exit(-1);
+            System.exit(-1);
         }
         log.info("File check passed,Starting read");
         for (int row = startRow; row < endWithRow; row++) {
@@ -117,9 +121,9 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             Map<String, Object> map = new HashMap<>();
             for (int rol = startCol; rol < endWithCOl; rol++) {
                 Cell info = sheet.getRow(row).getCell(rol);
-                Object o=getCellValue(info);
-                String title=titles.get(rol);
-                map.put(title,o);
+                Object o = getCellValue(info);
+                String title = titles.get(rol);
+                map.put(title, o);
             }
             list.add(map);
         }
@@ -164,7 +168,8 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         }
         switch (cell.getCellType()) {
             case NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) { // 处理日期格式、时间格式
+                // 处理日期格式、时间格式
+                if (DateUtil.isCellDateFormatted(cell)) {
                     SimpleDateFormat sdf;
                     if (DateUtil.isADateFormat(-1, cell.getCellStyle().getDataFormat() + "")) {
                         sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -173,7 +178,8 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
                     }
                     cellValue = sdf.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
                 } else if ("@".equals(cell.getCellStyle().getDataFormatString())) {
-                    DecimalFormat df = new DecimalFormat("#");//转换成整型
+                    //转换成整型
+                    DecimalFormat df = new DecimalFormat("#");
                     cellValue = df.format(cell.getNumericCellValue());
                 } else {
                     cellValue = NumberToTextConverter.toText(cell.getNumericCellValue());
@@ -272,7 +278,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 通过已经获取的List<Map<String,Onject>>集合来获取标题,返回数组
-     *
      */
     @Override
     public String[] getTitle(List<Map<String, Object>> list) {
@@ -429,7 +434,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 将某一行作为标题,输入从1开始
-     *
      */
     @Override
     public void setTitleLine(int titleLine) {
