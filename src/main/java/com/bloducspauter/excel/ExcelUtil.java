@@ -1,6 +1,6 @@
 package com.bloducspauter.excel;
 
-import com.bloducspauter.MyTool;
+import com.bloducspauter.origin.tool.MyTool;
 import com.bloducspauter.excel.read.ReadExcel;
 import com.bloducspauter.excel.tool.ExcelToolImpl;
 import com.bloducspauter.excel.output.OutputExcel;
@@ -69,19 +69,32 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         }
     }
 
-    /*
-    获取最大行数和列数
+    /**
+     * 获取最大行数和列数
+     *
+     * @param sheet {@code sheet}
      */
     private void getMaxRowsAndCols(Sheet sheet) {
         maxRow = sheet.getLastRowNum();
         maxCol = sheet.getRow(titleLine).getLastCellNum();
     }
 
+    /**
+     * 设置读取范围
+     *
+     * @param endWithRow 截止行
+     * @param endWithCOl 截止列
+     */
     private void setDefaultEndWithRowsAndCols(int endWithRow, int endWithCOl) {
         this.endWithRow = this.endWithRow == -1 ? maxRow : endWithRow;
         this.endWithCOl = this.endWithCOl == -1 ? maxCol : endWithCOl;
     }
 
+    /**
+     * 获取标题
+     *
+     * @param sheet {@code sheet}
+     */
     private void readTitle(Sheet sheet) {
         excelTool.checkTitleLine(titleLine, maxRow);
         for (int col = startCol; col < endWithCOl; col++) {
@@ -95,7 +108,13 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         }
     }
 
-    private List<Map<String, Object>> readImpl(String file) {
+    /**
+     * 读取表格文件存入List集合中
+     *
+     * @param file 文件路径
+     * @return {@code List<Map<String, Object>>}
+     */
+    private List<Map<String, Object>> readImpl(String file) throws IOException {
         log.info("Ready to read file:" + System.getProperty("user.dir") + File.separator + file);
         try {
             //如果是有参构造获取的Sheet就不要再获取一遍了
@@ -109,8 +128,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
             log.error("Reading file failed");
-            e.printStackTrace();
-            System.exit(-1);
+            throw e;
         }
         log.info("File check passed,Starting read");
         for (int row = startRow; row < endWithRow; row++) {
@@ -135,7 +153,13 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         return list;
     }
 
-    /* 根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook */
+    /**
+     * 根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook
+     *
+     * @param file 文件
+     * @return Sheet
+     * @throws IOException IO流异常
+     */
     private Sheet getSheet(String file) throws IOException {
         excelTool.checkSuffix(file);
         excelTool.checkFile(new File(file));
@@ -159,7 +183,8 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     /**
-     * 处理表格里面的数据
+     * @param cell 单元格
+     * @return {@code String}
      */
     public String getCellValue(Cell cell) {
         String cellValue = "";
@@ -304,24 +329,24 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
 
     @Override
-    public List<Map<String, Object>> readToList(String path) {
+    public List<Map<String, Object>> readToList(String path) throws IOException {
         return readImpl(path);
     }
 
 
     @Override
-    public List<Map<String, Object>> readToList(File file) {
+    public List<Map<String, Object>> readToList(File file) throws IOException {
         return readImpl(file.getAbsolutePath());
     }
 
     @Override
-    public List<Map<String, Object>> readToList() {
+    public List<Map<String, Object>> readToList() throws IOException {
         return readImpl(this.path);
     }
 
 
     @Override
-    public Object[][] readToArray(File file) {
+    public Object[][] readToArray(File file) throws IOException {
         if (arrayData == null) {
             list = readImpl(file.getAbsolutePath());
             arrayData = excelTool.conformity(list, titles);
@@ -336,7 +361,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
 
     @Override
-    public Object[][] readToArray(String Path) {
+    public Object[][] readToArray(String Path) throws IOException {
         File file = excelTool.conformity(Path);
         return readToArray(file);
     }

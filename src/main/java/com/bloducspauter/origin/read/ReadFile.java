@@ -1,4 +1,6 @@
-package com.bloducspauter;
+package com.bloducspauter.origin.read;
+
+import com.bloducspauter.origin.FileReadAndOutPutUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +12,7 @@ import java.util.Map;
  * @author Bloduc Spauter
  * @version 1.16
  */
-public interface ReadFile extends FileReadAndOutPutUtil{
+public interface ReadFile extends FileReadAndOutPutUtil {
     /**
      *  读取文件并把结果保存到List集合中
      * @param path 文件路径

@@ -1,6 +1,6 @@
 package com.bloducspauter.txt;
 
-import com.bloducspauter.MyTool;
+import com.bloducspauter.origin.tool.MyTool;
 import com.bloducspauter.txt.output.ReadTxt;
 import com.bloducspauter.txt.read.OutPutTxt;
 import com.bloducspauter.txt.tool.TxtTool;

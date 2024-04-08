@@ -1,8 +1,10 @@
 package com.bloducspauter.txt.tool;
 
-import com.bloducspauter.MyTool;
+import com.bloducspauter.origin.tool.MyTool;
+import com.bloducspauter.excel.ExcelUtil;
 import com.bloducspauter.excel.tool.ExcelToolImpl;
-import com.bloducspauter.FileReadAndOutPutUtil;
+import com.bloducspauter.origin.FileReadAndOutPutUtil;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 /**
  * 文本文件工具
+ *
  * @author Bloduc Spauter
  */
 public class TxtTool extends MyTool {
@@ -66,6 +69,11 @@ public class TxtTool extends MyTool {
 
     @Override
     public void checkRowCol(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol) {
+        myTool.checkRowCol(startRow, startCol, endWithRow, endWithCol, maxRow, maxCol);
+    }
 
+    @Test
+    public void rest() throws IOException {
+        new ExcelUtil().readToList("C:\\1.xlsx");
     }
 }

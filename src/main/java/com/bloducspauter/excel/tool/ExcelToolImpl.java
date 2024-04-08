@@ -1,7 +1,7 @@
 package com.bloducspauter.excel.tool;
 
 
-import com.bloducspauter.MyTool;
+import com.bloducspauter.origin.tool.MyTool;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -13,14 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.bloducspauter.FileReadAndOutPutUtil.SUFFIX_1;
-import static com.bloducspauter.FileReadAndOutPutUtil.SUFFIX_2;
+import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_1;
+import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
 
 /**
  * 表格文档检查
  *
  * @author Bloduc Spauter
- * @see com.bloducspauter.MyTool
+ * @see MyTool
  */
 @Slf4j
 public class ExcelToolImpl extends MyTool {

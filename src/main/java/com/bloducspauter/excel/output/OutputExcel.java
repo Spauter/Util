@@ -2,7 +2,7 @@ package com.bloducspauter.excel.output;
 
 
 
-import com.bloducspauter.OutputFile;
+import com.bloducspauter.origin.output.OutputFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Map;
  * </tbody>
  * @author Bloduc Spauter
  * @version 1.16
- * @see com.bloducspauter.OutputFile
+ * @see OutputFile
  */
 public interface OutputExcel extends OutputFile {
     /**

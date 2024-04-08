@@ -1,4 +1,6 @@
-package com.bloducspauter;
+package com.bloducspauter.origin.output;
+
+import com.bloducspauter.origin.FileReadAndOutPutUtil;
 
 import java.io.File;
 import java.io.IOException;
