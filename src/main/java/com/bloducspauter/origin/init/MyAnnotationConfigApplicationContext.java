@@ -1,4 +1,4 @@
-package com.bloducspauter.annotation.scan;
+package com.bloducspauter.origin.init;
 
 import com.bloducspauter.annotation.CellName;
 import com.bloducspauter.annotation.ExcelTable;
@@ -13,18 +13,23 @@ import java.util.*;
 @Slf4j
 public class MyAnnotationConfigApplicationContext {
 
-    public TableDefinition getTableDefinition(Class<?> configClass) throws Exception {
+    private final int MAX_VALUE=0x10000;
+
+    /**
+     *
+     * @param configClass 被提供类
+     * @return TableDefinition
+     */
+    public TableDefinition getTableDefinition(Class<?> configClass) {
         TableDefinition tableDefinition = new TableDefinition();
         ExcelTable excelTable = configClass.getAnnotation(ExcelTable.class);
         if (excelTable == null) {
             log.error("Cannot get excel table");
-            throw new Exception("Cannot get excel table");
+            throw new NoSuchElementException("Cannot get excel table");
         }
-        String className = configClass.getName();
         Field[] fields = configClass.getDeclaredFields();
         tableDefinition.setFields(fields);
-        tableDefinition.setClassName(className);
-        int index;
+        tableDefinition.setClassName(configClass);
         Map<String, Field> map = new HashMap<>();
         for (Field f : fields) {
             CellName cellName = f.getAnnotation(CellName.class);
@@ -55,20 +60,22 @@ public class MyAnnotationConfigApplicationContext {
         int i = 0;
         for (Map.Entry<String, Field> m : fieldMap.entrySet()) {
             CellName cellName = m.getValue().getAnnotation(CellName.class);
-            int index = cellName == null ? Integer.MAX_VALUE : cellName.index();
+            int index = cellName == null ? MAX_VALUE : cellName.index();
+            //判断index是否大于65535，因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据
+            if (index > MAX_VALUE) {
+                throw new IndexOutOfBoundsException("The field \""+m.getValue()+"\" index is out of range:"+index);
+            }
             if(treeMap.get(index)==null){
-                if (index != Integer.MAX_VALUE) {
+                if (index !=MAX_VALUE) {
                     treeMap.put(index, m.getKey());
                 } else {
-                    treeMap.put(Integer.MAX_VALUE-i, m.getKey());
+                    treeMap.put(MAX_VALUE+i, m.getKey());
                 }
             }else {
-                treeMap.put(Integer.MAX_VALUE-i, m.getKey());
+                treeMap.put(MAX_VALUE + i, m.getKey());
             }
             i++;
         }
         return treeMap;
     }
-
-
 }

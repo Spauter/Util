@@ -25,11 +25,11 @@ public interface ReadExcel extends ReadFile {
     /**
      * 返回一个包含需要读取文件路径的表头的数组
      *
-     * @param Path 文件路径
+     * @param path 文件路径
      * @return {@code String[]}
      * @throws IOException IO异常
      */
-    String[] getTitle(String Path) throws IOException;
+    String[] getTitle(String path) throws IOException;
 
     /**
      * 返回一个包含需要读取文件的表头的数组

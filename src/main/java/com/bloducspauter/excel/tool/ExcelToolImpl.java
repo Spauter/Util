@@ -13,8 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_1;
-import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
+import static com.bloducspauter.origin.FileReadAndOutPutUtil.*;
 
 /**
  * 表格文档检查
@@ -34,7 +33,7 @@ public class ExcelToolImpl extends MyTool {
 
     @Override
     public void checkSuffix(String path) {
-        if (!(path.endsWith(SUFFIX_1) || (path.endsWith(SUFFIX_2)))) {
+        if (!(path.endsWith(SUFFIX_1) || (path.endsWith(SUFFIX_2))||path.endsWith(SUFFIX_6))) {
             log.error("Unsupported suffix");
             throw new IllegalArgumentException("Unsupported suffix. It need 'xls' or 'xlsx' file,but you provide a unsupported file");
         }

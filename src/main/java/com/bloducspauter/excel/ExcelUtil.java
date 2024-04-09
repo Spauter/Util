@@ -7,6 +7,7 @@ import com.bloducspauter.excel.output.OutputExcel;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -24,22 +25,22 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     private String path;
     //标题
     //表格的标题,也就是首行
-    private final Map<Integer, String> titles = new HashMap<>();
+    protected final Map<Integer, String> titles = new HashMap<>();
     private List<Map<String, Object>> list = new ArrayList<>();
     static MyTool excelTool = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
     private String dateformat = "yyyy-MM-dd";
-    private int titleLine = 0;
+    protected int titleLine = 0;
     private Object[][] arrayData;
     private int startRow = 0;
     private int endWithRow = -1;
     private int startCol = 0;
-    private int endWithCOl = -1;
-    private int maxRow = 0;
-    private int maxCol = 0;
+    private int endWithCol = -1;
+    protected int maxRow = 0;
+    protected int maxCol = 0;
     //需要读取的Sheet
     private int readSheetNumber = 0;
-    private Sheet sheet;
+    protected Sheet sheet;
 
     /*
     无参构造
@@ -56,7 +57,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     提供文件路径后,会读取文件行数和列数信息
      */
     public ExcelUtil(String path) throws IOException {
-        log.info("Ready to read file:" + System.getProperty("user.dir") + File.separator + path);
         this.path = path;
         try {
             sheet = getSheet(path);
@@ -83,28 +83,30 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
      * 设置读取范围
      *
      * @param endWithRow 截止行
-     * @param endWithCOl 截止列
+     * @param endWithCol 截止列
      */
-    private void setDefaultEndWithRowsAndCols(int endWithRow, int endWithCOl) {
+    private void setDefaultEndWithRowsAndCols(int endWithRow, int endWithCol) {
         this.endWithRow = this.endWithRow == -1 ? maxRow : endWithRow;
-        this.endWithCOl = this.endWithCOl == -1 ? maxCol : endWithCOl;
+        this.endWithCol = this.endWithCol == -1 ? maxCol : this.endWithCol;
     }
+
+
 
     /**
      * 获取标题
      *
      * @param sheet {@code sheet}
      */
-    private void readTitle(Sheet sheet) {
+    protected void readTitle(Sheet sheet) {
         excelTool.checkTitleLine(titleLine, maxRow);
-        for (int col = startCol; col < endWithCOl; col++) {
+        for (int col = startCol; col < endWithCol; col++) {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
                 log.error("Read title field");
                 throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + col);
             }
             String titleInfo = String.valueOf(title);
-            this.titles.put(col, titleInfo);
+            titles.put(col, titleInfo);
         }
     }
 
@@ -120,12 +122,18 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             //如果是有参构造获取的Sheet就不要再获取一遍了
             sheet = sheet == null ? getSheet(file) : sheet;
             getMaxRowsAndCols(sheet);
-            if (endWithRow == -1 || endWithCOl == -1) {
-                setDefaultEndWithRowsAndCols(endWithRow, endWithCOl);
+            if (endWithRow == -1 || endWithCol == -1) {
+                setDefaultEndWithRowsAndCols(endWithRow, endWithCol);
             }
-            excelTool.checkRowCol(startRow, startCol, endWithRow, endWithCOl, maxRow, maxCol);
+            excelTool.checkRowCol(startRow, startCol, endWithRow, endWithCol, maxRow, maxCol);
             readTitle(sheet);
-        } catch (Exception e) {
+        }catch (NotOLE2FileException e){
+            log.error(e.getLocalizedMessage());
+            System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
+                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
+            log.error("Reading file failed");
+            throw e;
+        } catch(Exception e) {
             log.error(e.getLocalizedMessage());
             log.error("Reading file failed");
             throw e;
@@ -137,7 +145,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
                 continue;
             }
             Map<String, Object> map = new HashMap<>();
-            for (int rol = startCol; rol < endWithCOl; rol++) {
+            for (int rol = startCol; rol < endWithCol; rol++) {
                 Cell info = sheet.getRow(row).getCell(rol);
                 Object o = getCellValue(info);
                 String title = titles.get(rol);
@@ -160,7 +168,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
      * @return Sheet
      * @throws IOException IO流异常
      */
-    private Sheet getSheet(String file) throws IOException {
+    protected Sheet getSheet(String file) throws IOException {
         excelTool.checkSuffix(file);
         excelTool.checkFile(new File(file));
         Workbook workbook;
@@ -183,6 +191,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     /**
+     * 处理单元格数据，转化为合适的表达值
      * @param cell 单元格
      * @return {@code String}
      */
@@ -477,7 +486,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     @Override
     public void setEndWithCol(int endWithCol) {
-        this.endWithCOl = endWithCol;
+        this.endWithCol = endWithCol;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.bloducspauter.annotation.scan;
+package com.bloducspauter.origin.init;
 
 
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.TreeMap;
 @Data
 public class TableDefinition {
     private Field[] fields;
-    private String className;
+    private Class<?> className;
     private Map<String,Field> cellNameAndField;
     private TreeMap<Integer,String> indexForCellName;
 }

@@ -27,5 +27,5 @@ public @interface CellName {
     /**
      * 在输出是确定在哪一列
      */
-    int index() default Integer.MAX_VALUE;
+    int index() default 0x10000;
 }

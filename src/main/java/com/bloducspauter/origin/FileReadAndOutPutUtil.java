@@ -9,6 +9,7 @@ public interface FileReadAndOutPutUtil {
 
     String SUFFIX_1 = ".xlsx";
     String SUFFIX_2 = ".xls";
+    String SUFFIX_6=".csv";
     String SUFFIX_3=".docx";
     String SUFFIX_4=".doc";
     String SUFFIX_5=".txt";
