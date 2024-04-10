@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
+ * 获取{@link TableDefinition}
  * @author Bloduc Spauter
  */
 public class MyAnnotationConfigApplicationContext {
@@ -17,7 +18,8 @@ public class MyAnnotationConfigApplicationContext {
     /**
      *
      * @param configClass 被提供类
-     * @return TableDefinition
+     * @return TableDefinition {@link TableDefinition}
+     * @throws NoSuchElementException 如果没有{@link ExcelTable}注解
      */
     public TableDefinition getTableDefinition(Class<?> configClass) {
         TableDefinition tableDefinition = new TableDefinition();
@@ -53,6 +55,12 @@ public class MyAnnotationConfigApplicationContext {
     }
 
 
+    /**
+     * 进一步获取TreeMap后存入{@link TableDefinition#setIndexForCellName(TreeMap)}
+     * @param tableDefinition {@link  TableDefinition}
+     * @return {@link TreeMap}
+     * @throws IndexOutOfBoundsException 因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据,如果{@link ExcelField#index() }大于此值抛出异常
+     */
     public TreeMap<Integer, String> integerStringTreeMap(TableDefinition tableDefinition) {
         TreeMap<Integer, String> treeMap = new TreeMap<>();
         Map<String, Field> fieldMap = tableDefinition.getCellNameAndField();

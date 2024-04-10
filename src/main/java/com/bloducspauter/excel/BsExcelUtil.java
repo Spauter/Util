@@ -6,7 +6,6 @@ import com.bloducspauter.excel.output.BsOutputExcel;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
 import com.bloducspauter.excel.read.BsReadServise;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 
 
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 使用Json字符串接收Excel表格数据,继承自{@link ExcelUtil}
  * @author Bloduc Spauter
  */
 public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExcel {
@@ -26,13 +26,27 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
 
     private final TableDefinition entityTableDefinition;
 
-
+    /**
+     *  初始化实体类,使用{@link MyAnnotationConfigApplicationContext#getTableDefinition(Class)}
+     *  <p>
+     *  读取该类的{@link com.bloducspauter.annotation.ExcelTable}和{@link com.bloducspauter.annotation.ExcelField}
+     *  <p>
+     *  并将相关结果存入{@link TableDefinition}
+     * @param entity 实体类
+     */
     public BsExcelUtil(Class<?> entity) {
         MyAnnotationConfigApplicationContext myAnnotationConfigApplicationContext = new MyAnnotationConfigApplicationContext();
         entityTableDefinition = myAnnotationConfigApplicationContext.getTableDefinition(entity);
     }
 
 
+    /**
+     * 将Excel获取的数据以Json字符串形式存入List集合中
+     *
+     * @param file 文件路径
+     * @return {@code List<String>}
+     * @throws IOException IO流异常
+     */
     private List<String> readImpl(String file) throws IOException {
         List<String> stringList = new ArrayList<>();
         sheet = super.getSheet(file);
@@ -89,6 +103,12 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
     }
 
 
+    /**
+     *
+     * @param path 文件路径
+     * @return {@code List<Object}带有Json字符串的List集合
+     * @throws IOException IO流异常
+     */
     @Override
     public List<Object> readFile(String path) throws IOException {
         Class<?> entity = entityTableDefinition.getClassName();
