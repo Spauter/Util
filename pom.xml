@@ -6,7 +6,7 @@
 
     <groupId>blo.spau</groupId>
     <artifactId>Util</artifactId>
-    <version>1.17</version>
+    <version>1.171</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -38,11 +38,6 @@
             <artifactId>jsoup</artifactId>
             <version>1.15.3</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

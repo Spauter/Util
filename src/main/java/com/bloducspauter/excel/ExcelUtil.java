@@ -20,7 +20,6 @@ import java.util.*;
 /**
  * @author Bloduc Spauter
  */
-@Slf4j
 public class ExcelUtil implements ReadExcel, OutputExcel {
     private String path;
     //标题
@@ -63,8 +62,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             getMaxRowsAndCols(sheet);
             setDefaultEndWithRowsAndCols(-1, -1);
         } catch (Exception e) {
-            log.error(e.getLocalizedMessage());
-            log.error("Reading file failed");
+            System.out.println(("Reading file failed"));
             throw e;
         }
     }
@@ -102,7 +100,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         for (int col = startCol; col < endWithCol; col++) {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
-                log.error("Read title field");
+                System.out.println(("Read title field"));
                 throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + col);
             }
             String titleInfo = String.valueOf(title);
@@ -117,7 +115,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
      * @return {@code List<Map<String, Object>>}
      */
     private List<Map<String, Object>> readImpl(String file) throws IOException {
-        log.info("Ready to read file:" + System.getProperty("user.dir") + File.separator + file);
         try {
             //如果是有参构造获取的Sheet就不要再获取一遍了
             sheet = sheet == null ? getSheet(file) : sheet;
@@ -128,17 +125,15 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             excelTool.checkRowCol(startRow, startCol, endWithRow, endWithCol, maxRow, maxCol);
             readTitle(sheet);
         }catch (NotOLE2FileException e){
-            log.error(e.getLocalizedMessage());
             System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
                     "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
-            log.error("Reading file failed");
+            System.out.println(("Reading file failed"));
             throw e;
         } catch(Exception e) {
-            log.error(e.getLocalizedMessage());
-            log.error("Reading file failed");
+            System.out.println(("Reading file failed"));
             throw e;
         }
-        log.info("File check passed,Starting read");
+        System.out.println(("File check passed,Starting read"));
         for (int row = startRow; row < endWithRow; row++) {
             //如果是标题行则跳过
             if (row == titleLine) {
@@ -157,7 +152,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             System.out.println(m);
         }
         arrayData = excelTool.conformity(list, titles);
-        log.info("Reading successfully");
+        System.out.println(("Reading successfully"));
         return list;
     }
 
@@ -183,7 +178,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         // 获取工作簿下sheet的个数
         int totalSheets = workbook.getNumberOfSheets();
         if (readSheetNumber > totalSheets) {
-            log.error("Invalid sheet number");
+            System.out.println(("Invalid sheet number"));
             throw new IllegalArgumentException("Sheet index (" + readSheetNumber + ") is out of range " + totalSheets);
         }
         sheet = workbook.getSheetAt(readSheetNumber);
@@ -242,7 +237,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         String[] title;
         if (file == null && list != null) {
             if (list.isEmpty()) {
-                log.warn("WARRING: Failed to get title");
+                System.out.println(("WARRING: Failed to get title"));
             }
             title = new String[titles.size()];
             for (int i = 0; i < titles.size(); i++) {
@@ -253,7 +248,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         assert file != null;
         list = readImpl(file.getAbsolutePath());
         if (list == null || list.isEmpty()) {
-            log.warn("WARRING: Failed to get title");
+            System.out.println(("WARRING: Failed to get title"));
         }
         title = new String[titles.size()];
         for (int i = 0; i < titles.size(); i++) {
@@ -265,7 +260,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     private void outPutImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException {
         excelTool.checkSuffix(file);
         if (file.exists()) {
-            log.warn("The file is already exists.Can you rename this file?");
             throw new IOException("This file is already exists");
         }
         if (obj == null || obj.length == 0 || title == null || title.length == 0) {
@@ -307,7 +301,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         } catch (IOException e) {
             throw new IOException("File export failure.");
         }
-        log.info("The file is successfully exported and saved to:\t" + file.getAbsolutePath());
+        System.out.println(("The file is successfully exported and saved to:\t" + file.getAbsolutePath()));
     }
 
     /**

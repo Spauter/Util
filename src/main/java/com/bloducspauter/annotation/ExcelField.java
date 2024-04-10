@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface CellName {
+public @interface ExcelField {
     /**
      * 单元格真正的名字
      * @return boolean

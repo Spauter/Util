@@ -1,6 +1,6 @@
 package com.bloducspauter.origin.init;
 
-import com.bloducspauter.annotation.CellName;
+import com.bloducspauter.annotation.ExcelField;
 import com.bloducspauter.annotation.ExcelTable;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,7 +10,6 @@ import java.util.*;
 /**
  * @author Bloduc Spauter
  */
-@Slf4j
 public class MyAnnotationConfigApplicationContext {
 
     private final int MAX_VALUE=0x10000;
@@ -24,7 +23,7 @@ public class MyAnnotationConfigApplicationContext {
         TableDefinition tableDefinition = new TableDefinition();
         ExcelTable excelTable = configClass.getAnnotation(ExcelTable.class);
         if (excelTable == null) {
-            log.error("Cannot get excel table");
+            System.out.println(("Cannot get excel table"));
             throw new NoSuchElementException("Cannot get excel table");
         }
         Field[] fields = configClass.getDeclaredFields();
@@ -32,7 +31,7 @@ public class MyAnnotationConfigApplicationContext {
         tableDefinition.setClassName(configClass);
         Map<String, Field> map = new HashMap<>();
         for (Field f : fields) {
-            CellName cellName = f.getAnnotation(CellName.class);
+            ExcelField cellName = f.getAnnotation(ExcelField.class);
             String key;
             //如果没有注解就把属性名作为key
             if (cellName == null) {
@@ -59,7 +58,7 @@ public class MyAnnotationConfigApplicationContext {
         Map<String, Field> fieldMap = tableDefinition.getCellNameAndField();
         int i = 0;
         for (Map.Entry<String, Field> m : fieldMap.entrySet()) {
-            CellName cellName = m.getValue().getAnnotation(CellName.class);
+            ExcelField cellName = m.getValue().getAnnotation(ExcelField.class);
             int index = cellName == null ? MAX_VALUE : cellName.index();
             //判断index是否大于65535，因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据
             if (index > MAX_VALUE) {

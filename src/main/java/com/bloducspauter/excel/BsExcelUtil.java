@@ -2,6 +2,7 @@ package com.bloducspauter.excel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bloducspauter.excel.output.BsOutputExcel;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
 import com.bloducspauter.excel.read.BsReadServise;
@@ -20,8 +21,7 @@ import java.util.Map;
 /**
  * @author Bloduc Spauter
  */
-@Slf4j
-public class BsExcelUtil extends ExcelUtil implements BsReadServise {
+public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExcel {
 
 
     private final TableDefinition entityTableDefinition;
@@ -35,14 +35,7 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise {
 
     private List<String> readImpl(String file) throws IOException {
         List<String> stringList = new ArrayList<>();
-        try {
-            sheet = super.getSheet(file);
-        } catch (Exception e) {
-            log.error(e.getLocalizedMessage());
-            log.error("Reading file failed");
-            throw e;
-        }
-        log.info("File check passed,Starting read");
+        sheet = super.getSheet(file);
         maxRow = sheet.getLastRowNum();
         maxCol = sheet.getRow(titleLine).getLastCellNum();
         super.setEndWithRow(maxRow);
@@ -62,7 +55,6 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise {
                 if (field == null) {
                     String err="THe field \""+title+"\" does not exists in this field in class:" +
                             entityTableDefinition.getClassName().getName();
-                    log.error(err);
                     throw new IllegalArgumentException(err);
                 }
                 String filedName = field.getName();
@@ -71,7 +63,6 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise {
             String jsonString = JSON.toJSONString(map);
             stringList.add(jsonString);
         }
-        log.info("Reading successfully");
         return stringList;
     }
 
@@ -83,7 +74,7 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise {
     @Override
     @Deprecated
     public void setStartCol(int startCol) {
-        log.warn("This method is deprecated in the class,");
+        System.out.println(("This method is deprecated in the class,"));
     }
 
     /**
@@ -94,7 +85,7 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise {
     @Deprecated
     @Override
     public void setEndWithCol(int endWithCol) {
-        log.warn("This method is deprecated in the class,");
+        System.out.println(("This method is deprecated in the class,"));
     }
 
 
@@ -113,5 +104,10 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise {
     @Override
     public List<Object> readFile(File file) throws IOException {
         return readFile(file.getAbsolutePath());
+    }
+
+    @Override
+    public void outPutFile(String sheetName, String path, List<Object> entities) {
+
     }
 }
