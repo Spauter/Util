@@ -5,7 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.excel.output.BsOutputExcel;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
-import com.bloducspauter.excel.read.BsReadServise;
+import com.bloducspauter.excel.input.BsReadServise;
+import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.Cell;
 
 
@@ -19,6 +20,7 @@ import java.util.Map;
 
 /**
  * 使用Json字符串接收Excel表格数据,继承自{@link ExcelUtil}
+ *
  * @author Bloduc Spauter
  */
 public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExcel {
@@ -27,11 +29,12 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
     private final TableDefinition entityTableDefinition;
 
     /**
-     *  初始化实体类,使用{@link MyAnnotationConfigApplicationContext#getTableDefinition(Class)}
-     *  <p>
-     *  读取该类的{@link com.bloducspauter.annotation.ExcelTable}和{@link com.bloducspauter.annotation.ExcelField}
-     *  <p>
-     *  并将相关结果存入{@link TableDefinition}
+     * 初始化实体类,使用{@link MyAnnotationConfigApplicationContext#getTableDefinition(Class)}
+     * <p>
+     * 读取该类的{@link com.bloducspauter.annotation.ExcelTable}和{@link com.bloducspauter.annotation.ExcelField}
+     * <p>
+     * 并将相关结果存入{@link TableDefinition}
+     *
      * @param entity 实体类
      */
     public BsExcelUtil(Class<?> entity) {
@@ -47,11 +50,22 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
      * @return {@code List<String>}
      * @throws IOException IO流异常
      */
-    private List<String> readImpl(String file) throws IOException {
-        List<String> stringList = new ArrayList<>();
-        sheet = super.getSheet(file);
-        maxRow = sheet.getLastRowNum();
-        maxCol = sheet.getRow(titleLine).getLastCellNum();
+    private List<Object> readImpl(String file) throws IOException {
+        Class<?> entity = entityTableDefinition.getClassName();
+        List<Object> objects = new ArrayList<>();
+        try {
+            sheet = super.getSheet(file);
+            maxRow = sheet.getLastRowNum();
+            maxCol = sheet.getRow(titleLine).getLastCellNum();
+        } catch (NotOLE2FileException e) {
+            System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
+                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
+            System.out.println(("Reading file failed"));
+            throw e;
+        } catch (Exception e) {
+            System.out.println(("Reading file failed"));
+            throw e;
+        }
         super.setEndWithRow(maxRow);
         super.setEndWithCol(maxCol);
         super.readTitle(sheet);
@@ -65,9 +79,9 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
                 Cell info = sheet.getRow(row).getCell(rol);
                 Object o = getCellValue(info);
                 String title = titles.get(rol);
-                Field field=entityTableDefinition.getCellNameAndField().get(title);
+                Field field = entityTableDefinition.getCellNameAndField().get(title);
                 if (field == null) {
-                    String err="THe field \""+title+"\" does not exists in this field in class:" +
+                    String err = "THe field \"" + title + "\" does not exists in this field in class:" +
                             entityTableDefinition.getClassName().getName();
                     throw new IllegalArgumentException(err);
                 }
@@ -75,9 +89,10 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
                 map.put(filedName, o);
             }
             String jsonString = JSON.toJSONString(map);
-            stringList.add(jsonString);
+            Object o = JSONObject.parseObject(jsonString, entity);
+            objects.add(o);
         }
-        return stringList;
+        return objects;
     }
 
     /**
@@ -104,21 +119,13 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
 
 
     /**
-     *
      * @param path 文件路径
      * @return {@code List<Object}带有Json字符串的List集合
      * @throws IOException IO流异常
      */
     @Override
     public List<Object> readFile(String path) throws IOException {
-        Class<?> entity = entityTableDefinition.getClassName();
-        List<String> stringList = readImpl(path);
-        List<Object> objects = new ArrayList<>();
-        for (String s : stringList) {
-            Object o = JSONObject.parseObject(s, entity);
-            objects.add(o);
-        }
-        return objects;
+        return readImpl(path);
     }
 
     @Override

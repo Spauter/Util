@@ -1,4 +1,4 @@
-package com.bloducspauter.origin.read;
+package com.bloducspauter.origin.input;
 
 import com.bloducspauter.origin.FileReadAndOutPutUtil;
 
