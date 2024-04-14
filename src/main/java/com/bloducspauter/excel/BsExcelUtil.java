@@ -2,10 +2,8 @@ package com.bloducspauter.excel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bloducspauter.excel.output.BsOutputExcel;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
-import com.bloducspauter.excel.input.BsReadServise;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.Cell;
 
@@ -23,7 +21,7 @@ import java.util.Map;
  *
  * @author Bloduc Spauter
  */
-public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExcel {
+public class BsExcelUtil<T> extends ExcelUtil {
 
 
     private final TableDefinition entityTableDefinition;
@@ -42,6 +40,15 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
         entityTableDefinition = myAnnotationConfigApplicationContext.getTableDefinition(entity);
     }
 
+    /**
+     * 返回一个实体类
+     * @param t 实体
+     * @return
+     */
+    public T getEntity(T t) {
+        return t;
+    }
+
 
     /**
      * 将Excel获取的数据以Json字符串形式存入List集合中
@@ -50,9 +57,10 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
      * @return {@code List<String>}
      * @throws IOException IO流异常
      */
-    private List<Object> readImpl(String file) throws IOException {
+    @SuppressWarnings("unchecked")
+    public List<T> readImpl(String file) throws IOException {
         Class<?> entity = entityTableDefinition.getClassName();
-        List<Object> objects = new ArrayList<>();
+        List<T> objects = new ArrayList<>();
         try {
             sheet = super.getSheet(file);
             maxRow = sheet.getLastRowNum();
@@ -90,7 +98,7 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
             }
             String jsonString = JSON.toJSONString(map);
             Object o = JSONObject.parseObject(jsonString, entity);
-            objects.add(o);
+            objects.add((T) o);
         }
         return objects;
     }
@@ -123,18 +131,21 @@ public class BsExcelUtil extends ExcelUtil implements BsReadServise, BsOutputExc
      * @return {@code List<Object}带有Json字符串的List集合
      * @throws IOException IO流异常
      */
-    @Override
-    public List<Object> readFile(String path) throws IOException {
+    public List<T> readFile(String path) throws IOException {
         return readImpl(path);
     }
 
-    @Override
-    public List<Object> readFile(File file) throws IOException {
+
+    public List<T> readFile(File file) throws IOException {
         return readFile(file.getAbsolutePath());
     }
 
-    @Override
-    public void outPutFile(String sheetName, String path, List<Object> entities) {
+
+    public void outPutFile(String sheetName, String path, List<T> entities) {
+
+    }
+
+    public void outPutFile(String sheetName, File  file, List<T> entities) {
 
     }
 }

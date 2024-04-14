@@ -5,6 +5,7 @@ import com.bloducspauter.excel.input.ReadExcel;
 import com.bloducspauter.excel.tool.ExcelToolImpl;
 import com.bloducspauter.excel.output.OutputExcel;
 
+import lombok.Builder;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.*;
@@ -190,7 +191,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
      * @param cell 单元格
      * @return {@code String}
      */
-    public String getCellValue(Cell cell) {
+    protected String getCellValue(Cell cell) {
         String cellValue = "";
         if (cell == null) {
             return "";
