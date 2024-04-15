@@ -12,7 +12,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -42,33 +45,31 @@ public class BsExcelUtil<T> extends ExcelUtil {
         entityTableDefinition = myAnnotationConfigApplicationContext.getTableDefinition(entity);
     }
 
-
-
     public ReadData<T> getRreadData(String filePath) throws IOException, InterruptedException, ExecutionException {
-        sheet=super.getSheet(filePath);
-        maxRow=maxRow==0?sheet.getLastRowNum():maxRow;
+        sheet = super.getSheet(filePath);
+        maxRow = maxRow == 0 ? sheet.getLastRowNum() : maxRow;
         //获取CPU线程数
         int munCores = Runtime.getRuntime().availableProcessors();
-        List<T>entities = new ArrayList<>();
+        List<T> entities = new ArrayList<>();
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(munCores);
-        List<ReadingDataTask<T>> readingDataTasks = getReadingDataTasks(munCores,filePath);
+        List<ReadingDataTask<T>> readingDataTasks = getReadingDataTasks(munCores, filePath);
         //将上面创建的FutureTask提交给Executor线程执行,如果任务没有完成,invokeALl()阻塞处处
         List<Future<ReadData<T>>> futures = threadPoolExecutor.invokeAll(readingDataTasks);
         //任务完成了,停止所有任务;
         threadPoolExecutor.shutdown();
         for (Future<ReadData<T>> future : futures) {
-            ReadData<T>readData=future.get();
+            ReadData<T> readData = future.get();
             entities.addAll(readData.getData());
         }
-        ReadData<T>readData=new ReadData<>();
+        ReadData<T> readData = new ReadData<>();
         readData.setData(entities);
         readData.setMaxRol(maxRow);
         return readData;
     }
 
 
-    private List<ReadingDataTask<T>> getReadingDataTasks(int munCores,String filePath) throws IOException {
-        int size =maxRow;
+    private List<ReadingDataTask<T>> getReadingDataTasks(int munCores, String filePath) throws IOException {
+        int size = maxRow;
         int step = size / munCores;
         int startIndex, endWithIndex;
         List<ReadingDataTask<T>> readingDataTasks = new ArrayList<>();
@@ -81,7 +82,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
             }
             setStartRow(startIndex);
             setEndWithRow(endWithIndex);
-            List<T>entities=readImpl(filePath);
+            List<T> entities = readImpl(filePath);
             ReadingDataTask<T> task = new ReadingDataTask<>(endWithIndex, entities, startIndex);
             readingDataTasks.add(task);
         }
@@ -100,7 +101,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
         Class<?> entity = entityTableDefinition.getClassName();
         List<T> objects = new ArrayList<>();
         try {
-            sheet =sheet==null?super.getSheet(file):sheet;
+            sheet = sheet == null ? super.getSheet(file) : sheet;
             maxRow = (maxRow == 0) ? sheet.getLastRowNum() : maxRow;
             endWithRow = endWithRow == -1 ? maxRow : endWithRow;
             maxCol = sheet.getRow(titleLine).getLastCellNum();
@@ -180,22 +181,11 @@ public class BsExcelUtil<T> extends ExcelUtil {
 
 
     public void bsOutPutFile(String sheetName, String path, List<T> entities) throws NoSuchFieldException, IllegalAccessException {
-        if (entities == null || entities.isEmpty()) {
-            return;
-        }
-        TreeMap<Integer, String> treeMap = entityTableDefinition.getIndexForCellName();
-        for (T entity : entities) {
-            Class<?> providedEntityClass = entities.get(0).getClass();
-
-//            field.setAccessible(true);
-//            Object o=field.get(providedEntityClass);
-//            System.out.println(o);
-        }
+        //TODO
     }
 
     public void bsOutPutFile(String sheetName, File file, List<T> entities) {
-
-
+        //TODO
     }
 
 }
