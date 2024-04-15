@@ -45,6 +45,11 @@ public class BsExcelUtil<T> extends ExcelUtil {
         entityTableDefinition = myAnnotationConfigApplicationContext.getTableDefinition(entity);
     }
 
+    /**
+     * 读物excel表格，采用多线程方式
+     * @see #readFile(String)
+     * @param filePath 文件路径
+     */
     public ReadData<T> getRreadData(String filePath) throws IOException, InterruptedException, ExecutionException {
         sheet = super.getSheet(filePath);
         maxRow = maxRow == 0 ? sheet.getLastRowNum() : maxRow;
@@ -166,6 +171,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
 
 
     /**
+     * 如果了解多线程读取{@link #getRreadData(String)}
      * @param path 文件路径
      * @return {@code List<T>}
      * @throws IOException IO流异常
@@ -174,7 +180,9 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return readImpl(path);
     }
 
-
+    /**
+     * 果了解多线程读取{@link #getRreadData(String)}
+     */
     public List<T> readFile(File file) throws IOException {
         return readFile(file.getAbsolutePath());
     }
