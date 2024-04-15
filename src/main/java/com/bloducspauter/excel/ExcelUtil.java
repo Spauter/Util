@@ -32,8 +32,8 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     private String dateformat = "yyyy-MM-dd";
     protected int titleLine = 0;
     private Object[][] arrayData;
-    private int startRow = 0;
-    private int endWithRow = -1;
+    protected int startRow = 0;
+    protected int endWithRow = -1;
     private int startCol = 0;
     private int endWithCol = -1;
     protected int maxRow = 0;
