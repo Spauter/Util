@@ -1,11 +1,11 @@
 package com.bloducspauter.excel;
 
-import com.bloducspauter.origin.tool.MyTool;
+import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.excel.input.ReadExcel;
 import com.bloducspauter.excel.tool.ExcelToolImpl;
 import com.bloducspauter.excel.output.OutputExcel;
 
-import lombok.Builder;
+import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.*;
@@ -20,6 +20,7 @@ import java.util.*;
 /**
  * 表格工具
  * @author Bloduc Spauter
+ * @version 1.17
  */
 public class ExcelUtil implements ReadExcel, OutputExcel {
     private String path;
@@ -27,7 +28,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     //表格的标题,也就是首行
     protected final Map<Integer, String> titles = new HashMap<>();
     private List<Map<String, Object>> list = new ArrayList<>();
-    static MyTool excelTool = new ExcelToolImpl();
+    static ExcelTool excelTool = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
     private String dateformat = "yyyy-MM-dd";
     protected int titleLine = 0;
@@ -41,6 +42,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     //需要读取的Sheet
     private int readSheetNumber = 0;
     protected Sheet sheet;
+    protected String password;
 
     /*
     无参构造
@@ -102,7 +104,8 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
                 System.out.println(("Read title field"));
-                throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + col);
+                String column= excelTool.convertToExcelColumn(col);
+                throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + column);
             }
             String titleInfo = String.valueOf(title);
             titles.put(col, titleInfo);
@@ -187,7 +190,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     /**
-     * 处理单元格数据，转化为合适的表达值
+     * 处理单元格数据，转化为合适地表达值
      * @param cell 单元格
      * @return {@code String}
      */
@@ -306,7 +309,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     /**
-     * 通过已经获取的List<Map<String,Onject>>集合来获取标题,返回数组
+     * 通过已经获取的List<Map<String,Object>>集合来获取标题,返回数组
      */
     @Override
     public String[] getTitle(List<Map<String, Object>> list) {
@@ -505,5 +508,10 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         list.clear();
         arrayData = null;
         titles.clear();
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+        Biff8EncryptionKey.setCurrentUserPassword(password);
     }
 }

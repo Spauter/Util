@@ -25,7 +25,11 @@ public class MyAnnotationConfigApplicationContext {
         TableDefinition tableDefinition = new TableDefinition();
         ExcelTable excelTable = configClass.getAnnotation(ExcelTable.class);
         if (excelTable == null) {
-            System.out.println(("Cannot get excel table"));
+            System.out.println(("Cannot get excel table.You can declare @ExcelTable annotation @" + configClass.getSimpleName())+". Example:\n" +
+                    "@ExcelTable\n" +
+                    "public class "+configClass.getSimpleName()+"{\n" +
+                    "}");
+           ;
             throw new NoSuchElementException("Cannot get excel table");
         }
         Field[] fields = configClass.getDeclaredFields();
@@ -70,7 +74,7 @@ public class MyAnnotationConfigApplicationContext {
             int index = cellName == null ? MAX_VALUE : cellName.index();
             //判断index是否大于65535，因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据
             if (index > MAX_VALUE) {
-                throw new IndexOutOfBoundsException("The field \""+m.getValue()+"\" index is out of range:"+index);
+                throw new IndexOutOfBoundsException("The field \""+m.getValue().getName()+"\" annotation's index is out of range:"+index);
             }
             if(treeMap.get(index)==null){
                 if (index !=MAX_VALUE) {

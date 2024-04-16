@@ -18,9 +18,9 @@ import static com.bloducspauter.origin.FileReadAndOutPutUtil.*;
  *
  * @author Bloduc Spauter
  * @see MyTool
+ * @version 1.16
  */
-
-public class ExcelToolImpl extends MyTool {
+public class ExcelToolImpl extends ExcelTool {
     private final List<Map<String, Object>> list = new ArrayList<>();
 
     @Override
@@ -123,6 +123,7 @@ public class ExcelToolImpl extends MyTool {
      * @param columnNumber
      * @return
      */
+    @Override
     public  String convertToExcelColumn(int columnNumber) {
         StringBuilder columnName = new StringBuilder();
 

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 获取最终结果
  * @author Bloduc Spauter
- *
+ * @version 1.18
  */
 public class ReadData<T> {
     private List<T>data;

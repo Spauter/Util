@@ -25,6 +25,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 使用Json字符串接收Excel表格数据,继承自{@link ExcelUtil}
  *
  * @author Bloduc Spauter
+ * @version 1.18
  */
 public class BsExcelUtil<T> extends ExcelUtil {
 
@@ -45,12 +46,17 @@ public class BsExcelUtil<T> extends ExcelUtil {
         entityTableDefinition = myAnnotationConfigApplicationContext.getTableDefinition(entity);
     }
 
+    public ReadData<T> getReadData(File file) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
+        return getRreadData(file.getAbsolutePath());
+    }
+
     /**
      * 读物excel表格，采用多线程方式
-     * @see #readFile(String)
+     *
      * @param filePath 文件路径
+     * @see #readFile(String)
      */
-    public ReadData<T> getRreadData(String filePath) throws IOException, InterruptedException, ExecutionException {
+    public ReadData<T> getRreadData(String filePath) throws IOException, InterruptedException, ExecutionException, NoSuchFieldException {
         sheet = super.getSheet(filePath);
         maxRow = maxRow == 0 ? sheet.getLastRowNum() : maxRow;
         //获取CPU线程数
@@ -73,7 +79,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
     }
 
 
-    private List<ReadingDataTask<T>> getReadingDataTasks(int munCores, String filePath) throws IOException {
+    private List<ReadingDataTask<T>> getReadingDataTasks(int munCores, String filePath) throws IOException, NoSuchFieldException {
         int size = maxRow;
         int step = size / munCores;
         int startIndex, endWithIndex;
@@ -88,7 +94,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
             setStartRow(startIndex);
             setEndWithRow(endWithIndex);
             List<T> entities = readImpl(filePath);
-            ReadingDataTask<T> task = new ReadingDataTask<>(endWithIndex, entities, startIndex);
+            ReadingDataTask<T> task = new ReadingDataTask<>(endWithIndex, entities);
             readingDataTasks.add(task);
         }
         return readingDataTasks;
@@ -102,7 +108,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @throws IOException IO流异常
      */
     @SuppressWarnings("unchecked")
-    public List<T> readImpl(String file) throws IOException {
+    private List<T> readImpl(String file) throws IOException, NoSuchFieldException {
         Class<?> entity = entityTableDefinition.getClassName();
         List<T> objects = new ArrayList<>();
         try {
@@ -133,18 +139,26 @@ public class BsExcelUtil<T> extends ExcelUtil {
                 String title = titles.get(rol);
                 Field field = entityTableDefinition.getCellNameAndField().get(title);
                 if (field == null) {
-                    String err = "THe field \"" + title + "\" does not exists in this field in class:" +
-                            entityTableDefinition.getClassName().getName();
-                    throw new IllegalArgumentException(err);
+                    String err = "The field \"" + title + "\" does not exists in this field in class:" +
+                            entityTableDefinition.getClassName().getSimpleName();
+                    throw new NoSuchFieldException(err);
                 }
                 String filedName = field.getName();
                 map.put(filedName, o);
             }
             String jsonString = JSON.toJSONString(map);
             Object o = JSONObject.parseObject(jsonString, entity);
-            objects.add((T) o);
+            try {
+                objects.add((T) o);
+            }catch (ClassCastException e) {
+                System.out.println("Loading info failed in line "+row);
+            }
         }
         return objects;
+    }
+
+    public boolean bsOutputImpl(String sheetName,List<T> entities,String filePath) throws IOException, NoSuchFieldException {
+        return true;
     }
 
     /**
@@ -172,28 +186,48 @@ public class BsExcelUtil<T> extends ExcelUtil {
 
     /**
      * 如果了解多线程读取{@link #getRreadData(String)}
+     *
      * @param path 文件路径
      * @return {@code List<T>}
      * @throws IOException IO流异常
      */
-    public List<T> readFile(String path) throws IOException {
+    public List<T> readFile(String path) throws IOException, NoSuchFieldException {
         return readImpl(path);
     }
 
     /**
      * 果了解多线程读取{@link #getRreadData(String)}
      */
-    public List<T> readFile(File file) throws IOException {
+    public List<T> readFile(File file) throws IOException, NoSuchFieldException {
         return readFile(file.getAbsolutePath());
     }
 
+    public T readOne(File file,int index) throws IOException, NoSuchFieldException {
+        return readOne(file.getAbsolutePath(),index);
+    }
+
+    public T readOne(String filePath, int index) throws IOException, NoSuchFieldException {
+        if (index == titleLine) {
+            throw new IllegalArgumentException("Don't know how to turn title line"+ " into class " + entityTableDefinition.getClassName().getSimpleName());
+        }
+        super.setStartRow(index);
+        super.setEndWithRow(index+1);
+        return readImpl(filePath).get(0);
+    }
 
     public void bsOutPutFile(String sheetName, String path, List<T> entities) throws NoSuchFieldException, IllegalAccessException {
+        for (T entity : entities) {
+            Class<?>entityClass = entity.getClass();
+            Field[] fields = entityClass.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                System.out.println(field.get(entity));
+            }
+        }
         //TODO
     }
 
     public void bsOutPutFile(String sheetName, File file, List<T> entities) {
         //TODO
     }
-
-}
+}    

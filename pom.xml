@@ -6,7 +6,7 @@
 
     <groupId>blo.spau</groupId>
     <artifactId>Util</artifactId>
-    <version>1.18</version>
+    <version>1.18-pre1</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
