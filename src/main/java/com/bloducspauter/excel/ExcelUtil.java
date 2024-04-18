@@ -30,7 +30,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     private List<Map<String, Object>> list = new ArrayList<>();
     static ExcelTool excelTool = new ExcelToolImpl();
     //日期格式，默认yyyy-MM-dd
-    private String dateformat = "yyyy-MM-dd";
+    protected String dateformat = "yyyy-MM-dd";
     protected int titleLine = 0;
     private Object[][] arrayData;
     protected int startRow = 0;

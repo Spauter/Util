@@ -8,6 +8,7 @@ import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
+import com.bloducspauter.test.Teacher;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -15,10 +16,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -137,9 +140,22 @@ public class BsExcelUtil<T> extends ExcelUtil {
      */
     @SuppressWarnings("unchecked")
     private List<T> readImpl(String file) throws IOException, NoSuchFieldException {
-        getReadInformation(file);
         Class<?> entity = entityTableDefinition.getClassName();
         List<T> objects = new ArrayList<>();
+        try {
+            sheet = sheet == null ? super.getSheet(file) : sheet;
+            maxRow = (maxRow == 0) ? sheet.getLastRowNum() : maxRow;
+            endWithRow = endWithRow == -1 ? maxRow : endWithRow;
+            maxCol = sheet.getRow(titleLine).getLastCellNum();
+        } catch (NotOLE2FileException e) {
+            System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
+                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
+            System.out.println(("Reading file failed"));
+            throw e;
+        } catch (Exception e) {
+            System.out.println(("Reading file failed"));
+            throw e;
+        }
         super.setEndWithCol(maxCol);
         super.readTitle(sheet);
         for (int row = startRow; row < endWithRow; row++) {
@@ -172,30 +188,9 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return objects;
     }
 
-    private void getReadInformation(String file) throws IOException {
-        try {
-            sheet = sheet == null ? super.getSheet(file) : sheet;
-            maxRow = (maxRow == 0) ? sheet.getLastRowNum() : maxRow;
-            endWithRow = endWithRow == -1 ? maxRow : endWithRow;
-            maxCol = sheet.getRow(titleLine).getLastCellNum();
-        } catch (NotOLE2FileException e) {
-            System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
-                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
-            System.out.println(("Reading file failed"));
-            throw e;
-        } catch (Exception e) {
-            System.out.println(("Reading file failed"));
-            throw e;
-        }
-    }
-
-    private void bsOutputImpl(String sheetName, File file, List<T> entities) throws IOException {
+    private void bsOutPutFileImpl(String sheetName, File file, List<T> entities) throws IOException {
         excelTool.checkIsDirectory(file);
         excelTool.checkSuffix(file);
-        outputTitle(file,sheetName,entities);
-    }
-
-    private void outputTitle(File file,String sheetName,List<T> entities) throws IOException {
         if (entities.isEmpty()) {
             throw new NullPointerException("The list of entities is empty.");
         }
@@ -217,10 +212,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
             String title = (excelField != null && !excelField.value().isEmpty()) ? excelField.value() : field.getName();
             titleRow.createCell(cellIndex++).setCellValue(title);
         }
-        OutputEntities(entities,fieldTreeMap,file,wb);
-    }
-
-    private void OutputEntities(List<T> entities,TreeMap<Integer,Field> fieldTreeMap,File file,Workbook wb) throws IOException {
         int rowIndex = 1;
         for (T entity : entities) {
             Row row = sheet.createRow(rowIndex++);
@@ -231,6 +222,10 @@ public class BsExcelUtil<T> extends ExcelUtil {
                 try {
                     Object value = field.get(entity);
                     String valueString = value == null ? "" : value.toString();
+                    if (value instanceof Date) {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat(dateformat); // 指定日期格式
+                        valueString = dateFormat.format((Date) value);
+                    }
                     row.createCell(columnIndex).setCellValue(valueString);
                     columnIndex++;
                 } catch (IllegalAccessException e) {
@@ -238,10 +233,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
                 }
             }
         }
-        finallyOutput(wb,file);
-    }
-
-    private void finallyOutput(Workbook wb, File file) throws IOException {
         try (FileOutputStream fileOut = new FileOutputStream(file)) {
             wb.write(fileOut);
             System.out.println("The file is successfully exported and saved to: " + file.getAbsolutePath());
@@ -330,11 +321,11 @@ public class BsExcelUtil<T> extends ExcelUtil {
 
     public void bsOutPutFile(String sheetName, String path, List<T> entities) throws IOException, NoSuchFieldException {
         File file = new File(path);
-        bsOutputImpl(sheetName, file, entities);
+        bsOutPutFileImpl(sheetName,file,entities);
     }
 
     public void bsOutPutFile(String sheetName, File file, List<T> entities) throws IOException, NoSuchFieldException {
-        bsOutputImpl(sheetName, file, entities);
+      bsOutPutFileImpl(sheetName,file,entities);
     }
 }
 
