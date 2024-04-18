@@ -2,7 +2,7 @@ package com.bloducspauter.origin.init;
 
 import com.bloducspauter.annotation.ExcelField;
 import com.bloducspauter.annotation.ExcelTable;
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -53,7 +53,7 @@ public class MyAnnotationConfigApplicationContext {
             }
         }
         tableDefinition.setCellNameAndField(map);
-        TreeMap<Integer, String> treeMap = integerStringTreeMap(tableDefinition);
+        TreeMap<Integer, Field> treeMap = integerStringTreeMap(tableDefinition);
         tableDefinition.setIndexForCellName(treeMap);
         return tableDefinition;
     }
@@ -65,8 +65,8 @@ public class MyAnnotationConfigApplicationContext {
      * @return {@link TreeMap}
      * @throws IndexOutOfBoundsException 因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据,如果{@link ExcelField#index() }大于此值抛出异常
      */
-    public TreeMap<Integer, String> integerStringTreeMap(TableDefinition tableDefinition) {
-        TreeMap<Integer, String> treeMap = new TreeMap<>();
+    public TreeMap<Integer, Field> integerStringTreeMap(TableDefinition tableDefinition) {
+        TreeMap<Integer, Field> treeMap = new TreeMap<>();
         Map<String, Field> fieldMap = tableDefinition.getCellNameAndField();
         int i = 0;
         for (Map.Entry<String, Field> m : fieldMap.entrySet()) {
@@ -78,12 +78,12 @@ public class MyAnnotationConfigApplicationContext {
             }
             if(treeMap.get(index)==null){
                 if (index !=MAX_VALUE) {
-                    treeMap.put(index, m.getKey());
+                    treeMap.put(index, m.getValue());
                 } else {
-                    treeMap.put(MAX_VALUE+i, m.getKey());
+                    treeMap.put(MAX_VALUE+i, m.getValue());
                 }
             }else {
-                treeMap.put(MAX_VALUE + i, m.getKey());
+                treeMap.put(MAX_VALUE + i, m.getValue());
             }
             i++;
         }

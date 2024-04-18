@@ -14,5 +14,5 @@ public class TableDefinition {
     private Field[] fields;
     private Class<?> className;
     private Map<String,Field> cellNameAndField;
-    private TreeMap<Integer,String> indexForCellName;
+    private TreeMap<Integer,Field> indexForCellName;
 }
