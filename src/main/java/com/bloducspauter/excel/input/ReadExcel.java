@@ -1,8 +1,9 @@
 package com.bloducspauter.excel.input;
 
-import com.bloducspauter.origin.input.ReadFile;
 
-import java.io.File;
+import com.bloducspauter.excel.input.title.DetermineTitle;
+import com.bloducspauter.origin.init.DetermineReadRange;
+import com.bloducspauter.origin.input.ReadFileByPath;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -13,50 +14,20 @@ import java.util.Map;
  * @author Bloduc Spauer
  * @version 1.14.514
  */
-public interface ReadExcel extends ReadFile {
+public interface ReadExcel extends ReadFileByPath, DetermineReadRange,ReadExcelByFile, DetermineTitle {
     /**
-     * 返回一个包含当前读取表格的表头的数组
-     *
-     * @return {@code String[]}
-     * @throws IOException IO异常
+     *  提供文件后直接读取,不需要额外输入文件路径
+     * @return List
+     * @throws IOException IO流异常
      */
-    String[] getTitle() throws IOException;
+    List<Map<String, Object>> readToList() throws IOException;
+
 
     /**
-     * 返回一个包含需要读取文件路径的表头的数组
-     *
-     * @param path 文件路径
-     * @return {@code String[]}
-     * @throws IOException IO异常
+     * 读取文件将结果存入二维数组中，在提供有参构造后可使用
+     * @return Object[][]
+     * @throws IOException IO流异常
      */
-    String[] getTitle(String path) throws IOException;
+    Object[][] readToArray() throws IOException;
 
-    /**
-     * 返回一个包含需要读取文件的表头的数组
-     *
-     * @param file 文件
-     * @return {@code String[]}
-     * @throws IOException IO异常
-     */
-    String[] getTitle(File file) throws IOException;
-
-    /**
-     * 返回Map集合里键值，用于获取标题
-     *
-     * @param list {@code List集合}
-     * @return {@code String[]}
-     */
-    String[] getTitle(List<Map<String, Object>> list);
-
-    /**
-     * 以键值对的方式返回标题
-     * @return {@code  Map<Integer, String>}
-     */
-    Map<Integer, String> titleMap();
-
-    /**
-     * 设置被读取的Sheet;
-     * @param var Sheet
-     */
-    void readSheetAt(int var);
 }

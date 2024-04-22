@@ -14,7 +14,7 @@ import java.util.Map;
 import static com.bloducspauter.origin.FileReadAndOutPutUtil.*;
 
 /**
- * 表格文档检查
+ * 表格文档检查工具
  *
  * @author Bloduc Spauter
  * @see MyTool

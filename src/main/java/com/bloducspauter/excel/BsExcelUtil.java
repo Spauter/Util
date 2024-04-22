@@ -4,11 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.annotation.ExcelField;
 import com.bloducspauter.annotation.ExcelTable;
+import com.bloducspauter.excel.input.expand.BsReadExcel;
+import com.bloducspauter.excel.output.expand.BsOutPutExcel;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
-import com.bloducspauter.test.Teacher;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,7 +17,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,13 +29,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * 使用Json字符串接收Excel表格数据,继承自{@link ExcelUtil}
+ * 拓展的输入输出工具
  *
  * @author Bloduc Spauter
  * @version 1.18
+ * @see com.bloducspauter.excel.ExcelUtil
  */
-public class BsExcelUtil<T> extends ExcelUtil {
-
+public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPutExcel<T> {
 
     private final TableDefinition entityTableDefinition;
 
@@ -54,48 +54,26 @@ public class BsExcelUtil<T> extends ExcelUtil {
     }
 
     /**
-     * 采用多线程的方式读取文件,并将结果合并在一起
-     *
-     * @param file 文件
-     * @return {@link List}
-     * @throws IOException          IO流异常
-     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,需要考虑{@link ExcelField}
-     * @throws InterruptedException 中断异常
-     */
-    public List<T> getReadData(File file) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
-        String path = file.getAbsolutePath();
-        return getReadData(path);
-    }
-
-    /**
-     * 采用多线程的方式读取文件,并将结果合并在一起
-     *
-     * @param path 文件路径
-     * @return {@link List}
-     * @throws IOException          IO流异常
-     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,需要考虑{@link ExcelField}
-     * @throws InterruptedException 中断异常
-     */
-    public List<T> getReadData(String path) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
-        ReadData<T> readData = getReadDataIml(path);
-        return readData.getData();
-    }
-
-    /**
      * 读物excel表格，采用多线程方式
+     * <p>
+     * 先通过{@code  Runtime#getRuntime().availableProcessors()}获取CPU线程数
+     * </p>
+     * <p>
+     * 然后将上面创建的FutureTask提交给Executor线程执行,如果任务没有完成。
+     * 如果有线程未完成,会使用 {@link  ThreadPoolExecutor#invokeAll(Collection)}  阻塞此处
+     * </p>
      *
      * @param filePath 文件路径
-     * @see #readFile(String)
+     * @see #readAll(String)
      */
     private ReadData<T> getReadDataIml(String filePath) throws IOException, InterruptedException, ExecutionException, NoSuchFieldException {
         sheet = super.getSheet(filePath);
         maxRow = maxRow == 0 ? sheet.getLastRowNum() : maxRow;
-        //获取CPU线程数
+        //
         int munCores = Runtime.getRuntime().availableProcessors();
         List<T> entities = new ArrayList<>();
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(munCores);
         List<ReadingDataTask<T>> readingDataTasks = getReadingDataTasks(munCores, filePath);
-        //将上面创建的FutureTask提交给Executor线程执行,如果任务没有完成,invokeALl()阻塞处处
         List<Future<ReadData<T>>> futures = threadPoolExecutor.invokeAll(readingDataTasks);
         //任务完成了,停止所有任务;
         threadPoolExecutor.shutdown();
@@ -136,7 +114,9 @@ public class BsExcelUtil<T> extends ExcelUtil {
      *
      * @param file 文件路径
      * @return {@code List<String>}
-     * @throws IOException IO流异常
+     * @throws IOException          IO流异常
+     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
+     *                              需要考虑{@link ExcelField}
      */
     @SuppressWarnings("unchecked")
     private List<T> readImpl(String file) throws IOException, NoSuchFieldException {
@@ -271,37 +251,45 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @return {@code List<T>}
      * @throws IOException IO流异常
      */
-    public List<T> readFile(String path) throws IOException, NoSuchFieldException {
+    @Override
+    public List<T> readAll(String path) throws IOException, NoSuchFieldException {
         return readImpl(path);
     }
 
     /**
      * 果了解多线程读取{@link #getReadData(File)}
      */
-    public List<T> readFile(File file) throws IOException, NoSuchFieldException {
-        return readFile(file.getAbsolutePath());
+    @Override
+    public List<T> readAll(File file) throws IOException, NoSuchFieldException {
+        return readAll(file.getAbsolutePath());
     }
 
     /**
-     * 读一个
-     * @param file 文件
+     * 读一个数据
+     *
+     * @param file  文件
      * @param index 行数
      * @return T
-     * @throws IOException IO流异常
-     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,需要考虑{@link ExcelField}
+     * @throws IOException          IO流异常
+     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
+     *                              需要考虑{@link ExcelField}
      */
+    @Override
     public T readOne(File file, int index) throws IOException, NoSuchFieldException {
         return readOne(file.getAbsolutePath(), index);
     }
 
     /**
+     * 读一个数据
      *
      * @param filePath 文件路径
-     * @param index 行数
+     * @param index    行数
      * @return T
-     * @throws IOException IO流异常
-     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,需要考虑{@link ExcelField}
+     * @throws IOException          IO流异常
+     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
+     *                              需要考虑{@link ExcelField}
      */
+    @Override
     public T readOne(String filePath, int index) throws IOException, NoSuchFieldException {
         if (index == titleLine) {
             throw new IllegalArgumentException("Don't know how to turn title line" + " into class " + entityTableDefinition.getClassName().getSimpleName());
@@ -311,21 +299,89 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return readImpl(filePath).get(0);
     }
 
-    public void bsOutPutFile(String path,List<T> entities) throws IOException, NoSuchFieldException {
-       bsOutPutFile(SHEET_NAME, path, entities);
+    /**
+     * 采用多线程的方式读取文件,并将结果合并在一起
+     *
+     * @param file 文件
+     * @return {@link List}
+     * @throws IOException          IO流异常
+     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
+     *                              需要考虑{@link ExcelField}
+     * @throws InterruptedException 中断异常
+     */
+    public List<T> getReadData(File file) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
+        String path = file.getAbsolutePath();
+        return getReadData(path);
     }
 
-    public void bsOutputFile(File file,List<T> entities) throws IOException, NoSuchFieldException {
-        bsOutPutFile(SHEET_NAME,file,entities);
+    /**
+     * 采用多线程的方式读取文件,并将结果合并在一起
+     *
+     * @param path 文件路径
+     * @return {@link List}
+     * @throws IOException          IO流异常
+     * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
+     *                              需要考虑{@link ExcelField}
+     * @throws InterruptedException 中断异常
+     */
+    public List<T> getReadData(String path) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
+        ReadData<T> readData = getReadDataIml(path);
+        return readData.getData();
     }
 
-    public void bsOutPutFile(String sheetName, String path, List<T> entities) throws IOException, NoSuchFieldException {
+    /**
+     * 将实体类集合输出到Excel表中
+     *
+     * @param path     文件路径
+     * @param entities 实体类集合
+     * @throws IllegalArgumentException 见{@link com.bloducspauter.excel.tool.ExcelToolImpl}
+     */
+    @Override
+    public void write(List<T> entities, String path) throws IOException {
+        write(entities, path, SHEET_NAME);
+    }
+
+    /**
+     * 将实体类集合输出到Excel表中
+     *
+     * @param file     文件
+     * @param entities 实体类集合
+     * @throws IllegalArgumentException 见{@link com.bloducspauter.excel.tool.ExcelToolImpl}
+     * @throws NoSuchFieldException     如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
+     *                                  需要考虑{@link ExcelField}
+     */
+    @Override
+    public void write(List<T> entities, File file) throws NoSuchFieldException, IOException {
+        write(entities, file, SHEET_NAME);
+    }
+
+    /**
+     * 将实体类集合输出到Excel表中
+     *
+     * @param path      文件路径
+     * @param sheetName 自定义Sheet名字
+     * @param entities  实体类集合
+     * @throws IOException              IO流异常
+     * @throws IllegalArgumentException 见{@link com.bloducspauter.excel.tool.ExcelToolImpl}
+     */
+    @Override
+    public void write(List<T> entities, String path, String sheetName) throws IOException {
         File file = new File(path);
-        bsOutPutFileImpl(sheetName,file,entities);
+        bsOutPutFileImpl(sheetName, file, entities);
     }
 
-    public void bsOutPutFile(String sheetName, File file, List<T> entities) throws IOException, NoSuchFieldException {
-      bsOutPutFileImpl(sheetName,file,entities);
+    /**
+     * 将实体类集合输出到Excel表中
+     *
+     * @param file      文件
+     * @param sheetName 自定义Sheet名字
+     * @param entities  实体类集合
+     * @throws IOException              IO流异常
+     * @throws IllegalArgumentException 见{@link com.bloducspauter.excel.tool.ExcelToolImpl}
+     */
+    @Override
+    public void write(List<T> entities, File file, String sheetName) throws IOException {
+        bsOutPutFileImpl(sheetName, file, entities);
     }
 }
 

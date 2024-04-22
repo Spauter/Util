@@ -1,10 +1,9 @@
 package com.bloducspauter.excel;
 
-import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.excel.input.ReadExcel;
-import com.bloducspauter.excel.tool.ExcelToolImpl;
 import com.bloducspauter.excel.output.OutputExcel;
-
+import com.bloducspauter.excel.tool.ExcelTool;
+import com.bloducspauter.excel.tool.ExcelToolImpl;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
@@ -15,48 +14,97 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 表格工具
+ *
  * @author Bloduc Spauter
  * @version 1.17
  */
 public class ExcelUtil implements ReadExcel, OutputExcel {
     private String path;
-    //标题
-    //表格的标题,也就是首行
+    /**
+     * 标题行
+     */
     protected final Map<Integer, String> titles = new HashMap<>();
+    /**
+     * 读取到的List集合
+     */
     private List<Map<String, Object>> list = new ArrayList<>();
     static ExcelTool excelTool = new ExcelToolImpl();
-    //日期格式，默认yyyy-MM-dd
+    /**
+     * 日期格式，默认yyyy-MM-dd
+     */
     protected String dateformat = "yyyy-MM-dd";
+    /**
+     * 标题行，默认0行
+     */
     protected int titleLine = 0;
+    /**
+     * 读取到的二维数组
+     */
     private Object[][] arrayData;
+    /**
+     * 起始行
+     */
     protected int startRow = 0;
+    /**
+     * 截止行
+     */
     protected int endWithRow = -1;
+    /**
+     * 起始列
+     */
     private int startCol = 0;
+    /**
+     * 截止列
+     */
     private int endWithCol = -1;
+    /**
+     * 表格的最大行
+     */
     protected int maxRow = 0;
+    /**
+     * 表格的最大列
+     */
     protected int maxCol = 0;
-    //需要读取的Sheet
+    /**
+     * 需要读取的Sheet
+     */
     private int readSheetNumber = 0;
+    /**
+     * 表格的{@code Sheet}
+     */
     protected Sheet sheet;
+    /**
+     * 表格密码,未实现
+     */
     protected String password;
 
-    /*
-    无参构造
+    /**
+     * 无参构造
      */
     public ExcelUtil() {
 
     }
 
+    /**
+     * 提供文件后，会读取文件行数和列数信息
+     *
+     * @param file 文件
+     */
     public ExcelUtil(File file) throws IOException {
         new ExcelUtil(file.getAbsolutePath());
     }
 
-    /*
-    提供文件路径后,会读取文件行数和列数信息
+    /**
+     * 提供文件路径后,会读取文件行数和列数信息
+     *
+     * @param path 文件路径
      */
     public ExcelUtil(String path) throws IOException {
         this.path = path;
@@ -92,7 +140,6 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
 
-
     /**
      * 获取标题
      *
@@ -104,7 +151,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             Cell title = sheet.getRow(titleLine).getCell(col);
             if (title == null) {
                 System.out.println(("Read title field"));
-                String column= excelTool.convertToExcelColumn(col);
+                String column = excelTool.convertToExcelColumn(col);
                 throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + column);
             }
             String titleInfo = String.valueOf(title);
@@ -128,12 +175,12 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
             }
             excelTool.checkRowCol(startRow, startCol, endWithRow, endWithCol, maxRow, maxCol);
             readTitle(sheet);
-        }catch (NotOLE2FileException e){
+        } catch (NotOLE2FileException e) {
             System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
                     "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
             System.out.println(("Reading file failed"));
             throw e;
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println(("Reading file failed"));
             throw e;
         }
@@ -191,6 +238,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 处理单元格数据，转化为合适地表达值
+     *
      * @param cell 单元格
      * @return {@code String}
      */
@@ -310,6 +358,8 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 通过已经获取的List<Map<String,Object>>集合来获取标题,返回数组
+     *
+     * @param list {@code List<Map<String, Object>>}
      */
     @Override
     public String[] getTitle(List<Map<String, Object>> list) {
@@ -329,6 +379,11 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         return title;
     }
 
+    /**
+     * 返回一个{@code Map}集合的标题
+     *
+     * @return {@link Map}
+     */
     @Override
     public Map<Integer, String> titleMap() {
         return titles;
@@ -492,7 +547,10 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         this.endWithRow = endWithRow;
     }
 
-    /* 设置日期格式仅在读取时有效 */
+    /**
+     * 设置日期格式仅在读取时有效,如果在输出时需要修改日期格式,见子类{@link BsExcelUtil}
+     * @see BsExcelUtil
+     */
     public void setDateformat(String dateformat) {
         this.dateformat = dateformat;
     }
@@ -510,6 +568,10 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         titles.clear();
     }
 
+    /**
+     * 设置密码，未实现
+     * @param password 密码
+     */
     public void setPassword(String password) {
         this.password = password;
         Biff8EncryptionKey.setCurrentUserPassword(password);
