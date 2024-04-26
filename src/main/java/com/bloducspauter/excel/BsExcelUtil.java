@@ -8,6 +8,7 @@ import com.bloducspauter.excel.input.expand.BsReadExcel;
 import com.bloducspauter.excel.output.expand.BsOutPutExcel;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
+import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -334,7 +335,7 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      *
      * @param path     文件路径
      * @param entities 实体类集合
-     * @throws IllegalArgumentException 见{@link com.bloducspauter.excel.tool.ExcelToolImpl}
+     * @throws IllegalArgumentException 见{@link ExcelTool}
      */
     @Override
     public void write(List<T> entities, String path) throws IOException {
@@ -346,7 +347,7 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      *
      * @param file     文件
      * @param entities 实体类集合
-     * @throws IllegalArgumentException 见{@link com.bloducspauter.excel.tool.ExcelToolImpl}
+     * @throws IllegalArgumentException 见{@link ExcelTool}
      * @throws NoSuchFieldException     如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
      *                                  需要考虑{@link ExcelField}
      */
@@ -362,7 +363,7 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @param sheetName 自定义Sheet名字
      * @param entities  实体类集合
      * @throws IOException              IO流异常
-     * @throws IllegalArgumentException 见{@link com.bloducspauter.excel.tool.ExcelToolImpl}
+     * @throws IllegalArgumentException 见{@link ExcelTool}
      */
     @Override
     public void write(List<T> entities, String path, String sheetName) throws IOException {
@@ -377,12 +378,10 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @param sheetName 自定义Sheet名字
      * @param entities  实体类集合
      * @throws IOException              IO流异常
-     * @throws IllegalArgumentException 见{@link com.bloducspauter.excel.tool.ExcelToolImpl}
+     * @throws IllegalArgumentException 见{@link ExcelTool}
      */
     @Override
     public void write(List<T> entities, File file, String sheetName) throws IOException {
         bsOutPutFileImpl(sheetName, file, entities);
     }
 }
-
-

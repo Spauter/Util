@@ -3,7 +3,6 @@ package com.bloducspauter.excel;
 import com.bloducspauter.excel.input.ReadExcel;
 import com.bloducspauter.excel.output.OutputExcel;
 import com.bloducspauter.excel.tool.ExcelTool;
-import com.bloducspauter.excel.tool.ExcelToolImpl;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
@@ -35,7 +34,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
      * 读取到的List集合
      */
     private List<Map<String, Object>> list = new ArrayList<>();
-    static ExcelTool excelTool = new ExcelToolImpl();
+    static ExcelTool excelTool = new ExcelTool();
     /**
      * 日期格式，默认yyyy-MM-dd
      */
