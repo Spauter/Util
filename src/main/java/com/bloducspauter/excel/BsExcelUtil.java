@@ -4,8 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.annotation.ExcelField;
 import com.bloducspauter.annotation.ExcelTable;
-import com.bloducspauter.excel.input.expand.BsReadExcel;
-import com.bloducspauter.excel.output.expand.BsOutPutExcel;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
 import com.bloducspauter.excel.tool.ExcelTool;
@@ -29,6 +27,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import static com.bloducspauter.origin.FileReadAndOutPutUtil.SHEET_NAME;
+import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
+
 /**
  * 拓展的输入输出工具
  *
@@ -36,7 +37,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @version 1.18
  * @see com.bloducspauter.excel.ExcelUtil
  */
-public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPutExcel<T> {
+public class BsExcelUtil<T> extends ExcelUtil{
 
     private final TableDefinition entityTableDefinition;
 
@@ -252,7 +253,6 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @return {@code List<T>}
      * @throws IOException IO流异常
      */
-    @Override
     public List<T> readAll(String path) throws IOException, NoSuchFieldException {
         return readImpl(path);
     }
@@ -260,7 +260,6 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
     /**
      * 果了解多线程读取{@link #getReadData(File)}
      */
-    @Override
     public List<T> readAll(File file) throws IOException, NoSuchFieldException {
         return readAll(file.getAbsolutePath());
     }
@@ -275,7 +274,6 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
      *                              需要考虑{@link ExcelField}
      */
-    @Override
     public T readOne(File file, int index) throws IOException, NoSuchFieldException {
         return readOne(file.getAbsolutePath(), index);
     }
@@ -290,7 +288,6 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
      *                              需要考虑{@link ExcelField}
      */
-    @Override
     public T readOne(String filePath, int index) throws IOException, NoSuchFieldException {
         if (index == titleLine) {
             throw new IllegalArgumentException("Don't know how to turn title line" + " into class " + entityTableDefinition.getClassName().getSimpleName());
@@ -337,7 +334,6 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @param entities 实体类集合
      * @throws IllegalArgumentException 见{@link ExcelTool}
      */
-    @Override
     public void write(List<T> entities, String path) throws IOException {
         write(entities, path, SHEET_NAME);
     }
@@ -351,7 +347,6 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @throws NoSuchFieldException     如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
      *                                  需要考虑{@link ExcelField}
      */
-    @Override
     public void write(List<T> entities, File file) throws NoSuchFieldException, IOException {
         write(entities, file, SHEET_NAME);
     }
@@ -365,7 +360,6 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @throws IOException              IO流异常
      * @throws IllegalArgumentException 见{@link ExcelTool}
      */
-    @Override
     public void write(List<T> entities, String path, String sheetName) throws IOException {
         File file = new File(path);
         bsOutPutFileImpl(sheetName, file, entities);
@@ -380,7 +374,6 @@ public class BsExcelUtil<T> extends ExcelUtil implements BsReadExcel<T>, BsOutPu
      * @throws IOException              IO流异常
      * @throws IllegalArgumentException 见{@link ExcelTool}
      */
-    @Override
     public void write(List<T> entities, File file, String sheetName) throws IOException {
         bsOutPutFileImpl(sheetName, file, entities);
     }

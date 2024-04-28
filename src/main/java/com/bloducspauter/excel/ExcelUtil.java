@@ -1,8 +1,7 @@
 package com.bloducspauter.excel;
 
-import com.bloducspauter.excel.input.ReadExcel;
-import com.bloducspauter.excel.output.OutputExcel;
 import com.bloducspauter.excel.tool.ExcelTool;
+import lombok.Setter;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
@@ -18,13 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.bloducspauter.origin.FileReadAndOutPutUtil.*;
+
 /**
  * 表格工具
+ * <p>
  *
  * @author Bloduc Spauter
  * @version 1.17
  */
-public class ExcelUtil implements ReadExcel, OutputExcel {
+public class ExcelUtil {
     private String path;
     /**
      * 标题行
@@ -37,11 +39,21 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     static ExcelTool excelTool = new ExcelTool();
     /**
      * 日期格式，默认yyyy-MM-dd
+     * -- SETTER --
+     * 设置日期格式仅在读取时有效,如果在输出时需要修改日期格式,见子类{@link BsExcelUtil}
+     *
+     * @see BsExcelUtil
      */
+    @Setter
     protected String dateformat = "yyyy-MM-dd";
     /**
      * 标题行，默认0行
+     * -- SETTER --
+     * 设置某一列作为标题,默认为0(第一行)
+     *
+     * @param titleLine 被设置为标题的哪一行
      */
+    @Setter
     protected int titleLine = 0;
     /**
      * 读取到的二维数组
@@ -49,19 +61,39 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     private Object[][] arrayData;
     /**
      * 起始行
+     * -- SETTER --
+     * 设置起始读取的行数
+     *
+     * @param startRow  起始行
      */
+    @Setter
     protected int startRow = 0;
     /**
      * 截止行
+     * -- SETTER --
+     * 设置截至读取的列数
+     *
+     * @param endWithRow 截止列
      */
+    @Setter
     protected int endWithRow = -1;
     /**
      * 起始列
+     * -- SETTER --
+     * 设置起始读取的列数
+     *
+     * @param startCol 起始列
      */
+    @Setter
     private int startCol = 0;
     /**
      * 截止列
+     * -- SETTER --
+     * 设置截至读取的列数
+     *
+     * @param endWithCol 截止列
      */
+    @Setter
     private int endWithCol = -1;
     /**
      * 表格的最大行
@@ -93,6 +125,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 提供文件后，会读取文件行数和列数信息
+     * <p>
      *
      * @param file 文件
      */
@@ -102,6 +135,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 提供文件路径后,会读取文件行数和列数信息
+     * <p>
      *
      * @param path 文件路径
      */
@@ -119,8 +153,9 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 获取最大行数和列数
+     * <p>
      *
-     * @param sheet {@code sheet}
+     * @param sheet {code sheet}
      */
     private void getMaxRowsAndCols(Sheet sheet) {
         maxRow = sheet.getLastRowNum();
@@ -129,6 +164,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 设置读取范围
+     * <p>
      *
      * @param endWithRow 截止行
      * @param endWithCol 截止列
@@ -141,8 +177,9 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 获取标题
+     * <p>
      *
-     * @param sheet {@code sheet}
+     * @param sheet {code sheet}
      */
     protected void readTitle(Sheet sheet) {
         excelTool.checkTitleLine(titleLine, maxRow);
@@ -160,6 +197,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 读取表格文件存入List集合中
+     * <p>
      *
      * @param file 文件路径
      * @return {@code List<Map<String, Object>>}
@@ -208,6 +246,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 根据文件后缀名确定workbook是XSSFWorkbook还是HSSFWorkbook
+     * <p>
      *
      * @param file 文件
      * @return Sheet
@@ -237,6 +276,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 处理单元格数据，转化为合适地表达值
+     * <p>
      *
      * @param cell 单元格
      * @return {@code String}
@@ -257,7 +297,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
                         sdf = new SimpleDateFormat(dateformat);
                     }
                     cellValue = sdf.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
-                } else if ("@".equals(cell.getCellStyle().getDataFormatString())) {
+                } else if ("".equals(cell.getCellStyle().getDataFormatString())) {
                     //转换成整型
                     DecimalFormat df = new DecimalFormat("#");
                     cellValue = df.format(cell.getNumericCellValue());
@@ -356,11 +396,12 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
     }
 
     /**
-     * 通过已经获取的List<Map<String,Object>>集合来获取标题,返回数组
+     * 返回Map集合里键值，用于获取标题
      *
-     * @param list {@code List<Map<String, Object>>}
+     * @param list {@code List集合}
+     * @return {@code String[]}
      */
-    @Override
+
     public String[] getTitle(List<Map<String, Object>> list) {
         String[] title = new String[list.get(0).size()];
         int i = 0;
@@ -378,35 +419,55 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         return title;
     }
 
+
     /**
-     * 返回一个{@code Map}集合的标题
+     * 以键值对的方式返回标题
      *
-     * @return {@link Map}
+     * @return {@code  Map<Integer, String>}
      */
-    @Override
     public Map<Integer, String> titleMap() {
         return titles;
     }
 
-
-    @Override
+    /**
+     * 读取文件并把结果保存到List集合中
+     *
+     * @param path 文件路径
+     * @return List
+     * @throws IOException IO流异常
+     */
     public List<Map<String, Object>> readToList(String path) throws IOException {
         return readImpl(path);
     }
 
-
-    @Override
+    /**
+     * 读取文件并把结果保存到List集合中
+     *
+     * @param file 文件
+     * @return List
+     * @throws IOException IO流异常
+     */
     public List<Map<String, Object>> readToList(File file) throws IOException {
         return readImpl(file.getAbsolutePath());
     }
 
-    @Override
+    /**
+     * 提供文件后直接读取,不需要额外输入文件路径
+     *
+     * @return List
+     * @throws IOException IO流异常
+     */
     public List<Map<String, Object>> readToList() throws IOException {
         return readImpl(this.path);
     }
 
-
-    @Override
+    /**
+     * 读取文件并把结果保存到List集合中
+     *
+     * @param file 文件
+     * @return List
+     * @throws IOException IO流异常
+     */
     public Object[][] readToArray(File file) throws IOException {
         if (arrayData == null) {
             list = readImpl(file.getAbsolutePath());
@@ -415,152 +476,216 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
         return arrayData;
     }
 
-    @Override
+    /**
+     * 读取文件将结果存入二维数组中，在提供有参构造后可使用
+     *
+     * @return Object[][]
+     * @throws IOException IO流异常
+     */
     public Object[][] readToArray() throws IOException {
         return readToArray(path);
     }
 
-
-    @Override
-    public Object[][] readToArray(String Path) throws IOException {
-        File file = excelTool.conformity(Path);
+    /**
+     * 读取文件将结果存入二维数组中
+     *
+     * @param path 文件路径
+     * @return Object[][]
+     * @throws IOException IO流异常
+     */
+    public Object[][] readToArray(String path) throws IOException {
+        File file = excelTool.conformity(path);
         return readToArray(file);
     }
 
-
-    @Override
+    /**
+     * 返回一个包含需要读取文件的表头的数组
+     *
+     * @param file 文件
+     * @return {@code String[]}
+     * @throws IOException IO异常
+     */
     public String[] getTitle(File file) throws IOException {
         return getTitleImpl(file);
     }
 
-    @Override
-    public String[] getTitle(String Path) throws IOException {
-        File file = excelTool.conformity(Path);
+    /**
+     * 返回一个包含需要读取文件路径的表头的数组
+     *
+     * @param path 文件路径
+     * @return {@code String[]}
+     * @throws IOException IO异常
+     */
+    public String[] getTitle(String path) throws IOException {
+        File file = excelTool.conformity(path);
         return getTitleImpl(file);
     }
 
-    @Override
+    /**
+     * 返回一个包含当前读取表格的表头的数组
+     *
+     * @return {@code String[]}
+     * @throws IOException IO异常
+     */
     public String[] getTitle() throws IOException {
         return getTitleImpl(null);
     }
 
-    @Override
+    /**
+     * 将存储结果输出为表格
+     *
+     * @param sheetName 自定义Sheet名字
+     * @param obj       二维数组 {@code Object[][]}
+     * @param title     标题{@code String[]}
+     * @param file      文件
+     * @throws IOException IO流异常
+     */
     public void outPut(String sheetName, Object[][] obj, String[] title, File file) throws IOException {
         outPutImpl(sheetName, obj, title, file);
     }
 
-    @Override
-    public void outPut(String sheetName, Object[][] obj, String[] title, String Path) throws IOException {
-        File file = excelTool.conformity(Path);
+    /**
+     * 将存储结果输出为表格
+     *
+     * @param sheetName 自定义Sheet名字
+     * @param obj       二维数组 {@code Object[][]}
+     * @param title     标题{@code String[]}
+     * @param path      文件路径
+     * @throws IOException IO流异常
+     */
+    public void outPut(String sheetName, Object[][] obj, String[] title, String path) throws IOException {
+        File file = excelTool.conformity(path);
         outPutImpl(sheetName, obj, title, file);
     }
 
 
-    @Override
-    public void outPut(String sheetName, List<Map<String, Object>> list, String Path) throws IOException {
-        File file = excelTool.conformity(Path);
+    /**
+     * 将存储结果输出为表格，不需要额外的{@code String[] title}
+     *
+     * @param sheetName 自定义Sheet名字
+     * @param list      List集合
+     * @param path      文件路径
+     * @throws IOException IO流异常
+     */
+    public void outPut(String sheetName, List<Map<String, Object>> list, String path) throws IOException {
+        File file = excelTool.conformity(path);
         String[] title = getTitle(list);
         Object[][] obj = excelTool.conformity(list, titles);
         outPutImpl(sheetName, obj, title, file);
     }
 
-    @Override
+    /**
+     * 将存储结果输出为表格，不需要额外的{@code String[] title}
+     *
+     * @param sheetName 自定义Sheet名字
+     * @param list      List集合
+     * @param file      文件
+     * @throws IOException IO流异常
+     */
     public void outPut(String sheetName, List<Map<String, Object>> list, File file) throws IOException {
         String[] title = getTitle(list);
         Object[][] obj = excelTool.conformity(list, titles);
         outPutImpl(sheetName, obj, title, file);
     }
 
-    @Override
-    public void outPut(List<Map<String, Object>> list, String Path) throws IOException {
-        File file = excelTool.conformity(Path);
+    /**
+     * 将结果输出保持文件中
+     *
+     * @param list List集合
+     * @param path 文件路径
+     * @throws IOException Io流异常
+     */
+    public void outPut(List<Map<String, Object>> list, String path) throws IOException {
+        File file = excelTool.conformity(path);
         String[] title = getTitle(list);
         Object[][] obj = excelTool.conformity(list, titles);
         outPutImpl(SHEET_NAME, obj, title, file);
     }
 
-    @Override
+    /**
+     * 将结果输出保持文件中
+     *
+     * @param list List集合
+     * @param file 文件
+     * @throws IOException Io流异常
+     */
     public void outPut(List<Map<String, Object>> list, File file) throws IOException {
         String[] title = getTitle(list);
         Object[][] obj = excelTool.conformity(list, titles);
         outPutImpl(SHEET_NAME, obj, title, file);
     }
 
-    @Override
-    public void outPut(Object[][] obj, String[] title, String Path) throws IOException {
-        File file = excelTool.conformity(Path);
+    /**
+     * 将结果输出保持文件中
+     *
+     * @param obj   二维数组
+     * @param title 标题
+     * @param path  文件路径
+     * @throws IOException Io流异常
+     */
+    public void outPut(Object[][] obj, String[] title, String path) throws IOException {
+        File file = excelTool.conformity(path);
         outPutImpl(SHEET_NAME, obj, title, file);
     }
 
-    @Override
+    /**
+     * 将结果输出保持文件中
+     *
+     * @param obj   二维数组
+     * @param title 标题
+     * @param file  文件
+     * @throws IOException Io流异常
+     */
     public void outPut(Object[][] obj, String[] title, File file) throws IOException {
         outPutImpl(SHEET_NAME, obj, title, file);
     }
 
-    @Override
+    /**
+     * 将结果输出保持文件中，在使用有参构造后可以使用此方法
+     *
+     * @param path 文件路径
+     * @throws IOException          IO异常
+     * @throws NullPointerException 如果书库为空可能抛出
+     */
     public void outPut(String path) throws IOException {
         outPut(new File(path));
     }
 
-    @Override
+    /**
+     * 将结果输出保持文件中，在使用有参构造后可以使用此方法
+     *
+     * @param file 文件
+     * @throws IOException          IO异常
+     * @throws NullPointerException 如果书库为空可能抛出
+     */
     public void outPut(File file) throws IOException {
         String[] title = getTitle();
         outPutImpl(SHEET_NAME, arrayData, title, file);
     }
 
-    @Override
+
     public int getMaxRows() {
         return maxRow;
     }
 
-    @Override
+
     public int getMaxCols() {
         return maxCol;
     }
 
-    /**
-     * 将某一行作为标题,输入从1开始
-     */
-    @Override
-    public void setTitleLine(int titleLine) {
-        this.titleLine = titleLine;
-    }
-
-    @Override
-    public void setStartRow(int startRow) {
-        this.startRow = startRow;
-    }
-
-    @Override
-    public void setStartCol(int startCol) {
-        this.startCol = startCol;
-    }
-
-    @Override
-    public void setEndWithCol(int endWithCol) {
-        this.endWithCol = endWithCol;
-    }
-
-    @Override
-    public void setEndWithRow(int endWithRow) {
-        this.endWithRow = endWithRow;
-    }
 
     /**
-     * 设置日期格式仅在读取时有效,如果在输出时需要修改日期格式,见子类{@link BsExcelUtil}
-     * @see BsExcelUtil
+     * 设置被读取的Sheet;
+     *
+     * @param sheetNumber Sheet
      */
-    public void setDateformat(String dateformat) {
-        this.dateformat = dateformat;
-    }
-
-    @Override
-    //设置需要读取的sheet,最小为一
     public void readSheetAt(int sheetNumber) {
         readSheetNumber = sheetNumber;
     }
 
-    @Override
+    /**
+     * 清除数据
+     */
     public void clearAll() {
         list.clear();
         arrayData = null;
@@ -569,7 +694,7 @@ public class ExcelUtil implements ReadExcel, OutputExcel {
 
     /**
      * 设置密码，未实现
-     * @param password 密码
+     * param password 密码
      */
     public void setPassword(String password) {
         this.password = password;

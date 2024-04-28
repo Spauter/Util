@@ -14,20 +14,4 @@ public interface FileReadAndOutPutUtil {
     String SUFFIX_4=".doc";
     String SUFFIX_5=".txt";
     String SHEET_NAME = "Sheet1";
-
-    /**
-     * 返回总行数
-     * @return int
-     */
-    int getMaxRows();
-
-    /**
-     * 返回总列数
-     * @return int
-     */
-    int getMaxCols();
-    /**
-     * 清除所有数据
-     */
-    void clearAll();
 }
