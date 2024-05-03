@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-
 import static com.bloducspauter.origin.FileReadAndOutPutUtil.SHEET_NAME;
 import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
 
@@ -130,8 +129,11 @@ public class BsExcelUtil<T> extends ExcelUtil{
             endWithRow = endWithRow == -1 ? maxRow : endWithRow;
             maxCol = sheet.getRow(titleLine).getLastCellNum();
         } catch (NotOLE2FileException e) {
-            System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
-                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
+            System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files," +
+                    " as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding)," +
+                    " Instead of a plain text CSV file.\n" +
+                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, " +
+                    "which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
             System.out.println(("Reading file failed"));
             throw e;
         } catch (Exception e) {
@@ -344,10 +346,8 @@ public class BsExcelUtil<T> extends ExcelUtil{
      * @param file     文件
      * @param entities 实体类集合
      * @throws IllegalArgumentException 见{@link ExcelTool}
-     * @throws NoSuchFieldException     如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
-     *                                  需要考虑{@link ExcelField}
      */
-    public void write(List<T> entities, File file) throws NoSuchFieldException, IOException {
+    public void write(List<T> entities, File file) throws IOException {
         write(entities, file, SHEET_NAME);
     }
 
