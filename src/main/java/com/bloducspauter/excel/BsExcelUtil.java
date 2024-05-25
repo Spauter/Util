@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+
 import static com.bloducspauter.origin.FileReadAndOutPutUtil.SHEET_NAME;
 import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
 
@@ -36,7 +38,7 @@ import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
  * @version 1.18
  * @see com.bloducspauter.excel.ExcelUtil
  */
-public class BsExcelUtil<T> extends ExcelUtil{
+public class BsExcelUtil<T> extends ExcelUtil {
 
     private final TableDefinition entityTableDefinition;
 
@@ -85,6 +87,7 @@ public class BsExcelUtil<T> extends ExcelUtil{
         ReadData<T> readData = new ReadData<>();
         readData.setData(entities);
         readData.setMaxRol(maxRow);
+
         return readData;
     }
 
@@ -169,6 +172,9 @@ public class BsExcelUtil<T> extends ExcelUtil{
                 System.out.println("Loading info failed in line " + row);
             }
         }
+        //默认初始行和截至行
+        startRow=0;
+        endWithRow=maxRow;
         return objects;
     }
 
@@ -207,7 +213,8 @@ public class BsExcelUtil<T> extends ExcelUtil{
                     Object value = field.get(entity);
                     String valueString = value == null ? "" : value.toString();
                     if (value instanceof Date) {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat(dateformat); // 指定日期格式
+                        // 指定日期格式
+                        SimpleDateFormat dateFormat = new SimpleDateFormat(dateformat);
                         valueString = dateFormat.format((Date) value);
                     }
                     row.createCell(columnIndex).setCellValue(valueString);
@@ -247,6 +254,96 @@ public class BsExcelUtil<T> extends ExcelUtil{
         System.out.println(("This method is deprecated in the class,"));
     }
 
+    @Override
+    public List<Map<String, Object>> readToList(File file) throws IOException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        try {
+            List<T> entities = getReadData(file);
+            Field[] fields = entityTableDefinition.getFields();
+            for (T entity : entities) {
+                for (Field field : fields) {
+                    try {
+                        field.setAccessible(true);
+                        map.put(field.getName(), field.get(entity));
+                    } catch (IllegalAccessException e) {
+                        System.out.println("Add entities failed:" + e.getMessage());
+                        System.out.println("Entity:" + entity + ",Field:" + field.getName());
+                    }
+                }
+                list.add(map);
+            }
+        } catch (ExecutionException | NoSuchFieldException | InterruptedException e) {
+            System.out.println("Reading Field because of " + e.getClass().getSimpleName() + ":" + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public Object[][] readToArray(String path) throws IOException {
+        Object[][] objects = new Object[endWithRow - startRow][maxCol];
+        try {
+            List<T> entities = getReadData(path);
+            Field[] fields = entityTableDefinition.getFields();
+            for (int i = startRow; i < endWithRow; i++) {
+                for (int j = 0; j < maxCol; j++) {
+                    try {
+                        if (i>=entities.size() || j > fields.length) {
+                            objects[i][j] = null;
+                            continue;
+                        }
+                        fields[j].setAccessible(true);
+                        Object o= fields[j].get(entities.get(i));
+                        objects[i][j] = o;
+                    } catch (IllegalAccessException e) {
+                        System.out.println("Add entities failed:" + e.getMessage());
+                        System.out.println("Entity:" + entities.get(i) + ",Field:" + fields[j].getName());
+                    }
+                }
+            }
+        } catch (ExecutionException | NoSuchFieldException | InterruptedException e) {
+            System.out.println("Read failed");
+            throw new RuntimeException(e);
+        }
+        return objects;
+    }
+
+    @Override
+    public Object[][] readToArray(File file) throws IOException {
+        return readToArray(file.getAbsolutePath());
+    }
+
+    @Override
+    public List<Map<String, Object>> readToList(String path) throws IOException {
+        File file = new File(path);
+        return readToList(file);
+    }
+
+    @Override
+    @Deprecated
+    public Object[][] readToArray() throws IOException {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public List<Map<String, Object>> readToList() {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public void outPut(File file) {
+
+    }
+
+    @Override
+    @Deprecated
+    public void outPut(String path) {
+
+    }
 
     /**
      * 如果了解多线程读取{@link #getReadData(File)}
