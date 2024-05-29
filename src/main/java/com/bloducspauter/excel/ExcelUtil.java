@@ -26,7 +26,7 @@ import static com.bloducspauter.origin.Util.*;
  * <p>
  *
  * @author Bloduc Spauter
- * @version   1.0
+ * @version 1.0
  */
 public class ExcelUtil implements ExcelService {
     private String path;
@@ -258,8 +258,8 @@ public class ExcelUtil implements ExcelService {
         excelTool.checkSuffix(file);
         excelTool.checkFileExists(file);
         Sheet sheet;
-        File file1=new File(file);
-        Workbook workbook=getWorkBook(file1);
+        File file1 = new File(file);
+        Workbook workbook = getWorkBook(file1);
         // 创建工作簿对象
         // 获取工作簿下sheet的个数
         int totalSheets = workbook.getNumberOfSheets();
@@ -272,18 +272,17 @@ public class ExcelUtil implements ExcelService {
     }
 
     protected Workbook getWorkBook(File file) throws IOException, UnsupportedFileException {
-        String suffix= excelTool.getSuffix(file.getName());
-        switch (ExcelType.forSuffix(suffix)){
-            case XLSX:{
+        String suffix = excelTool.getSuffix(file.getName());
+        switch (ExcelType.forSuffix(suffix)) {
+            case XLSX: {
                 return new XSSFWorkbook(new FileInputStream(file));
             }
             case CSV:
-            case XLS:{
+            case XLS: {
                 return new HSSFWorkbook(new FileInputStream(file));
             }
-            default:{
-                throw new UnsupportedFileException("We need "+ Arrays.toString(ExcelType.values()) +",but you provided a "+suffix+"file");
-            }
+            default:
+                throw new UnsupportedFileException("We need " + Arrays.toString(ExcelType.values()) + ",but you provided a " + suffix + "file");
         }
     }
 
@@ -362,19 +361,30 @@ public class ExcelUtil implements ExcelService {
     }
 
     private void outputImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
-        excelTool.checkSuffix(file);
-        if (file.exists()) {
-            throw new IOException("This file is already exists");
-        }
         if (obj == null || obj.length == 0 || title == null || title.length == 0) {
             throw new NullPointerException("Unable to invoke an empty data. Did you forgot to read file or clean it?");
         }
+        if (excelTool.checkIsDirectory(file)) {
+            String filepath = file.getAbsolutePath() + File.separator + UUID.randomUUID() + ".xlsx";
+            file = new File(filepath);
+        }
+        if (excelTool.checkFileExists(file)) {
+            throw new IOException("This file is already exists");
+        }
         Workbook wb;
-//        判断文件类型
-        if (file.getName().endsWith(SUFFIX_2)) {
-            wb = new HSSFWorkbook();
-        } else {
-            wb = new XSSFWorkbook();
+        String suffix = excelTool.getSuffix(file.getName());
+        switch (ExcelType.forSuffix(suffix)) {
+            case XLSX: {
+                wb = new XSSFWorkbook();
+                break;
+            }
+            case CSV:
+            case XLS: {
+                wb = new HSSFWorkbook();
+                break;
+            }
+            default:
+                throw new UnsupportedFileException("We need " + Arrays.toString(ExcelType.values()) + ",but you provided a " + suffix + "file");
         }
         Sheet sheet = wb.createSheet(sheetName);
         Row row = sheet.createRow(0);
@@ -473,7 +483,7 @@ public class ExcelUtil implements ExcelService {
 
     @Override
     public Object[][] readToArray(String path) throws IOException, UnsupportedFileException {
-        File file =new File(path);
+        File file = new File(path);
         return readToArray(file);
     }
 
@@ -522,7 +532,6 @@ public class ExcelUtil implements ExcelService {
         File file = new File(path);
         outputImpl(sheetName, obj, title, file);
     }
-
 
 
     @Override
@@ -593,5 +602,5 @@ public class ExcelUtil implements ExcelService {
         this.password = password;
         Biff8EncryptionKey.setCurrentUserPassword(password);
     }
-    
+
 }

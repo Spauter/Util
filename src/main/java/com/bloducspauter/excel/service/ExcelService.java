@@ -18,43 +18,51 @@ public interface ExcelService extends FIleReadAndOutput {
     String SHEET_NAME = "Sheet1";
 
     /**
-     * 将存储结果输出为表格，不需要额外的{@code String[] title}
+     * 将存储结果输出为表格，不需要额外的{@code String[] title}，
      *
      * @param sheetName 自定义Sheet名字
      * @param list      List集合
-     * @param file      文件
+     * @param file      文件，可以为目录
      * @throws IOException IO流异常
      */
-    void output(String sheetName, List<Map<String, Object>> list, File file)throws IOException, UnsupportedFileException;
+    void output(String sheetName, List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException;
 
     /**
-     * 将存储结果输出为表格，不需要额外的{@code String[] title}
+     * 将存储结果输出为表格，不需要额外的{@code String[] title}，
      *
      * @param sheetName 自定义Sheet名字
      * @param list      List集合
-     * @param path      文件路径
+     * @param path      文件路径，可以为目录
      * @throws IOException IO流异常
      */
-    default void output(String sheetName, List<Map<String, Object>> list, String path)throws IOException, UnsupportedFileException{
-        File file=new File(path);
-        output(sheetName,list,file);
-    }
-
-
-    @Override
-    default void output(List<Map<String, Object>> list, File file)throws IOException, UnsupportedFileException {
-        output(SHEET_NAME, list, file);
+    default void output(String sheetName, List<Map<String, Object>> list, String path) throws IOException, UnsupportedFileException {
+        File file = new File(path);
+        output(sheetName, list, file);
     }
 
     /**
-     * 将结果输出保持文件中
+     * 将存储结果输出为表格，不需要额外的{@code String[] title}，
+     * Sheet会采用默认名字
      *
      * @param list List集合
-     * @param path 文件路径
-     * @throws IOException Io流异常
+     * @param file 文件，可以为目录
+     * @throws IOException IO流异常
      */
     @Override
-    default void output(List<Map<String, Object>> list, String path) throws IOException, UnsupportedFileException{
+    default void output(List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException {
+        output(SHEET_NAME, list, file);
+    }
+
+    /**
+     * 将存储结果输出为表格，不需要额外的{@code String[] title}，
+     * Sheet会采用默认名字
+     *
+     * @param list List集合
+     * @param path 文件路径，可以为目录
+     * @throws IOException IO流异常
+     */
+    @Override
+    default void output(List<Map<String, Object>> list, String path) throws IOException, UnsupportedFileException {
         File file = new File(path);
         output(SHEET_NAME, list, file);
     }
@@ -65,10 +73,10 @@ public interface ExcelService extends FIleReadAndOutput {
      * @param sheetName 自定义Sheet名字
      * @param obj       二维数组 {@code Object[][]}
      * @param title     标题{@code String[]}
-     * @param file      文件
+     * @param file      文件，可以为目录
      * @throws IOException IO流异常
      */
-    void output(String sheetName,Object[][] obj,String[] title,File file)throws IOException, UnsupportedFileException;
+    void output(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException;
 
 
     /**
@@ -77,36 +85,37 @@ public interface ExcelService extends FIleReadAndOutput {
      * @param sheetName 自定义Sheet名字
      * @param obj       二维数组 {@code Object[][]}
      * @param title     标题{@code String[]}
-     * @param path      文件路径
+     * @param path      文件路径，可以为目录
      * @throws IOException IO流异常
      */
-    default void output(String sheetName,Object[][] obj,String[] title,String path)throws IOException, UnsupportedFileException{
+    default void output(String sheetName, Object[][] obj, String[] title, String path) throws IOException, UnsupportedFileException {
         File file = new File(path);
-        output(sheetName,obj,title,file);
+        output(sheetName, obj, title, file);
     }
+
     /**
      * 将结果输出保持文件中，在使用有参构造后可以使用此方法
      *
-     * @param path 文件路径
+     * @param path 文件路径，可以为目录
      * @throws IOException          IO异常
      * @throws NullPointerException 如果书库为空可能抛出
      */
     @Override
-    default void output(Object[][] objects,String[] title,String path)throws IOException, UnsupportedFileException{
+    default void output(Object[][] objects, String[] title, String path) throws IOException, UnsupportedFileException {
         File file = new File(path);
-        output(SHEET_NAME,objects,title,file);
+        output(SHEET_NAME, objects, title, file);
     }
+
     /**
      * 将结果输出保持文件中
      *
      * @param obj   二维数组
      * @param title 标题
-     * @param file  文件
+     * @param file  文件，可以为目录
      * @throws IOException Io流异常
      */
     @Override
-    default void output(Object[][] obj,String[] title,File file)throws IOException, UnsupportedFileException{
-        output(SHEET_NAME,obj,title,file);
+    default void output(Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
+        output(SHEET_NAME, obj, title, file);
     }
-
 }
