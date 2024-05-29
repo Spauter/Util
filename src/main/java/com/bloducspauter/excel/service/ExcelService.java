@@ -91,6 +91,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @throws IOException          IO异常
      * @throws NullPointerException 如果书库为空可能抛出
      */
+    @Override
     default void output(Object[][] objects,String[] title,String path)throws IOException, UnsupportedFileException{
         File file = new File(path);
         output(SHEET_NAME,objects,title,file);
@@ -103,6 +104,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @param file  文件
      * @throws IOException Io流异常
      */
+    @Override
     default void output(Object[][] obj,String[] title,File file)throws IOException, UnsupportedFileException{
         output(SHEET_NAME,obj,title,file);
     }
