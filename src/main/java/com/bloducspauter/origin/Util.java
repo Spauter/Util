@@ -5,7 +5,7 @@ package com.bloducspauter.origin;
  * @author Bloduc Spauer
  * @version 1.16
 */
-public interface FileReadAndOutPutUtil {
+public interface Util {
 
     String SUFFIX_1 = ".xlsx";
     String SUFFIX_2 = ".xls";

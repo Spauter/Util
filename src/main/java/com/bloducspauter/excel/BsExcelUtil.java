@@ -26,8 +26,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-import static com.bloducspauter.origin.FileReadAndOutPutUtil.SHEET_NAME;
-import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
+import static com.bloducspauter.origin.Util.SHEET_NAME;
+import static com.bloducspauter.origin.Util.SUFFIX_2;
 
 /**
  * 拓展的输入输出工具
