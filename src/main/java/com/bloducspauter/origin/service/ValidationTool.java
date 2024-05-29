@@ -13,7 +13,12 @@ public abstract class ValidationTool {
 
     List<Map<String, Object>> list = new ArrayList<>();
 
-    void checkSuffix(String path) {
+    /**
+     * 检查文件名的方法
+     * @param path 文件路径
+     * @throws com.bloducspauter.origin.exceptions.UnsupportedFileException 当文件参数不合法时
+     */
+    public void checkSuffix(String path) {
         File file = new File(path);
         checkSuffix(file);
     }
@@ -25,7 +30,7 @@ public abstract class ValidationTool {
         return checkFileExists(file);
     }
 
-    boolean checkFileExists(File file) {
+    public boolean checkFileExists(File file) {
         return file.exists();
     }
 
@@ -72,4 +77,25 @@ public abstract class ValidationTool {
         return list;
     }
 
+    public void checkTitleLine(int titleLine, int maxRow) throws IndexOutOfBoundsException {
+        if (titleLine > maxRow || titleLine < 0) {
+            throw new IndexOutOfBoundsException(titleLine);
+        }
+    }
+
+
+    public void checkRowCol(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol) {
+        if (startCol < 0 || startRow < 0 || endWithRow < 0 || endWithCol < 0) {
+            throw new IndexOutOfBoundsException(-1);
+        }
+        if (startCol > endWithCol || startRow > endWithRow) {
+            throw new IndexOutOfBoundsException(startCol > endWithCol ? startCol : startRow);
+        }
+        if (startCol > maxCol || startRow > maxRow) {
+            throw new IndexOutOfBoundsException(startCol > maxCol ? startCol : startRow);
+        }
+        if (endWithCol > maxCol || endWithRow > maxRow) {
+            throw new IndexOutOfBoundsException(endWithCol > maxCol ? endWithCol : endWithRow);
+        }
+    }
 }

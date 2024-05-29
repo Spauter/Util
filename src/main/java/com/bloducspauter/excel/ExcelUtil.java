@@ -1,6 +1,7 @@
 package com.bloducspauter.excel;
 
 import com.bloducspauter.excel.tool.ExcelTool;
+import com.bloducspauter.origin.service.ValidationTool;
 import lombok.Setter;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -36,7 +37,7 @@ public class ExcelUtil {
      * 读取到的List集合
      */
     private List<Map<String, Object>> list = new ArrayList<>();
-    static ExcelTool excelTool = new ExcelTool();
+    static ValidationTool excelTool = new ExcelTool();
     /**
      * 日期格式，默认yyyy-MM-dd
      * -- SETTER --
