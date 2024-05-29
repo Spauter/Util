@@ -358,7 +358,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
     /**
      * 果了解多线程读取{@link #getReadData(File)}
      */
-    public List<T> readAll(File file) throws IOException, NoSuchFieldException {
+    public List<T> readAll(File file) throws IOException, NoSuchFieldException, UnsupportedFileException {
         return readAll(file.getAbsolutePath());
     }
 
