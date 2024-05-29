@@ -331,15 +331,15 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return null;
     }
 
-    5@Override
+    @Override
     @Deprecated
-    public void outPut(File file) {
+    public void output(File file) {
 
     }
 
     @Override
     @Deprecated
-    public void outPut(String path) {
+    public void output(String path) {
 
     }
 
