@@ -6,7 +6,6 @@ package com.bloducspauter.origin;
  * @version 1.16
 */
 public interface Util {
-
     String SUFFIX_1 = ".xlsx";
     String SUFFIX_2 = ".xls";
     String SUFFIX_6=".csv";

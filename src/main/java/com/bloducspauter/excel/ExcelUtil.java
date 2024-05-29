@@ -1,6 +1,7 @@
 package com.bloducspauter.excel;
 
 import com.bloducspauter.enums.ExcelType;
+import com.bloducspauter.excel.service.ExcelService;
 import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.excel.tool.ExcelValidationTool;
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
@@ -27,7 +28,7 @@ import static com.bloducspauter.origin.Util.*;
  * @author Bloduc Spauter
  * @version   1.0
  */
-public class ExcelUtil {
+public class ExcelUtil implements ExcelService {
     private String path;
     /**
      * 标题行
@@ -256,14 +257,9 @@ public class ExcelUtil {
     protected Sheet getSheet(String file) throws IOException, UnsupportedFileException {
         excelTool.checkSuffix(file);
         excelTool.checkFileExists(file);
-        Workbook workbook;
         Sheet sheet;
-        if (file.endsWith(SUFFIX_1)) {
-//        判断文件类型
-            workbook = new XSSFWorkbook(new FileInputStream(file));
-        } else {
-            workbook = new HSSFWorkbook(new FileInputStream(file));
-        }
+        File file1=new File(file);
+        Workbook workbook=getWorkBook(file1);
         // 创建工作簿对象
         // 获取工作簿下sheet的个数
         int totalSheets = workbook.getNumberOfSheets();
@@ -365,7 +361,7 @@ public class ExcelUtil {
         return title;
     }
 
-    private void outPutImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
+    private void outputImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
         excelTool.checkSuffix(file);
         if (file.exists()) {
             throw new IOException("This file is already exists");
@@ -446,27 +442,12 @@ public class ExcelUtil {
         return titles;
     }
 
-    /**
-     * 读取文件并把结果保存到List集合中
-     *
-     * @param path 文件路径
-     * @return List
-     * @throws IOException IO流异常
-     */
+
+    @Override
     public List<Map<String, Object>> readToList(String path) throws IOException, UnsupportedFileException {
         return readImpl(path);
     }
 
-    /**
-     * 读取文件并把结果保存到List集合中
-     *
-     * @param file 文件
-     * @return List
-     * @throws IOException IO流异常
-     */
-    public List<Map<String, Object>> readToList(File file) throws IOException, UnsupportedFileException {
-        return readImpl(file.getAbsolutePath());
-    }
 
     /**
      * 提供文件后直接读取,不需要额外输入文件路径
@@ -478,20 +459,6 @@ public class ExcelUtil {
         return readImpl(this.path);
     }
 
-    /**
-     * 读取文件并把结果保存到List集合中
-     *
-     * @param file 文件
-     * @return List
-     * @throws IOException IO流异常
-     */
-    public Object[][] readToArray(File file) throws IOException, UnsupportedFileException {
-        if (arrayData == null) {
-            list = readImpl(file.getAbsolutePath());
-            arrayData = excelTool.conformity(list, titles);
-        }
-        return arrayData;
-    }
 
     /**
      * 读取文件将结果存入二维数组中，在提供有参构造后可使用
@@ -503,13 +470,8 @@ public class ExcelUtil {
         return readToArray(path);
     }
 
-    /**
-     * 读取文件将结果存入二维数组中
-     *
-     * @param path 文件路径
-     * @return Object[][]
-     * @throws IOException IO流异常
-     */
+
+    @Override
     public Object[][] readToArray(String path) throws IOException, UnsupportedFileException {
         File file =new File(path);
         return readToArray(file);
@@ -548,114 +510,28 @@ public class ExcelUtil {
         return getTitleImpl(null);
     }
 
-    /**
-     * 将存储结果输出为表格
-     *
-     * @param sheetName 自定义Sheet名字
-     * @param obj       二维数组 {@code Object[][]}
-     * @param title     标题{@code String[]}
-     * @param file      文件
-     * @throws IOException IO流异常
-     */
-    public void outPut(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
-        outPutImpl(sheetName, obj, title, file);
+
+    @Override
+    public void output(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
+        outputImpl(sheetName, obj, title, file);
     }
 
-    /**
-     * 将存储结果输出为表格
-     *
-     * @param sheetName 自定义Sheet名字
-     * @param obj       二维数组 {@code Object[][]}
-     * @param title     标题{@code String[]}
-     * @param path      文件路径
-     * @throws IOException IO流异常
-     */
-    public void outPut(String sheetName, Object[][] obj, String[] title, String path) throws IOException, UnsupportedFileException {
+
+    @Override
+    public void output(String sheetName, Object[][] obj, String[] title, String path) throws IOException, UnsupportedFileException {
         File file = new File(path);
-        outPutImpl(sheetName, obj, title, file);
+        outputImpl(sheetName, obj, title, file);
     }
 
 
-    /**
-     * 将存储结果输出为表格，不需要额外的{@code String[] title}
-     *
-     * @param sheetName 自定义Sheet名字
-     * @param list      List集合
-     * @param path      文件路径
-     * @throws IOException IO流异常
-     */
-    public void outPut(String sheetName, List<Map<String, Object>> list, String path) throws IOException, UnsupportedFileException {
-        File file = new File(path);
+
+    @Override
+    public void output(String sheetName, List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException {
         String[] title = getTitle(list);
         Object[][] obj = excelTool.conformity(list, titles);
-        outPutImpl(sheetName, obj, title, file);
+        outputImpl(sheetName, obj, title, file);
     }
 
-    /**
-     * 将存储结果输出为表格，不需要额外的{@code String[] title}
-     *
-     * @param sheetName 自定义Sheet名字
-     * @param list      List集合
-     * @param file      文件
-     * @throws IOException IO流异常
-     */
-    public void outPut(String sheetName, List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException {
-        String[] title = getTitle(list);
-        Object[][] obj = excelTool.conformity(list, titles);
-        outPutImpl(sheetName, obj, title, file);
-    }
-
-    /**
-     * 将结果输出保持文件中
-     *
-     * @param list List集合
-     * @param path 文件路径
-     * @throws IOException Io流异常
-     */
-    public void outPut(List<Map<String, Object>> list, String path) throws IOException, UnsupportedFileException {
-        File file =new File(path);
-        String[] title = getTitle(list);
-        Object[][] obj = excelTool.conformity(list, titles);
-        outPutImpl(SHEET_NAME, obj, title, file);
-    }
-
-    /**
-     * 将结果输出保持文件中
-     *
-     * @param list List集合
-     * @param file 文件
-     * @throws IOException Io流异常
-     */
-    public void outPut(List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException {
-        String[] title = getTitle(list);
-        Object[][] obj = excelTool.conformity(list, titles);
-        outPutImpl(SHEET_NAME, obj, title, file);
-    }
-
-    /**
-     * 将结果输出保持文件中
-     *
-     * @param obj   二维数组
-     * @param title 标题
-     * @param path  文件路径
-     * @throws IOException Io流异常
-     */
-    public void outPut(Object[][] obj, String[] title, String path) throws IOException, UnsupportedFileException {
-        File file =new File(path);
-        outPutImpl(SHEET_NAME, obj, title, file);
-    }
-
-    /**
-     * 将结果输出保持文件中
-     *
-     * @param obj   二维数组
-     * @param title 标题
-     * @param file  文件
-     * @throws IOException Io流异常
-     */
-    public void outPut(Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
-        outPutImpl(SHEET_NAME, obj, title, file);
-    }
 
     /**
      * 将结果输出保持文件中，在使用有参构造后可以使用此方法
@@ -664,8 +540,8 @@ public class ExcelUtil {
      * @throws IOException          IO异常
      * @throws NullPointerException 如果书库为空可能抛出
      */
-    public void outPut(String path) throws IOException, UnsupportedFileException {
-        outPut(new File(path));
+    public void output(String path) throws IOException, UnsupportedFileException {
+        output(new File(path));
     }
 
     /**
@@ -675,9 +551,9 @@ public class ExcelUtil {
      * @throws IOException          IO异常
      * @throws NullPointerException 如果书库为空可能抛出
      */
-    public void outPut(File file) throws IOException, UnsupportedFileException {
+    public void output(File file) throws IOException, UnsupportedFileException {
         String[] title = getTitle();
-        outPutImpl(SHEET_NAME, arrayData, title, file);
+        outputImpl(SHEET_NAME, arrayData, title, file);
     }
 
 
@@ -717,4 +593,5 @@ public class ExcelUtil {
         this.password = password;
         Biff8EncryptionKey.setCurrentUserPassword(password);
     }
+    
 }
