@@ -1,5 +1,7 @@
 package com.bloducspauter.origin.service;
 
+import com.bloducspauter.origin.exceptions.UnsupportedFileException;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +20,12 @@ public abstract class ValidationTool {
      * @param path 文件路径
      * @throws com.bloducspauter.origin.exceptions.UnsupportedFileException 当文件参数不合法时
      */
-    public void checkSuffix(String path) {
+    public void checkSuffix(String path) throws UnsupportedFileException {
         File file = new File(path);
         checkSuffix(file);
     }
 
-    protected abstract void checkSuffix(File file);
+    public abstract void checkSuffix(File file) throws UnsupportedFileException;
 
     public boolean checkFileExists(String path) {
         File file = new File(path);
@@ -97,5 +99,18 @@ public abstract class ValidationTool {
         if (endWithCol > maxCol || endWithRow > maxRow) {
             throw new IndexOutOfBoundsException(endWithCol > maxCol ? endWithCol : endWithRow);
         }
+    }
+
+    public String getSuffix(String filename){
+        if (filename == null) {
+            throw new NullPointerException();
+        }
+        String[] parts=filename.split("\\.");
+        if (parts.length == 1) {
+            return filename;
+        }
+        String suffix;
+        suffix = parts[parts.length - 1];
+        return suffix;
     }
 }

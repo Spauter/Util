@@ -7,6 +7,7 @@ import com.bloducspauter.annotation.ExcelTable;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
 import com.bloducspauter.excel.tool.ExcelTool;
+import com.bloducspauter.origin.exceptions.UnsupportedFileException;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -67,7 +68,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @param filePath 文件路径
      * @see #readAll(String)
      */
-    private ReadData<T> getReadDataIml(String filePath) throws IOException, InterruptedException, ExecutionException, NoSuchFieldException {
+    private ReadData<T> getReadDataIml(String filePath) throws IOException, InterruptedException, ExecutionException, NoSuchFieldException, UnsupportedFileException {
         sheet = super.getSheet(filePath);
         maxRow = maxRow == 0 ? sheet.getLastRowNum() : maxRow;
         //
@@ -89,7 +90,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
     }
 
 
-    private List<ReadingDataTask<T>> getReadingDataTasks(int munCores, String filePath) throws IOException, NoSuchFieldException {
+    private List<ReadingDataTask<T>> getReadingDataTasks(int munCores, String filePath) throws IOException, NoSuchFieldException, UnsupportedFileException {
         int size = maxRow;
         int step = size / munCores;
         int startIndex, endWithIndex;
@@ -120,7 +121,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      *                              需要考虑{@link ExcelField}
      */
     @SuppressWarnings("unchecked")
-    private List<T> readImpl(String file) throws IOException, NoSuchFieldException {
+    private List<T> readImpl(String file) throws IOException, NoSuchFieldException, UnsupportedFileException {
         Class<?> entity = entityTableDefinition.getClassName();
         List<T> objects = new ArrayList<>();
         try {
@@ -175,7 +176,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return objects;
     }
 
-    private void bsOutPutFileImpl(String sheetName, File file, List<T> entities) throws IOException {
+    private void bsOutPutFileImpl(String sheetName, File file, List<T> entities) throws IOException, UnsupportedFileException {
         excelTool.checkIsDirectory(file);
         excelTool.checkSuffix(file);
         if (entities.isEmpty()) {
@@ -273,6 +274,8 @@ public class BsExcelUtil<T> extends ExcelUtil {
         } catch (ExecutionException | NoSuchFieldException | InterruptedException e) {
             System.out.println("Reading Field because of " + e.getClass().getSimpleName() + ":" + e.getMessage());
             throw new RuntimeException(e);
+        } catch (UnsupportedFileException e) {
+            throw new RuntimeException(e);
         }
         return list;
     }
@@ -299,7 +302,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
                     }
                 }
             }
-        } catch (ExecutionException | NoSuchFieldException | InterruptedException e) {
+        } catch (ExecutionException | NoSuchFieldException | InterruptedException | UnsupportedFileException e) {
             System.out.println("Read failed");
             throw new RuntimeException(e);
         }
@@ -369,7 +372,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
      *                              需要考虑{@link ExcelField}
      */
-    public T readOne(File file, int index) throws IOException, NoSuchFieldException {
+    public T readOne(File file, int index) throws IOException, NoSuchFieldException, UnsupportedFileException {
         return readOne(file.getAbsolutePath(), index);
     }
 
@@ -383,7 +386,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
      *                              需要考虑{@link ExcelField}
      */
-    public T readOne(String filePath, int index) throws IOException, NoSuchFieldException {
+    public T readOne(String filePath, int index) throws IOException, NoSuchFieldException, UnsupportedFileException {
         if (index == titleLine) {
             throw new IllegalArgumentException("Don't know how to turn title line" + " into class " + entityTableDefinition.getClassName().getSimpleName());
         }
@@ -402,7 +405,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      *                              需要考虑{@link ExcelField}
      * @throws InterruptedException 中断异常
      */
-    public List<T> getReadData(File file) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
+    public List<T> getReadData(File file) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException, UnsupportedFileException {
         String path = file.getAbsolutePath();
         return getReadData(path);
     }
@@ -417,7 +420,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      *                              需要考虑{@link ExcelField}
      * @throws InterruptedException 中断异常
      */
-    public List<T> getReadData(String path) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
+    public List<T> getReadData(String path) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException, UnsupportedFileException {
         ReadData<T> readData = getReadDataIml(path);
         return readData.getData();
     }
@@ -429,7 +432,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @param entities 实体类集合
      * @throws IllegalArgumentException 见{@link ExcelTool}
      */
-    public void write(List<T> entities, String path) throws IOException {
+    public void write(List<T> entities, String path) throws IOException, UnsupportedFileException {
         write(entities, path, SHEET_NAME);
     }
 
@@ -440,7 +443,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @param entities 实体类集合
      * @throws IllegalArgumentException 见{@link ExcelTool}
      */
-    public void write(List<T> entities, File file) throws IOException {
+    public void write(List<T> entities, File file) throws IOException, UnsupportedFileException {
         write(entities, file, SHEET_NAME);
     }
 
@@ -453,7 +456,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @throws IOException              IO流异常
      * @throws IllegalArgumentException 见{@link ExcelTool}
      */
-    public void write(List<T> entities, String path, String sheetName) throws IOException {
+    public void write(List<T> entities, String path, String sheetName) throws IOException, UnsupportedFileException {
         File file = new File(path);
         bsOutPutFileImpl(sheetName, file, entities);
     }
@@ -467,7 +470,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @throws IOException              IO流异常
      * @throws IllegalArgumentException 见{@link ExcelTool}
      */
-    public void write(List<T> entities, File file, String sheetName) throws IOException {
+    public void write(List<T> entities, File file, String sheetName) throws IOException, UnsupportedFileException {
         bsOutPutFileImpl(sheetName, file, entities);
     }
 }
