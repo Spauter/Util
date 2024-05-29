@@ -612,7 +612,7 @@ public class ExcelUtil {
      * @param path 文件路径
      * @throws IOException Io流异常
      */
-    public void outPut(List<Map<String, Object>> list, String path) throws IOException {
+    public void outPut(List<Map<String, Object>> list, String path) throws IOException, UnsupportedFileException {
         File file =new File(path);
         String[] title = getTitle(list);
         Object[][] obj = excelTool.conformity(list, titles);
@@ -653,7 +653,7 @@ public class ExcelUtil {
      * @param file  文件
      * @throws IOException Io流异常
      */
-    public void outPut(Object[][] obj, String[] title, File file) throws IOException {
+    public void outPut(Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
         outPutImpl(SHEET_NAME, obj, title, file);
     }
 

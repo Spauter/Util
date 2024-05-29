@@ -351,7 +351,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @return {@code List<T>}
      * @throws IOException IO流异常
      */
-    public List<T> readAll(String path) throws IOException, NoSuchFieldException {
+    public List<T> readAll(String path) throws IOException, NoSuchFieldException, UnsupportedFileException {
         return readImpl(path);
     }
 
