@@ -25,7 +25,7 @@ import static com.bloducspauter.origin.FileReadAndOutPutUtil.*;
  * <p>
  *
  * @author Bloduc Spauter
- * @version 1.17
+ * @version   1.0
  */
 public class ExcelUtil {
     private String path;

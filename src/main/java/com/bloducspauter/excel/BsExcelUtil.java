@@ -16,7 +16,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,7 +26,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-
 import static com.bloducspauter.origin.FileReadAndOutPutUtil.SHEET_NAME;
 import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
 
@@ -35,7 +33,7 @@ import static com.bloducspauter.origin.FileReadAndOutPutUtil.SUFFIX_2;
  * 拓展的输入输出工具
  *
  * @author Bloduc Spauter
- * @version 1.18
+ * @since  1.18
  * @see com.bloducspauter.excel.ExcelUtil
  */
 public class BsExcelUtil<T> extends ExcelUtil {
@@ -87,7 +85,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
         ReadData<T> readData = new ReadData<>();
         readData.setData(entities);
         readData.setMaxRol(maxRow);
-
         return readData;
     }
 
@@ -275,7 +272,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
             }
         } catch (ExecutionException | NoSuchFieldException | InterruptedException e) {
             System.out.println("Reading Field because of " + e.getClass().getSimpleName() + ":" + e.getMessage());
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return list;
@@ -323,7 +319,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
 
     @Override
     @Deprecated
-    public Object[][] readToArray() throws IOException {
+    public Object[][] readToArray() {
         return null;
     }
 

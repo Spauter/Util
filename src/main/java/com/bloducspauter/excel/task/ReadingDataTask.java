@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 /**
  * @version 1.18
  * @param <T> 其实是实体类
+ * @author Bloduc Spauter
  */
 public class ReadingDataTask<T> implements Callable<ReadData<T>> {
     private final int maxRow;
