@@ -4,7 +4,7 @@ package com.bloducspauter.origin.exceptions;
  * @author Bloduc Spauter
  *
  */
-public class UnsupportedFileException extends IllegalAccessException{
+public class UnsupportedFileException extends IllegalArgumentException{
     private static final long serialVersionUID = 184539654L;
 
     /**

@@ -5,21 +5,22 @@ import com.bloducspauter.excel.service.ExcelService;
 import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.excel.tool.ExcelValidationTool;
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
-import com.bloducspauter.origin.service.ValidationTool;
 import lombok.Setter;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.common.POIFSConstants;
+import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
+import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static com.bloducspauter.origin.Util.*;
 
 /**
  * 表格工具
@@ -259,7 +260,7 @@ public class ExcelUtil implements ExcelService {
         excelTool.checkFileExists(file);
         Sheet sheet;
         File file1 = new File(file);
-        Workbook workbook = getWorkBook(file1);
+        Workbook workbook = getReadWorkbook(file1);
         // 创建工作簿对象
         // 获取工作簿下sheet的个数
         int totalSheets = workbook.getNumberOfSheets();
@@ -271,7 +272,7 @@ public class ExcelUtil implements ExcelService {
         return sheet;
     }
 
-    protected Workbook getWorkBook(File file) throws IOException, UnsupportedFileException {
+    protected Workbook getReadWorkbook(File file) throws IOException, UnsupportedFileException {
         String suffix = excelTool.getSuffix(file.getName());
         switch (ExcelType.forSuffix(suffix)) {
             case XLSX: {
@@ -280,6 +281,21 @@ public class ExcelUtil implements ExcelService {
             case CSV:
             case XLS: {
                 return new HSSFWorkbook(new FileInputStream(file));
+            }
+            default:
+                throw new UnsupportedFileException("We need " + Arrays.toString(ExcelType.values()) + ",but you provided a " + suffix + "file");
+        }
+    }
+
+    protected Workbook getOutputWorkbook(File file) {
+        String suffix = excelTool.getSuffix(file.getName());
+        switch (ExcelType.forSuffix(suffix)) {
+            case XLSX: {
+                return new XSSFWorkbook();
+            }
+            case CSV:
+            case XLS: {
+                return new HSSFWorkbook();
             }
             default:
                 throw new UnsupportedFileException("We need " + Arrays.toString(ExcelType.values()) + ",but you provided a " + suffix + "file");
@@ -371,21 +387,7 @@ public class ExcelUtil implements ExcelService {
         if (excelTool.checkFileExists(file)) {
             throw new IOException("This file is already exists");
         }
-        Workbook wb;
-        String suffix = excelTool.getSuffix(file.getName());
-        switch (ExcelType.forSuffix(suffix)) {
-            case XLSX: {
-                wb = new XSSFWorkbook();
-                break;
-            }
-            case CSV:
-            case XLS: {
-                wb = new HSSFWorkbook();
-                break;
-            }
-            default:
-                throw new UnsupportedFileException("We need " + Arrays.toString(ExcelType.values()) + ",but you provided a " + suffix + "file");
-        }
+        Workbook wb = getOutputWorkbook(file);
         Sheet sheet = wb.createSheet(sheetName);
         Row row = sheet.createRow(0);
         Cell cell;

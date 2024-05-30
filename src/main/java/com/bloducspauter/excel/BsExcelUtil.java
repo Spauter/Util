@@ -10,13 +10,11 @@ import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,7 +25,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-import static com.bloducspauter.origin.Util.SUFFIX_2;
 
 /**
  * 拓展的输入输出工具
@@ -176,18 +173,16 @@ public class BsExcelUtil<T> extends ExcelUtil {
     }
 
     private void bsOutPutFileImpl(String sheetName, File file, List<T> entities) throws IOException, UnsupportedFileException {
-        excelTool.checkIsDirectory(file);
-        excelTool.checkSuffix(file);
         if (entities.isEmpty()) {
             throw new NullPointerException("The list of entities is empty.");
         }
-        Workbook wb;
-        // 判断文件类型
-        if (file.getName().endsWith(SUFFIX_2)) {
-            wb = new HSSFWorkbook();
-        } else {
-            wb = new XSSFWorkbook();
+        if (excelTool.checkIsDirectory(file)) {
+            String filepath = file.getAbsolutePath() + File.separator + UUID.randomUUID() + ".xlsx";
+            file = new File(filepath);
         }
+        excelTool.checkSuffix(file);
+        super.getOutputWorkbook(file);
+        Workbook wb=getOutputWorkbook(file);
         Sheet sheet = wb.createSheet(sheetName);
         TreeMap<Integer, Field> fieldTreeMap = entityTableDefinition.getIndexForCellName();
         // 写入标题行
