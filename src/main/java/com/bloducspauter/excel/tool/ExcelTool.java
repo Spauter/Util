@@ -9,7 +9,7 @@ import com.bloducspauter.enums.ExcelType;
  * 表格文档检查工具
  *
  * @author Bloduc Spauter
- * @version 1.16
+ * @since  1.16
  */
 public class ExcelTool extends ExcelValidationTool {
 

@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 /**
  * @author BS
+ * @version 1.18
  */
 @Data
 public class TableDefinition {

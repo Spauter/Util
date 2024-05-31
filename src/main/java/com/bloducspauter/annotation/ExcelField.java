@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Excel表格单元格注解工具
  * @author Bloduc Spauter
+ * @version 1.18
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

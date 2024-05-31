@@ -9,6 +9,7 @@ import java.util.Arrays;
  * 常见excel表格类型
  *
  * @author Bloduc Spauter
+ * @version 1.18.2
  */
 public enum ExcelType {
     XLS("xls"),

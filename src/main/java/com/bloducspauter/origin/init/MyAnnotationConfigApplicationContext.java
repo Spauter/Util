@@ -9,6 +9,7 @@ import java.util.*;
 /**
  * 获取{@link TableDefinition}
  * @author Bloduc Spauter
+ * @version 1.18
  */
 public class MyAnnotationConfigApplicationContext {
 
