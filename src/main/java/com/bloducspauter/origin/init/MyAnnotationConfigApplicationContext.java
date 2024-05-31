@@ -1,7 +1,6 @@
 package com.bloducspauter.origin.init;
 
 import com.bloducspauter.annotation.ExcelField;
-import com.bloducspauter.annotation.ExcelTable;
 
 
 import java.lang.reflect.Field;
@@ -19,20 +18,9 @@ public class MyAnnotationConfigApplicationContext {
      *
      * @param configClass 被提供类
      * @return TableDefinition {@link TableDefinition}
-     * @throws NoSuchElementException 如果没有{@link ExcelTable}注解
      */
     public TableDefinition getTableDefinition(Class<?> configClass) {
         TableDefinition tableDefinition = new TableDefinition();
-        ExcelTable excelTable = configClass.getAnnotation(ExcelTable.class);
-        if (excelTable == null) {
-            System.out.println(("Cannot get excel table.You can declare @ExcelTable annotation in class :" + configClass.getSimpleName())+".\n" +
-                    "Solution: Considering Annotation \"@ExcelTable\".Example:\n\n"+
-                    "@ExcelTable\n" +
-                    "public class "+configClass.getSimpleName()+"{\n" +
-                    "}");
-           ;
-            throw new NoSuchElementException("Cannot get excel table");
-        }
         Field[] fields = configClass.getDeclaredFields();
         tableDefinition.setFields(fields);
         tableDefinition.setClassName(configClass);

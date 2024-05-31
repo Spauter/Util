@@ -1,12 +1,10 @@
 package com.bloducspauter.origin.service;
 
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author Bloduc Spauter
