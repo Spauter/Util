@@ -3,16 +3,13 @@ package com.bloducspauter.text;
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
 import com.bloducspauter.origin.service.ValidationTool;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.util.*;
 
 /**
+ * 这个类主要原本是处理文本型csv表格的，对于其它纯文本都适用
+ *
  * @author Bloduc Spauter
  */
 public class TextUtil implements TextService {
@@ -23,15 +20,15 @@ public class TextUtil implements TextService {
 
     private boolean first = true;
 
-    private final ValidationTool validationTool=new ValidationTool() {
+    private final ValidationTool validationTool = new ValidationTool() {
         @Override
         public void checkSuffix(File file) throws UnsupportedFileException {
 
         }
     };
 
-    private List<Map<String, Object>> readImpl(String path, String separator) {
-        separator=separator==null?TXT_CSV_SEPARATOR:separator;
+    private List<Map<String, Object>> readImpl(String path, String separator) throws IOException {
+        separator = separator == null ? TXT_CSV_SEPARATOR : separator;
         List<Map<String, Object>> list = new ArrayList<>();
         File file = new File(path);
         FileReader iis = null;
@@ -49,17 +46,73 @@ public class TextUtil implements TextService {
             }
         } catch (IOException e) {
             System.out.println("Error reading because of:" + e.getMessage());
-        }
-        if (null != iis) {
-            try {
-                iis.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (e instanceof FileNotFoundException) {
+                throw e;
             }
+        }
+        try {
+            iis.close();
+        } catch (IOException ignore) {
         }
         list.remove(0);
         System.out.println("Reading text file successfully");
         return list;
+    }
+
+    private File getOutputFile(String path) throws FileAlreadyExistsException {
+        File file = new File(path);
+        //如果是目录创建一个文件名
+        if (validationTool.checkIsDirectory(file)) {
+            path = path + File.separator + UUID.randomUUID() + ".txt";
+            file = new File(path);
+        }
+        if (validationTool.checkFileExists(file)) {
+            throw new FileAlreadyExistsException("File " + file.getAbsolutePath() + " already exists");
+        }
+        return file;
+    }
+
+    public void outputImpl(String path, Object[][] obj, String separator) {
+        separator=separator==null?TXT_CSV_SEPARATOR:separator;
+        try {
+            File file = getOutputFile(path);
+            FileWriter out = new FileWriter(file);
+            for (String t : title) {
+                out.write(t + separator);
+            }
+            out.write("\r\n");
+            for (Object[] objects : obj) {
+                for (int j = 0; j < title.length; j++) {
+                    String info = (String) objects[j];
+                    info = info == null ? "" : info;
+                    out.write(info + separator);
+                }
+                out.write("\r\n");
+                System.out.println();
+            }
+            out.close();
+            System.out.println("File written successfully.");
+        } catch (IOException e) {
+            System.out.println("Write failed because of " + e.getClass() + ":" + e.getMessage());
+        }
+    }
+
+    private void outputImpl(String path, List<Map<String, Object>> list, String separator) throws FileAlreadyExistsException {
+        File file = getOutputFile(path);
+        separator=separator==null?TXT_CSV_SEPARATOR:separator;
+        try (FileWriter out = new FileWriter(file)) {
+            out.write(Arrays.toString(title) + "\r\n");
+            for (Map<String, Object> entity : list) {
+                for (Object value : entity.values()) {
+                    value = (value == null) ? "" : value.toString();
+                    out.write(value + separator);
+                }
+                out.write("\r\n");
+            }
+            System.out.println("File written successfully.");
+        } catch (IOException e) {
+            System.out.println("Write failed because of " + e.getClass() + ":" + e.getMessage());
+        }
     }
 
     private Map<String, Object> checkData(String s, String separator) {
@@ -77,34 +130,49 @@ public class TextUtil implements TextService {
     }
 
     @Override
-    public List<Map<String, Object>> readToList(String path, String separator) {
-        return readImpl(path,separator);
+    public List<Map<String, Object>> readToList(String path, String separator) throws IOException {
+        return readImpl(path, separator);
     }
 
     @Override
-    public Object[][] readToArray(String path, String separator) {
-        List<Map<String,Object>>list=readImpl(path,separator);
-      return validationTool.conformity(list,title);
+    public Object[][] readToArray(String path, String separator) throws IOException {
+        List<Map<String, Object>> list = readImpl(path, separator);
+        return validationTool.conformity(list, title);
     }
 
     @Override
-    public List<Map<String, Object>> readToList(String path) throws UnsupportedFileException {
-        return readToList(path,null);
+    public void output(List<Map<String, Object>> list, String path, String separator) throws IOException, UnsupportedFileException {
+        outputImpl(path,list,separator);
     }
 
     @Override
-    public Object[][] readToArray(String path) throws UnsupportedFileException {
-        return readToArray(path,null);
+    public void output(Object[][] obj, String path, String separator) throws IOException, UnsupportedFileException {
+        outputImpl(path,obj,separator);
     }
 
     @Override
-    public void output(List<Map<String, Object>> list, String path) throws UnsupportedFileException {
+    public String[] getTitle() {
+        return title;
+    }
 
+    @Override
+    public List<Map<String, Object>> readToList(String path) throws UnsupportedFileException, IOException {
+        return readToList(path, null);
+    }
+
+    @Override
+    public Object[][] readToArray(String path) throws UnsupportedFileException, IOException {
+        return readToArray(path, null);
+    }
+
+    @Override
+    public void output(List<Map<String, Object>> list, String path) throws UnsupportedFileException, FileAlreadyExistsException {
+        outputImpl(path, list, null);
     }
 
     @Override
     public void output(Object[][] obj, String[] title, File file) throws UnsupportedFileException {
-
+        outputImpl(file.getAbsolutePath(), obj, null);
     }
 
 

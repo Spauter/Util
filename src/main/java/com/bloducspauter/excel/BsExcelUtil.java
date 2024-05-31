@@ -172,7 +172,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return objects;
     }
 
-    private void bsOutPutFileImpl(String sheetName, File file, List<T> entities) throws IOException, UnsupportedFileException {
+    private void outputImpl(String sheetName, File file, List<T> entities) throws IOException, UnsupportedFileException {
         if (entities.isEmpty()) {
             throw new NullPointerException("The list of entities is empty.");
         }
@@ -302,19 +302,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return readToList(file);
     }
 
-    @Override
-    @Deprecated
-    public Object[][] readToArray() {
-        return null;
-    }
-
-    @Override
-    @Deprecated
-    public List<Map<String, Object>> readToList() {
-        return null;
-    }
-
-
     /**
      * 如果了解多线程读取{@link #getReadData(File)}
      *
@@ -429,7 +416,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      */
     public void write(List<T> entities, String path, String sheetName) throws IOException, UnsupportedFileException {
         File file = new File(path);
-        bsOutPutFileImpl(sheetName, file, entities);
+        outputImpl(sheetName, file, entities);
     }
 
     /**
@@ -442,6 +429,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @throws IllegalArgumentException 见{@link ExcelTool}
      */
     public void write(List<T> entities, File file, String sheetName) throws IOException, UnsupportedFileException {
-        bsOutPutFileImpl(sheetName, file, entities);
+        outputImpl(sheetName, file, entities);
     }
 }
