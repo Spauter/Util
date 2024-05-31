@@ -68,7 +68,7 @@ public abstract class ValidationTool {
 
 
     /**
-     * 将一个{@code List<Map<String,Object>>}转化为一个二五数组
+     * 将一个{@code List<Map<String,Object>>}转化为一个二维数组
      * @param list List<Map<String,Object>>
      * @param titles 标题行
      */
@@ -80,6 +80,14 @@ public abstract class ValidationTool {
             }
         }
         return objects;
+    }
+
+    public Object[][] conformity(List<Map<String, Object>> list,String[] titles){
+        Map<Integer,String>map=new HashMap<>();
+        for (int i=0;i< titles.length;i++) {
+            map.put(i,titles[i]);
+        }
+        return conformity(list,map);
     }
 
     /**

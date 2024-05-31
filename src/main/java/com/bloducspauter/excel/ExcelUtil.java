@@ -5,22 +5,19 @@ import com.bloducspauter.excel.service.ExcelService;
 import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.excel.tool.ExcelValidationTool;
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
+import com.bloducspauter.text.TextUtil;
 import lombok.Setter;
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.common.POIFSConstants;
-import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 表格工具
@@ -35,10 +32,7 @@ public class ExcelUtil implements ExcelService {
      * 标题行
      */
     protected final Map<Integer, String> titles = new HashMap<>();
-    /**
-     * 读取到的List集合
-     */
-    private List<Map<String, Object>> list = new ArrayList<>();
+
     static ExcelValidationTool excelTool = new ExcelTool();
     /**
      * 日期格式，默认yyyy-MM-dd
@@ -54,14 +48,10 @@ public class ExcelUtil implements ExcelService {
      * -- SETTER --
      * 设置某一列作为标题,默认为0(第一行)
      *
-     * @param titleLine 被设置为标题的哪一行
      */
     @Setter
     protected int titleLine = 0;
-    /**
-     * 读取到的二维数组
-     */
-    private Object[][] arrayData;
+
     /**
      * 起始行
      * -- SETTER --
@@ -127,34 +117,6 @@ public class ExcelUtil implements ExcelService {
     }
 
     /**
-     * 提供文件后，会读取文件行数和列数信息
-     * <p>
-     *
-     * @param file 文件
-     */
-    public ExcelUtil(File file) throws IOException, UnsupportedFileException {
-        new ExcelUtil(file.getAbsolutePath());
-    }
-
-    /**
-     * 提供文件路径后,会读取文件行数和列数信息
-     * <p>
-     *
-     * @param path 文件路径
-     */
-    public ExcelUtil(String path) throws IOException, UnsupportedFileException {
-        this.path = path;
-        try {
-            sheet = getSheet(path);
-            getMaxRowsAndCols(sheet);
-            setDefaultEndWithRowsAndCols(-1, -1);
-        } catch (Exception e) {
-            System.out.println(("Reading file failed"));
-            throw e;
-        }
-    }
-
-    /**
      * 获取最大行数和列数
      * <p>
      *
@@ -216,15 +178,17 @@ public class ExcelUtil implements ExcelService {
             excelTool.checkRowCol(startRow, startCol, endWithRow, endWithCol, maxRow, maxCol);
             readTitle(sheet);
         } catch (NotOLE2FileException e) {
-            System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
-                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
-            System.out.println(("Reading file failed"));
-            throw e;
+            System.out.println("An exception occurred: "+e.getClass().getName() + "," + e.getMessage());
+            System.out.println("WARRING:If you are using to read CSV files, as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding), Instead of a plain text CSV file.\n" +
+                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, which is much simpler and more efficient。");
+            System.out.println("Try reading this file as a text CSV file");
+            return new TextUtil().readToList(file);
         } catch (Exception e) {
             System.out.println(("Reading file failed"));
             throw e;
         }
         System.out.println(("File check passed,Starting read"));
+        List<Map<String,Object>>list=new ArrayList<>();
         for (int row = startRow; row < endWithRow; row++) {
             //如果是标题行则跳过
             if (row == titleLine) {
@@ -239,10 +203,7 @@ public class ExcelUtil implements ExcelService {
             }
             list.add(map);
         }
-        for (Map<String, Object> m : list) {
-            System.out.println(m);
-        }
-        arrayData = excelTool.conformity(list, titles);
+
         System.out.println(("Reading successfully"));
         return list;
     }
@@ -273,6 +234,9 @@ public class ExcelUtil implements ExcelService {
     }
 
     protected Workbook getReadWorkbook(File file) throws IOException, UnsupportedFileException {
+        if (!file.exists()) {
+            throw new FileNotFoundException("File "+file.getAbsolutePath()+" not found");
+        }
         String suffix = excelTool.getSuffix(file.getName());
         switch (ExcelType.forSuffix(suffix)) {
             case XLSX: {
@@ -351,31 +315,6 @@ public class ExcelUtil implements ExcelService {
         return cellValue;
     }
 
-
-    private String[] getTitleImpl(File file) throws IOException, UnsupportedFileException {
-        String[] title;
-        if (file == null && list != null) {
-            if (list.isEmpty()) {
-                System.out.println(("WARRING: Failed to get title"));
-            }
-            title = new String[titles.size()];
-            for (int i = 0; i < titles.size(); i++) {
-                title[i] = titles.get(i);
-            }
-            return title;
-        }
-        assert file != null;
-        list = readImpl(file.getAbsolutePath());
-        if (list == null || list.isEmpty()) {
-            System.out.println(("WARRING: Failed to get title"));
-        }
-        title = new String[titles.size()];
-        for (int i = 0; i < titles.size(); i++) {
-            title[i] = titles.get(i);
-        }
-        return title;
-    }
-
     private void outputImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
         if (obj == null || obj.length == 0 || title == null || title.length == 0) {
             throw new NullPointerException("Unable to invoke an empty data. Did you forgot to read file or clean it?");
@@ -420,30 +359,6 @@ public class ExcelUtil implements ExcelService {
         System.out.println(("The file is successfully exported and saved to:\t" + file.getAbsolutePath()));
     }
 
-    /**
-     * 返回Map集合里键值，用于获取标题
-     *
-     * @param list {@code List集合}
-     * @return {@code String[]}
-     */
-
-    public String[] getTitle(List<Map<String, Object>> list) {
-        String[] title = new String[list.get(0).size()];
-        int i = 0;
-        for (Map<String, Object> map : list) {
-            for (String key : map.keySet()) {
-                if (i < title.length) {
-                    title[i] = key;
-                    titles.put(i, key);
-                    i++;
-                } else {
-                    break;
-                }
-            }
-        }
-        return title;
-    }
-
 
     /**
      * 以键值对的方式返回标题
@@ -456,10 +371,9 @@ public class ExcelUtil implements ExcelService {
 
 
     @Override
-    public List<Map<String, Object>> readToList(String path) throws IOException, UnsupportedFileException {
+    public List<Map<String, Object>> readToList(String path) throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException {
         return readImpl(path);
     }
-
 
     /**
      * 提供文件后直接读取,不需要额外输入文件路径
@@ -478,48 +392,14 @@ public class ExcelUtil implements ExcelService {
      * @return Object[][]
      * @throws IOException IO流异常
      */
-    public Object[][] readToArray() throws IOException, UnsupportedFileException {
+    public Object[][] readToArray() throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException {
         return readToArray(path);
     }
 
 
     @Override
-    public Object[][] readToArray(String path) throws IOException, UnsupportedFileException {
-        File file = new File(path);
-        return readToArray(file);
-    }
-
-    /**
-     * 返回一个包含需要读取文件的表头的数组
-     *
-     * @param file 文件
-     * @return {@code String[]}
-     * @throws IOException IO异常
-     */
-    public String[] getTitle(File file) throws IOException, UnsupportedFileException {
-        return getTitleImpl(file);
-    }
-
-    /**
-     * 返回一个包含需要读取文件路径的表头的数组
-     *
-     * @param path 文件路径
-     * @return {@code String[]}
-     * @throws IOException IO异常
-     */
-    public String[] getTitle(String path) throws IOException, UnsupportedFileException {
-        File file = new File(path);
-        return getTitleImpl(file);
-    }
-
-    /**
-     * 返回一个包含当前读取表格的表头的数组
-     *
-     * @return {@code String[]}
-     * @throws IOException IO异常
-     */
-    public String[] getTitle() throws IOException, UnsupportedFileException {
-        return getTitleImpl(null);
+    public Object[][] readToArray(String path) throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException {
+        return excelTool.conformity(readImpl(path),titles);
     }
 
 
@@ -538,33 +418,12 @@ public class ExcelUtil implements ExcelService {
 
     @Override
     public void output(String sheetName, List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException {
-        String[] title = getTitle(list);
         Object[][] obj = excelTool.conformity(list, titles);
+        String[] title=new String[titles.size()];
+        for (int i = 0; i < titles.size(); i++) {
+            title[i]=titles.get(i);
+        }
         outputImpl(sheetName, obj, title, file);
-    }
-
-
-    /**
-     * 将结果输出保持文件中，在使用有参构造后可以使用此方法
-     *
-     * @param path 文件路径
-     * @throws IOException          IO异常
-     * @throws NullPointerException 如果书库为空可能抛出
-     */
-    public void output(String path) throws IOException, UnsupportedFileException {
-        output(new File(path));
-    }
-
-    /**
-     * 将结果输出保持文件中，在使用有参构造后可以使用此方法
-     *
-     * @param file 文件
-     * @throws IOException          IO异常
-     * @throws NullPointerException 如果书库为空可能抛出
-     */
-    public void output(File file) throws IOException, UnsupportedFileException {
-        String[] title = getTitle();
-        outputImpl(SHEET_NAME, arrayData, title, file);
     }
 
 
@@ -587,14 +446,6 @@ public class ExcelUtil implements ExcelService {
         readSheetNumber = sheetNumber;
     }
 
-    /**
-     * 清除数据
-     */
-    public void clearAll() {
-        list.clear();
-        arrayData = null;
-        titles.clear();
-    }
 
     /**
      * 设置密码，未实现

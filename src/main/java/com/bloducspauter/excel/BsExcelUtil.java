@@ -30,8 +30,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 拓展的输入输出工具
  *
  * @author Bloduc Spauter
- * @since  1.18
  * @see com.bloducspauter.excel.ExcelUtil
+ * @since 1.18
  */
 public class BsExcelUtil<T> extends ExcelUtil {
 
@@ -130,7 +130,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
                     " as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding)," +
                     " Instead of a plain text CSV file.\n" +
                     "You should use Apache Commons CSV or direct Java file read operations to read CSV files, " +
-                    "which is much simpler and more efficient. Here is sample code for reading a CSV file using Apache Commons CSV:");
+                    "which is much simpler and more efficient. ");
             System.out.println(("Reading file failed"));
             throw e;
         } catch (Exception e) {
@@ -167,8 +167,8 @@ public class BsExcelUtil<T> extends ExcelUtil {
             }
         }
         //默认初始行和截至行
-        startRow=0;
-        endWithRow=maxRow;
+        startRow = 0;
+        endWithRow = maxRow;
         return objects;
     }
 
@@ -182,7 +182,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
         }
         excelTool.checkSuffix(file);
         super.getOutputWorkbook(file);
-        Workbook wb=getOutputWorkbook(file);
+        Workbook wb = getOutputWorkbook(file);
         Sheet sheet = wb.createSheet(sheetName);
         TreeMap<Integer, Field> fieldTreeMap = entityTableDefinition.getIndexForCellName();
         // 写入标题行
@@ -247,69 +247,57 @@ public class BsExcelUtil<T> extends ExcelUtil {
     }
 
     @Override
-    public List<Map<String, Object>> readToList(File file) throws IOException {
+    public List<Map<String, Object>> readToList(File file) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
         List<Map<String, Object>> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
-        try {
-            List<T> entities = getReadData(file);
-            Field[] fields = entityTableDefinition.getFields();
-            for (T entity : entities) {
-                for (Field field : fields) {
-                    try {
-                        field.setAccessible(true);
-                        map.put(field.getName(), field.get(entity));
-                    } catch (IllegalAccessException e) {
-                        System.out.println("Add entities failed:" + e.getMessage());
-                        System.out.println("Entity:" + entity + ",Field:" + field.getName());
-                    }
+        List<T> entities = getReadData(file);
+        Field[] fields = entityTableDefinition.getFields();
+        for (T entity : entities) {
+            for (Field field : fields) {
+                try {
+                    field.setAccessible(true);
+                    map.put(field.getName(), field.get(entity));
+                } catch (IllegalAccessException e) {
+                    System.out.println("Add entities failed:" + e.getMessage());
+                    System.out.println("Entity:" + entity + ",Field:" + field.getName());
                 }
-                list.add(map);
             }
-        } catch (ExecutionException | NoSuchFieldException | InterruptedException e) {
-            System.out.println("Reading Field because of " + e.getClass().getSimpleName() + ":" + e.getMessage());
-            throw new RuntimeException(e);
-        } catch (UnsupportedFileException e) {
-            throw new RuntimeException(e);
+            list.add(map);
         }
         return list;
     }
 
     @Override
-    public Object[][] readToArray(String path) throws IOException {
+    public Object[][] readToArray(String path) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
         Object[][] objects = new Object[endWithRow - startRow][maxCol];
-        try {
-            List<T> entities = getReadData(path);
-            Field[] fields = entityTableDefinition.getFields();
-            for (int i = startRow; i < endWithRow; i++) {
-                for (int j = 0; j < maxCol; j++) {
-                    try {
-                        if (i>=entities.size() || j > fields.length) {
-                            objects[i][j] = null;
-                            continue;
-                        }
-                        fields[j].setAccessible(true);
-                        Object o= fields[j].get(entities.get(i));
-                        objects[i][j] = o;
-                    } catch (IllegalAccessException e) {
-                        System.out.println("Add entities failed:" + e.getMessage());
-                        System.out.println("Entity:" + entities.get(i) + ",Field:" + fields[j].getName());
+        List<T> entities = getReadData(path);
+        Field[] fields = entityTableDefinition.getFields();
+        for (int i = startRow; i < endWithRow; i++) {
+            for (int j = 0; j < maxCol; j++) {
+                try {
+                    if (i >= entities.size() || j > fields.length) {
+                        objects[i][j] = null;
+                        continue;
                     }
+                    fields[j].setAccessible(true);
+                    Object o = fields[j].get(entities.get(i));
+                    objects[i][j] = o;
+                } catch (IllegalAccessException e) {
+                    System.out.println("Add entities failed:" + e.getMessage());
+                    System.out.println("Entity:" + entities.get(i) + ",Field:" + fields[j].getName());
                 }
             }
-        } catch (ExecutionException | NoSuchFieldException | InterruptedException | UnsupportedFileException e) {
-            System.out.println("Read failed");
-            throw new RuntimeException(e);
         }
         return objects;
     }
 
     @Override
-    public Object[][] readToArray(File file) throws IOException {
+    public Object[][] readToArray(File file) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
         return readToArray(file.getAbsolutePath());
     }
 
     @Override
-    public List<Map<String, Object>> readToList(String path) throws IOException {
+    public List<Map<String, Object>> readToList(String path) throws IOException, ExecutionException, NoSuchFieldException, InterruptedException {
         File file = new File(path);
         return readToList(file);
     }
@@ -326,17 +314,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return null;
     }
 
-    @Override
-    @Deprecated
-    public void output(File file) {
-
-    }
-
-    @Override
-    @Deprecated
-    public void output(String path) {
-
-    }
 
     /**
      * 如果了解多线程读取{@link #getReadData(File)}

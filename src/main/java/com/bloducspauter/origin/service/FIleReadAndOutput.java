@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Bloduc Spauter
@@ -19,7 +20,7 @@ public interface FIleReadAndOutput {
      * @throws IOException              IO流异常，比如{@code FileNotFoundException}
      * @throws UnsupportedFileException 当文件格式不支持时抛出磁异常
      */
-    List<Map<String, Object>> readToList(String path) throws IOException, UnsupportedFileException;
+    List<Map<String, Object>> readToList(String path) throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException;
 
     /**
      * 读取文档,将结果存储到List集合中
@@ -28,7 +29,7 @@ public interface FIleReadAndOutput {
      * @throws IOException              IO流异常，比如{@code FileNotFoundException}
      * @throws UnsupportedFileException 当文件格式不支持时抛出磁异常
      */
-    default List<Map<String, Object>> readToList(File file) throws IOException, UnsupportedFileException {
+    default List<Map<String, Object>> readToList(File file) throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException {
         return readToList(file.getAbsolutePath());
     }
 
@@ -39,7 +40,7 @@ public interface FIleReadAndOutput {
      * @throws IOException              IO流异常，比如{@code FileNotFoundException}
      * @throws UnsupportedFileException 当文件格式不支持时抛出磁异常
      */
-    Object[][] readToArray(String path) throws IOException, UnsupportedFileException;
+    Object[][] readToArray(String path) throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException;
 
     /**
      * 读取文档路径,将结果存储到L一个二位数组中，但是此方法无法得到标题信息
@@ -48,7 +49,7 @@ public interface FIleReadAndOutput {
      * @throws IOException              IO流异常，比如{@code FileNotFoundException}
      * @throws UnsupportedFileException 当文件格式不支持时抛出磁异常
      */
-    default Object[][] readToArray(File file) throws IOException, UnsupportedFileException {
+    default Object[][] readToArray(File file) throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException {
         return readToArray(file.getAbsolutePath());
     }
 
