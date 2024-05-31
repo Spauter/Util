@@ -3,7 +3,6 @@ package com.bloducspauter.excel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.annotation.ExcelField;
-import com.bloducspauter.annotation.ExcelTable;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
 import com.bloducspauter.excel.tool.ExcelTool;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -40,9 +38,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
     /**
      * 初始化实体类,使用{@link MyAnnotationConfigApplicationContext#getTableDefinition(Class)}
      * <p>
-     * 读取该类的{@link ExcelTable}和{@link ExcelField}
-     * <p>
-     * 并将相关结果存入{@link TableDefinition}
+     * 将相关结果存入{@link TableDefinition}
      *
      * @param entity 实体类
      */
