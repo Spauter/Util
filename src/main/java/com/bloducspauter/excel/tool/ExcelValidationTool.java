@@ -6,7 +6,7 @@ import com.bloducspauter.origin.service.ValidationTool;
 /**
  * 关于Excel工具
  * @author Bloduc Spauter
- *
+ * @version 1.18.2
  */
 public abstract class ExcelValidationTool extends ValidationTool {
     /**

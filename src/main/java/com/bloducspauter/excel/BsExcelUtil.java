@@ -2,7 +2,7 @@ package com.bloducspauter.excel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bloducspauter.annotation.ExcelField;
+import com.bloducspauter.annotation.FiledProperty;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
 import com.bloducspauter.excel.tool.ExcelTool;
@@ -110,7 +110,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @return {@code List<String>}
      * @throws IOException          IO流异常
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
-     *                              需要考虑{@link ExcelField}
+     *                              需要考虑{@link FiledProperty}
      */
     @SuppressWarnings("unchecked")
     private List<T> readImpl(String file) throws Exception {
@@ -186,7 +186,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
         int cellIndex = 0;
         for (Map.Entry<Integer, Field> entry : fieldTreeMap.entrySet()) {
             Field field = entry.getValue();
-            ExcelField excelField = field.getAnnotation(ExcelField.class);
+            FiledProperty excelField = field.getAnnotation(FiledProperty.class);
             String title = (excelField != null && !excelField.value().isEmpty()) ? excelField.value() : field.getName();
             titleRow.createCell(cellIndex++).setCellValue(title);
         }
@@ -324,7 +324,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @return T
      * @throws IOException          IO流异常
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
-     *                              需要考虑{@link ExcelField}
+     *                              需要考虑{@link FiledProperty}
      */
     public T readOne(File file, int index) throws Exception {
         return readOne(file.getAbsolutePath(), index);
@@ -338,7 +338,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @return T
      * @throws IOException          IO流异常
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
-     *                              需要考虑{@link ExcelField}
+     *                              需要考虑{@link FiledProperty}
      */
     public T readOne(String filePath, int index) throws Exception {
         if (index == titleLine) {
@@ -356,7 +356,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @return {@link List}
      * @throws IOException          IO流异常
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
-     *                              需要考虑{@link ExcelField}
+     *                              需要考虑{@link FiledProperty}
      * @throws InterruptedException 中断异常
      */
     public List<T> getReadData(File file) throws Exception {
@@ -371,7 +371,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @return {@link List}
      * @throws IOException          IO流异常
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
-     *                              需要考虑{@link ExcelField}
+     *                              需要考虑{@link FiledProperty}
      * @throws InterruptedException 中断异常
      */
     public List<T> getReadData(String path) throws Exception {

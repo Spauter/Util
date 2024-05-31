@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 /**
  * Excel表格单元格注解工具
  * @author Bloduc Spauter
- * @version 1.18
+ * @since  1.18
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface ExcelField {
+public @interface FiledProperty {
     /**
      * 单元格真正的名字
      * @return boolean

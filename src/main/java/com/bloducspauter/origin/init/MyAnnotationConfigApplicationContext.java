@@ -1,6 +1,6 @@
 package com.bloducspauter.origin.init;
 
-import com.bloducspauter.annotation.ExcelField;
+import com.bloducspauter.annotation.FiledProperty;
 
 
 import java.lang.reflect.Field;
@@ -27,7 +27,7 @@ public class MyAnnotationConfigApplicationContext {
         tableDefinition.setClassName(configClass);
         Map<String, Field> map = new HashMap<>();
         for (Field f : fields) {
-            ExcelField cellName = f.getAnnotation(ExcelField.class);
+            FiledProperty cellName = f.getAnnotation(FiledProperty.class);
             String key;
             //如果没有注解就把属性名作为key
             if (cellName == null) {
@@ -53,14 +53,14 @@ public class MyAnnotationConfigApplicationContext {
      * 进一步获取TreeMap后存入{@link TableDefinition#setIndexForCellName(TreeMap)}
      * @param tableDefinition {@link  TableDefinition}
      * @return {@link TreeMap}
-     * @throws IndexOutOfBoundsException 因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据,如果{@link ExcelField#index() }大于此值抛出异常
+     * @throws IndexOutOfBoundsException 因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据,如果{@link FiledProperty#index() }大于此值抛出异常
      */
     public TreeMap<Integer, Field> integerStringTreeMap(TableDefinition tableDefinition) {
         TreeMap<Integer, Field> treeMap = new TreeMap<>();
         Map<String, Field> fieldMap = tableDefinition.getCellNameAndField();
         int i = 0;
         for (Map.Entry<String, Field> m : fieldMap.entrySet()) {
-            ExcelField cellName = m.getValue().getAnnotation(ExcelField.class);
+            FiledProperty cellName = m.getValue().getAnnotation(FiledProperty.class);
             int index = cellName == null ? MAX_VALUE : cellName.index();
             //判断index是否大于65535，因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据
             if (index > MAX_VALUE) {
