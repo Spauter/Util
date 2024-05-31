@@ -13,20 +13,18 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * 表格工具
  * <p>
  *
  * @author Bloduc Spauter
- * @version 1.0
+ * @since  1.0
  */
 public class ExcelUtil implements ExcelService {
 
@@ -162,7 +160,7 @@ public class ExcelUtil implements ExcelService {
      * @param file 文件路径
      * @return {@code List<Map<String, Object>>}
      */
-    private List<Map<String, Object>> readImpl(String file) throws IOException, UnsupportedFileException, NoSuchFieldException, InterruptedException, ExecutionException {
+    private List<Map<String, Object>> readImpl(String file) throws Exception {
         List<Map<String, Object>> list = new ArrayList<>();
         try {
             excelTool.checkSuffix(file);
@@ -215,7 +213,7 @@ public class ExcelUtil implements ExcelService {
      * @return Sheet
      * @throws IOException IO流异常
      */
-    protected Sheet getSheet(String file) throws IOException, UnsupportedFileException {
+    protected Sheet getSheet(String file) throws Exception {
         Sheet sheet;
         File file1 = new File(file);
         Workbook workbook = getReadWorkbook(file1);
@@ -230,7 +228,7 @@ public class ExcelUtil implements ExcelService {
         return sheet;
     }
 
-    protected Workbook getReadWorkbook(File file) throws IOException, UnsupportedFileException {
+    protected Workbook getReadWorkbook(File file) throws Exception {
         if (!file.exists()) {
             throw new FileNotFoundException("File " + file.getAbsolutePath() + " not found");
         }
@@ -310,7 +308,7 @@ public class ExcelUtil implements ExcelService {
         return cellValue;
     }
 
-    private void outputImpl(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
+    private void outputImpl(String sheetName, Object[][] obj, String[] title, File file) throws Exception {
         if (obj == null || obj.length == 0 || title == null || title.length == 0) {
             throw new NullPointerException("Unable to invoke an empty data. Did you forgot to read file or clean it?");
         }
@@ -361,28 +359,28 @@ public class ExcelUtil implements ExcelService {
     }
 
     @Override
-    public List<Map<String, Object>> readToList(String path) throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException {
+    public List<Map<String, Object>> readToList(String path) throws Exception {
         return readImpl(path);
     }
 
     @Override
-    public Object[][] readToArray(String path) throws IOException, UnsupportedFileException, ExecutionException, NoSuchFieldException, InterruptedException {
+    public Object[][] readToArray(String path) throws Exception {
         return excelTool.conformity(readImpl(path), titles);
     }
 
     @Override
-    public void output(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
+    public void output(String sheetName, Object[][] obj, String[] title, File file) throws Exception {
         outputImpl(sheetName, obj, title, file);
     }
 
     @Override
-    public void output(String sheetName, Object[][] obj, String[] title, String path) throws IOException, UnsupportedFileException {
+    public void output(String sheetName, Object[][] obj, String[] title, String path) throws Exception {
         File file = new File(path);
         outputImpl(sheetName, obj, title, file);
     }
 
     @Override
-    public void output(String sheetName, List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException {
+    public void output(String sheetName, List<Map<String, Object>> list, File file) throws Exception {
         Object[][] obj = excelTool.conformity(list, titles);
         String[] title = new String[titles.size()];
         for (int i = 0; i < titles.size(); i++) {

@@ -11,6 +11,7 @@ import java.util.*;
  * 这个类主要原本是处理文本型csv表格的，对于其它纯文本都适用
  *
  * @author Bloduc Spauter
+ * @since 1.18.2
  */
 public class TextUtil implements TextService {
 
@@ -27,7 +28,7 @@ public class TextUtil implements TextService {
         }
     };
 
-    private List<Map<String, Object>> readImpl(String path, String separator) throws IOException {
+    private List<Map<String, Object>> readImpl(String path, String separator) throws Exception {
         separator = separator == null ? TXT_CSV_SEPARATOR : separator;
         List<Map<String, Object>> list = new ArrayList<>();
         File file = new File(path);
@@ -59,7 +60,7 @@ public class TextUtil implements TextService {
         return list;
     }
 
-    private File getOutputFile(String path) throws FileAlreadyExistsException {
+    private File getOutputFile(String path) throws Exception {
         File file = new File(path);
         //如果是目录创建一个文件名
         if (validationTool.checkIsDirectory(file)) {
@@ -72,7 +73,7 @@ public class TextUtil implements TextService {
         return file;
     }
 
-    public void outputImpl(String path, Object[][] obj, String separator) {
+    public void outputImpl(String path, Object[][] obj, String separator) throws Exception{
         separator=separator==null?TXT_CSV_SEPARATOR:separator;
         try {
             File file = getOutputFile(path);
@@ -97,7 +98,7 @@ public class TextUtil implements TextService {
         }
     }
 
-    private void outputImpl(String path, List<Map<String, Object>> list, String separator) throws FileAlreadyExistsException {
+    private void outputImpl(String path, List<Map<String, Object>> list, String separator) throws Exception {
         File file = getOutputFile(path);
         separator=separator==null?TXT_CSV_SEPARATOR:separator;
         try (FileWriter out = new FileWriter(file)) {
@@ -130,23 +131,23 @@ public class TextUtil implements TextService {
     }
 
     @Override
-    public List<Map<String, Object>> readToList(String path, String separator) throws IOException {
+    public List<Map<String, Object>> readToList(String path, String separator) throws Exception {
         return readImpl(path, separator);
     }
 
     @Override
-    public Object[][] readToArray(String path, String separator) throws IOException {
+    public Object[][] readToArray(String path, String separator) throws Exception {
         List<Map<String, Object>> list = readImpl(path, separator);
         return validationTool.conformity(list, title);
     }
 
     @Override
-    public void output(List<Map<String, Object>> list, String path, String separator) throws IOException, UnsupportedFileException {
+    public void output(List<Map<String, Object>> list, String path, String separator) throws Exception {
         outputImpl(path,list,separator);
     }
 
     @Override
-    public void output(Object[][] obj, String path, String separator) throws IOException, UnsupportedFileException {
+    public void output(Object[][] obj, String path, String separator) throws Exception {
         outputImpl(path,obj,separator);
     }
 
@@ -156,22 +157,22 @@ public class TextUtil implements TextService {
     }
 
     @Override
-    public List<Map<String, Object>> readToList(String path) throws UnsupportedFileException, IOException {
+    public List<Map<String, Object>> readToList(String path) throws Exception {
         return readToList(path, null);
     }
 
     @Override
-    public Object[][] readToArray(String path) throws UnsupportedFileException, IOException {
+    public Object[][] readToArray(String path) throws Exception{
         return readToArray(path, null);
     }
 
     @Override
-    public void output(List<Map<String, Object>> list, String path) throws UnsupportedFileException, FileAlreadyExistsException {
+    public void output(List<Map<String, Object>> list, String path) throws Exception {
         outputImpl(path, list, null);
     }
 
     @Override
-    public void output(Object[][] obj, String[] title, File file) throws UnsupportedFileException {
+    public void output(Object[][] obj, String[] title, File file) throws Exception {
         outputImpl(file.getAbsolutePath(), obj, null);
     }
 

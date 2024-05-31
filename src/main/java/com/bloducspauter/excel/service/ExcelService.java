@@ -1,8 +1,7 @@
 package com.bloducspauter.excel.service;
 
-import com.bloducspauter.origin.exceptions.UnsupportedFileException;
-import com.bloducspauter.origin.service.FIleReadAndOutput;
 
+import com.bloducspauter.origin.service.FIleReadAndOutput;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +24,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @param file      文件，可以为目录
      * @throws IOException IO流异常
      */
-    void output(String sheetName, List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException;
+    void output(String sheetName, List<Map<String, Object>> list, File file) throws Exception;
 
     /**
      * 将存储结果输出为表格，不需要额外的{@code String[] title}，
@@ -35,7 +34,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @param path      文件路径，可以为目录
      * @throws IOException IO流异常
      */
-    default void output(String sheetName, List<Map<String, Object>> list, String path) throws IOException, UnsupportedFileException {
+    default void output(String sheetName, List<Map<String, Object>> list, String path) throws Exception {
         File file = new File(path);
         output(sheetName, list, file);
     }
@@ -49,7 +48,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @throws IOException IO流异常
      */
     @Override
-    default void output(List<Map<String, Object>> list, File file) throws IOException, UnsupportedFileException {
+    default void output(List<Map<String, Object>> list, File file) throws Exception {
         output(SHEET_NAME, list, file);
     }
 
@@ -62,7 +61,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @throws IOException IO流异常
      */
     @Override
-    default void output(List<Map<String, Object>> list, String path) throws IOException, UnsupportedFileException {
+    default void output(List<Map<String, Object>> list, String path) throws Exception {
         File file = new File(path);
         output(SHEET_NAME, list, file);
     }
@@ -76,7 +75,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @param file      文件，可以为目录
      * @throws IOException IO流异常
      */
-    void output(String sheetName, Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException;
+    void output(String sheetName, Object[][] obj, String[] title, File file) throws Exception;
 
 
     /**
@@ -88,7 +87,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @param path      文件路径，可以为目录
      * @throws IOException IO流异常
      */
-    default void output(String sheetName, Object[][] obj, String[] title, String path) throws IOException, UnsupportedFileException {
+    default void output(String sheetName, Object[][] obj, String[] title, String path) throws Exception {
         File file = new File(path);
         output(sheetName, obj, title, file);
     }
@@ -101,7 +100,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @throws NullPointerException 如果书库为空可能抛出
      */
     @Override
-    default void output(Object[][] objects, String[] title, String path) throws IOException, UnsupportedFileException {
+    default void output(Object[][] objects, String[] title, String path) throws Exception{
         File file = new File(path);
         output(SHEET_NAME, objects, title, file);
     }
@@ -115,7 +114,7 @@ public interface ExcelService extends FIleReadAndOutput {
      * @throws IOException Io流异常
      */
     @Override
-    default void output(Object[][] obj, String[] title, File file) throws IOException, UnsupportedFileException {
+    default void output(Object[][] obj, String[] title, File file) throws Exception{
         output(SHEET_NAME, obj, title, file);
     }
 }
