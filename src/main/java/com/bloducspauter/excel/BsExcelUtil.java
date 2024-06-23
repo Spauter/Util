@@ -26,7 +26,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 拓展的输入输出工具
- *
+ * <p>
+ * 存储数据时建议使用{@code List<E>}接收数据,不论{@code E}是{@code Map<String,Object>}还是一个实体类
+ * <p>
+ * 输出文档时，使用{@code Object[][]}作为参数不支持文档加密
  * @author Bloduc Spauter
  * @see com.bloducspauter.excel.ExcelUtil
  * @since 1.18
@@ -80,7 +83,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
         readData.setMaxRol(maxRow);
         return readData;
     }
-
 
     private List<ReadingDataTask<T>> getReadingDataTasks(int munCores, String filePath) throws Exception {
         int size = maxRow;

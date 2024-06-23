@@ -34,7 +34,8 @@ public class ExcelUtil implements ExcelService {
      */
     protected final Map<Integer, String> titles = new HashMap<>();
 
-    static ExcelValidationTool excelTool = new ExcelTool();
+    ExcelValidationTool excelTool = new ExcelTool();
+
     /**
      * 日期格式，默认yyyy-MM-dd
      * -- SETTER --
@@ -105,10 +106,7 @@ public class ExcelUtil implements ExcelService {
      * 表格的{@code Sheet}
      */
     protected Sheet sheet;
-    /**
-     * 表格密码,未实现
-     */
-    protected String password;
+
 
     /**
      * 获取最大行数和列数
@@ -406,13 +404,5 @@ public class ExcelUtil implements ExcelService {
         readSheetNumber = sheetNumber;
     }
 
-    /**
-     * 设置密码，未实现
-     * param password 密码
-     */
-    public void setPassword(String password) {
-        this.password = password;
-        Biff8EncryptionKey.setCurrentUserPassword(password);
-    }
 
 }

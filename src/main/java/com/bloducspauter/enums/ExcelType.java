@@ -2,6 +2,7 @@ package com.bloducspauter.enums;
 
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.Arrays;
 
