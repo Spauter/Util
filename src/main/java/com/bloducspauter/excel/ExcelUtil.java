@@ -1,6 +1,8 @@
 package com.bloducspauter.excel;
 
 import com.bloducspauter.enums.ExcelType;
+import com.bloducspauter.excel.read.CellReader;
+import com.bloducspauter.excel.read.TitleReader;
 import com.bloducspauter.excel.service.ExcelService;
 import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.excel.tool.ExcelValidationTool;
@@ -8,15 +10,11 @@ import com.bloducspauter.origin.exceptions.UnsupportedFileException;
 import com.bloducspauter.text.TextService;
 import com.bloducspauter.text.TextUtil;
 import lombok.Setter;
-import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -24,7 +22,7 @@ import java.util.*;
  * <p>
  *
  * @author Bloduc Spauter
- * @since  1.0
+ * @since 1.0
  */
 public class ExcelUtil implements ExcelService {
 
@@ -32,7 +30,7 @@ public class ExcelUtil implements ExcelService {
     /**
      * 标题行
      */
-    protected final Map<Integer, String> titles = new HashMap<>();
+    protected Map<Integer, String> titles = new HashMap<>();
 
     ExcelValidationTool excelTool = new ExcelTool();
 
@@ -139,16 +137,7 @@ public class ExcelUtil implements ExcelService {
      */
     protected void readTitle(Sheet sheet) {
         excelTool.checkTitleLine(titleLine, maxRow);
-        for (int col = startCol; col < endWithCol; col++) {
-            Cell title = sheet.getRow(titleLine).getCell(col);
-            if (title == null) {
-                System.out.println(("Read title field"));
-                String column = excelTool.convertToExcelColumn(col);
-                throw new NullPointerException("Empty column in row " + (titleLine + 1) + ",column " + column);
-            }
-            String titleInfo = String.valueOf(title);
-            titles.put(col, titleInfo);
-        }
+        titles = TitleReader.readTitle(sheet, titleLine, startCol, endWithCol, excelTool);
     }
 
     /**
@@ -192,7 +181,7 @@ public class ExcelUtil implements ExcelService {
             Map<String, Object> map = new HashMap<>();
             for (int rol = startCol; rol < endWithCol; rol++) {
                 Cell info = sheet.getRow(row).getCell(rol);
-                Object o = getCellValue(info);
+                Object o = CellReader.getCellValue(sheet, row, rol, dateformat);
                 String title = titles.get(rol);
                 map.put(title, o);
             }
@@ -257,54 +246,6 @@ public class ExcelUtil implements ExcelService {
         }
     }
 
-    /**
-     * 处理单元格数据，转化为合适地表达值
-     * <p>
-     *
-     * @param cell 单元格
-     * @return {@code String}
-     */
-    protected String getCellValue(Cell cell) {
-        String cellValue = "";
-        if (cell == null) {
-            return "";
-        }
-        switch (cell.getCellType()) {
-            case NUMERIC:
-                // 处理日期格式、时间格式
-                if (DateUtil.isCellDateFormatted(cell)) {
-                    SimpleDateFormat sdf;
-                    if (DateUtil.isADateFormat(-1, cell.getCellStyle().getDataFormat() + "")) {
-                        sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    } else {
-                        sdf = new SimpleDateFormat(dateformat);
-                    }
-                    cellValue = sdf.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
-                } else if ("".equals(cell.getCellStyle().getDataFormatString())) {
-                    //转换成整型
-                    DecimalFormat df = new DecimalFormat("#");
-                    cellValue = df.format(cell.getNumericCellValue());
-                } else {
-                    cellValue = NumberToTextConverter.toText(cell.getNumericCellValue());
-                }
-                break;
-            case STRING:
-                cellValue = cell.getStringCellValue();
-                break;
-            case FORMULA:
-                cellValue = cell.getCellFormula();
-                break;
-            case BLANK:
-                cellValue = "";
-                break;
-            case BOOLEAN:
-                cellValue = String.valueOf(cell.getBooleanCellValue());
-                break;
-            case ERROR:
-                cellValue = String.valueOf(cell.getErrorCellValue());
-        }
-        return cellValue;
-    }
 
     private void outputImpl(String sheetName, Object[][] obj, String[] title, File file) throws Exception {
         if (obj == null || obj.length == 0 || title == null || title.length == 0) {

@@ -12,11 +12,8 @@ import com.bloducspauter.origin.init.TableDefinition;
 import com.bloducspauter.origin.wrapper.ReadWrapper;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +61,7 @@ public class WrapperExcelUtil<T>  {
     }
 
     @SuppressWarnings("unchecked")
-    private List<T> read() throws GeneralSecurityException, IOException, NoSuchFieldException {
+    private List<T> read() throws NoSuchFieldException {
         String path=wrapper.getPath();
         excelTool.checkIsDirectory(path);
         excelTool.checkSuffix(path);

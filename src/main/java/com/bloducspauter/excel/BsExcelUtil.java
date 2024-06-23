@@ -3,6 +3,7 @@ package com.bloducspauter.excel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.annotation.FiledProperty;
+import com.bloducspauter.excel.read.CellReader;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
 import com.bloducspauter.excel.tool.ExcelTool;
@@ -14,6 +15,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 存储数据时建议使用{@code List<E>}接收数据,不论{@code E}是{@code Map<String,Object>}还是一个实体类
  * <p>
  * 输出文档时，使用{@code Object[][]}作为参数不支持文档加密
+ *
  * @author Bloduc Spauter
  * @see com.bloducspauter.excel.ExcelUtil
  * @since 1.18
@@ -144,7 +147,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
             Map<String, Object> map = new HashMap<>();
             for (int rol = 0; rol < maxCol; rol++) {
                 Cell info = sheet.getRow(row).getCell(rol);
-                Object o = getCellValue(info);
+                Object o = CellReader.getCellValue(sheet, row, rol, dateformat);
                 String title = titles.get(rol);
                 Field field = entityTableDefinition.getCellNameAndField().get(title);
                 if (field == null) {
