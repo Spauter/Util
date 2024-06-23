@@ -38,11 +38,10 @@ public class OneTest {
 
     @Test
     public void test2() throws Exception {
-        ExcelService excelService = new ExcelUtil();
-        long startTime = System.currentTimeMillis();
-        //Insert your code
-        List<Map<String, Object>> list = excelService.readToList("C:\\Users\\32306\\Desktop\\Microsoft Edge 密码.csv");
-        excelService.output(list, "C:\\users\\32306\\desktop\\1.csv");
+        ExcelUtil excelService = new ExcelUtil();
+        excelService.readSheetAt(5);
+        List<Map<String, Object>> list = excelService.readToList("C:\\users\\32306\\desktop\\2.xlsm");
+        excelService.output(list, "C:\\users\\32306\\desktop\\1.xlsx");
 
     }
 

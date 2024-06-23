@@ -9,6 +9,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 /**
+ * 用于处理单元格数据的类
  * @author Bloduc Spauter
  */
 public class CellReader {

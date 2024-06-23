@@ -4,6 +4,7 @@ import com.bloducspauter.origin.exceptions.UnsupportedFileException;
 import com.bloducspauter.origin.service.ValidationTool;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.*;
 
@@ -86,7 +87,8 @@ public class TextUtil implements TextService {
                 for (int j = 0; j < title.length; j++) {
                     String info = (String) objects[j];
                     info = info == null ? "" : info;
-                    out.write(info + separator);
+                    byte[] bytes = info.getBytes(StandardCharsets.UTF_8);
+                    out.write(new String(bytes, StandardCharsets.UTF_8) + separator);
                 }
                 out.write("\r\n");
                 System.out.println();
@@ -173,6 +175,7 @@ public class TextUtil implements TextService {
 
     @Override
     public void output(Object[][] obj, String[] title, File file) throws Exception {
+        this.title = title;
         outputImpl(file.getAbsolutePath(), obj, null);
     }
 

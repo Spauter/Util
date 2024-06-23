@@ -221,6 +221,7 @@ public class ExcelUtil implements ExcelService {
         }
         String suffix = excelTool.getSuffix(file.getName());
         switch (ExcelType.forSuffix(suffix)) {
+            case XLSM:
             case XLSX: {
                 return new XSSFWorkbook(new FileInputStream(file));
             }
@@ -228,13 +229,14 @@ public class ExcelUtil implements ExcelService {
                 return new HSSFWorkbook(new FileInputStream(file));
             }
             default:
-                throw new UnsupportedFileException("We need " + Arrays.toString(ExcelType.values()) + ",but you provided a " + suffix + "file");
+                throw new UnsupportedFileException("We need " + Arrays.toString(ExcelType.values()) + ",but you provided a " + suffix + " file");
         }
     }
 
     protected Workbook getOutputWorkbook(File file) {
         String suffix = excelTool.getSuffix(file.getName());
         switch (ExcelType.forSuffix(suffix)) {
+            case XLSM:
             case XLSX: {
                 return new XSSFWorkbook();
             }

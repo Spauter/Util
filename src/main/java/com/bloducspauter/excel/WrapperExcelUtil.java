@@ -13,6 +13,7 @@ import com.bloducspauter.origin.wrapper.ReadWrapper;
 import com.bloducspauter.origin.wrapper.WriteWrapper;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author Bloduc Spauter
  */
 public class WrapperExcelUtil<T> {
-    private final TableDefinition tableDefinition;
+    private TableDefinition tableDefinition = null;
     private final ExcelTool excelTool = new ExcelTool();
     private Workbook workbook;
     private Sheet sheet;
@@ -43,6 +44,9 @@ public class WrapperExcelUtil<T> {
      * @param entity 实体类
      */
     public WrapperExcelUtil(Class<?> entity, ReadWrapper readWrapper) throws Exception {
+        if (entity == null) {
+            return;
+        }
         tableDefinition = MyAnnotationConfigApplicationContext.getTableDefinition(entity);
         init(readWrapper);
     }
@@ -71,14 +75,14 @@ public class WrapperExcelUtil<T> {
         endColumn = readWrapper.getEndColumn() == 0 ? maxColumn : readWrapper.getEndColumn();
         excelTool.checkRowCol(startRow, startColumn, endRow, endColumn, maxRow, maxColumn);
         titleMap = TitleReader.readTitle(sheet, sheetNum, startColumn, endColumn, excelTool);
+        startRow = wrapper.getStartRow();
+        startColumn = wrapper.getStartColumn();
     }
 
     @SuppressWarnings("unchecked")
     private List<T> read() throws NoSuchFieldException {
         Class<?> entity = tableDefinition.getClassName();
         List<T> objects = new ArrayList<>();
-        int startRow = wrapper.getStartRow();
-        int startColumn = wrapper.getStartColumn();
         String dateformat = wrapper.getDateformat();
         endRow = wrapper.getEndRow() == 0 ? maxRow : endRow;
         for (int row = startRow; row < endRow; row++) {
@@ -114,6 +118,7 @@ public class WrapperExcelUtil<T> {
 
     /**
      * 读取一条
+     *
      * @param index 行数
      */
     public T readOne(int index) throws Exception {
