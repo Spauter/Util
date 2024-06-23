@@ -3,6 +3,7 @@ package com.bloducspauter.origin.wrapper;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Data;
+import lombok.Setter;
 
 /**
  * 读取文档设置的参数
@@ -11,6 +12,7 @@ import lombok.Data;
  */
 @Data
 @Builder
+@Setter
 public class ReadWrapper {
     /**
      * 文件路径
@@ -22,41 +24,41 @@ public class ReadWrapper {
     /**
      * 标题栏
      */
-    private int titleLine=0;
+    private int titleLine;
 
     /**
      * 起始行
      */
-    private int startRow=0;
+    private int startRow;
 
     /**
      * 截至行
      */
-    private int endRow=-1;
+    private int endRow;
 
     /**
      * 起始列
      */
-    private int startColumn=0;
+    private int startColumn;
 
     /**
      * 截至列
      */
-    private int endColumn=-1;
+    private int endColumn;
 
     /**
      * 读取的sheet
      *
      */
-    private int readSheetAt=0;
+    private int readSheetAt;
 
     /**
      * 密码
      */
-    private String password =null;
+    private String password;
 
     /**
      * 日期格式
      */
-    private String dateformat="yyy-MM-dd";
+    private String dateformat;
 }

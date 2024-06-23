@@ -52,7 +52,8 @@ public class WorkBookReader {
         if (index > max) {
             throw new IndexOutOfBoundsException("The index is out of range:" + index + "/" + max);
         }
-        return workbook.getSheetAt(index);
+        sheet = workbook.getSheetAt(index);
+        return sheet;
     }
 
     /**

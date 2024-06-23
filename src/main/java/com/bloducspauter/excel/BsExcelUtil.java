@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.annotation.FiledProperty;
 import com.bloducspauter.excel.read.CellReader;
+import com.bloducspauter.excel.read.RowDataReader;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
 import com.bloducspauter.excel.tool.ExcelTool;
@@ -144,20 +145,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
             if (row == titleLine) {
                 continue;
             }
-            Map<String, Object> map = new HashMap<>();
-            for (int rol = 0; rol < maxCol; rol++) {
-                Cell info = sheet.getRow(row).getCell(rol);
-                Object o = CellReader.getCellValue(sheet, row, rol, dateformat);
-                String title = titles.get(rol);
-                Field field = entityTableDefinition.getCellNameAndField().get(title);
-                if (field == null) {
-                    String err = "The field \"" + title + "\" does not exists in this field in class:" +
-                            entityTableDefinition.getClassName().getSimpleName();
-                    throw new NoSuchFieldException(err);
-                }
-                String filedName = field.getName();
-                map.put(filedName, o);
-            }
+            Map<String, Object> map = RowDataReader.read(sheet,entityTableDefinition,titles,row,0,maxCol,dateformat);
             String jsonString = JSON.toJSONString(map);
             Object o = JSONObject.parseObject(jsonString, entity);
             try {

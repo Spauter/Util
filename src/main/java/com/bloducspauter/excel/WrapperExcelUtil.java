@@ -3,7 +3,7 @@ package com.bloducspauter.excel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bloducspauter.excel.read.CellReader;
+import com.bloducspauter.excel.read.RowDataReader;
 import com.bloducspauter.excel.read.TitleReader;
 import com.bloducspauter.excel.read.WorkBookReader;
 import com.bloducspauter.excel.tool.ExcelTool;
@@ -13,9 +13,7 @@ import com.bloducspauter.origin.wrapper.ReadWrapper;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +22,7 @@ import java.util.Map;
  */
 public class WrapperExcelUtil<T>  {
     private final TableDefinition tableDefinition;
-    private ExcelTool excelTool;
+    private final ExcelTool excelTool=new ExcelTool();
     private Workbook workbook;
     private Sheet sheet;
     private int maxRow;
@@ -48,6 +46,9 @@ public class WrapperExcelUtil<T>  {
     }
 
     private void init(ReadWrapper readWrapper) throws Exception {
+        if (readWrapper.getDateformat() == null) {
+            readWrapper.setDateformat("yyyy-MM-dd");
+        }
         wrapper=readWrapper;
         int sheetNum=readWrapper.getReadSheetAt();
         WorkBookReader workBookReader=new WorkBookReader();
@@ -55,39 +56,25 @@ public class WrapperExcelUtil<T>  {
         sheet= workBookReader.getSheet(sheetNum);
         maxRow=workBookReader.getMaxRow();
         maxColumn=workBookReader.getMaxColumn(readWrapper.getTitleLine());
-        endRow=readWrapper.getEndRow();
+        endRow=readWrapper.getEndRow()==0?maxRow:readWrapper.getEndRow();
+        endColumn=readWrapper.getEndColumn()==0?maxColumn:readWrapper.getEndColumn();
         excelTool.checkRowCol(startRow,startColumn,endRow,endColumn,maxRow,maxColumn);
         titleMap= TitleReader.readTitle(sheet,sheetNum,startColumn,endColumn,excelTool);
     }
 
     @SuppressWarnings("unchecked")
     private List<T> read() throws NoSuchFieldException {
-        String path=wrapper.getPath();
-        excelTool.checkIsDirectory(path);
-        excelTool.checkSuffix(path);
         Class<?> entity = tableDefinition.getClassName();
         List<T> objects = new ArrayList<>();
         int startRow=wrapper.getStartRow();
         int startColumn=wrapper.getStartColumn();
-        endRow = wrapper.getEndRow() == -1 ? maxRow : endRow;
+        String dateformat=wrapper.getDateformat();
+        endRow = wrapper.getEndRow() == 0 ? maxRow : endRow;
         for (int row = startRow; row < endRow; row++) {
             if (row == wrapper.getTitleLine()) {
                 continue;
             }
-            Map<String, Object> map = new HashMap<>();
-            for (int column = startColumn; column < endColumn; column++) {
-                String dateformat = wrapper.getDateformat();
-                Object cellValue= CellReader.getCellValue(sheet,row,column,dateformat);
-                String title=titleMap.get(column);
-                Field field =tableDefinition.getCellNameAndField().get(title);
-                if (field == null) {
-                    String err = "The field \"" + title + "\" does not exists in this field in class:" +
-                            tableDefinition.getClassName().getSimpleName();
-                    throw new NoSuchFieldException(err);
-                }
-                String filedName = field.getName();
-                map.put(filedName, cellValue);
-            }
+            Map<String, Object> map = RowDataReader.read(sheet,tableDefinition,titleMap,row,startColumn,maxColumn,dateformat);
             String jsonString = JSON.toJSONString(map);
             Object o = JSONObject.parseObject(jsonString, entity);
             try {
