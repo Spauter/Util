@@ -16,9 +16,9 @@ public class ReadWrapper {
     private String path;
     private int titleLine=0;
     private int startRow=0;
-    private int endWithRow=-1;
-    private int startCol=0;
-    private int endWithCol=-1;
+    private int endRow=-1;
+    private int startColumn=0;
+    private int endColumn=-1;
     private int readSheetAt=0;
     private String password =null;
     private String dateformat="yyy-MM-dd";

@@ -46,8 +46,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @param entity 实体类
      */
     public BsExcelUtil(Class<?> entity) {
-        MyAnnotationConfigApplicationContext myAnnotationConfigApplicationContext = new MyAnnotationConfigApplicationContext();
-        entityTableDefinition = myAnnotationConfigApplicationContext.getTableDefinition(entity);
+        entityTableDefinition = MyAnnotationConfigApplicationContext.getTableDefinition(entity);
     }
 
     /**

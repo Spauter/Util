@@ -13,14 +13,14 @@ import java.util.*;
  */
 public class MyAnnotationConfigApplicationContext {
 
-    private final int MAX_VALUE=0x10000;
+    private static final int MAX_VALUE=0x10000;
 
     /**
      *
      * @param configClass 被提供类
      * @return TableDefinition {@link TableDefinition}
      */
-    public TableDefinition getTableDefinition(Class<?> configClass) {
+    public static TableDefinition getTableDefinition(Class<?> configClass) {
         TableDefinition tableDefinition = new TableDefinition();
         Field[] fields = configClass.getDeclaredFields();
         tableDefinition.setFields(fields);
@@ -55,7 +55,7 @@ public class MyAnnotationConfigApplicationContext {
      * @return {@link TreeMap}
      * @throws IndexOutOfBoundsException 因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据,如果{@link FiledProperty#index() }大于此值抛出异常
      */
-    public TreeMap<Integer, Field> integerStringTreeMap(TableDefinition tableDefinition) {
+    public static TreeMap<Integer, Field> integerStringTreeMap(TableDefinition tableDefinition) {
         TreeMap<Integer, Field> treeMap = new TreeMap<>();
         Map<String, Field> fieldMap = tableDefinition.getCellNameAndField();
         int i = 0;
