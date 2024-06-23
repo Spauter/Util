@@ -2,6 +2,7 @@ package com.bloducspauter.newexcel.read;
 
 import com.bloducspauter.origin.init.TableDefinition;
 import org.apache.poi.ss.usermodel.Sheet;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +34,8 @@ public class RowDataReader {
         return map;
     }
 
-    Map<String, Object> read(Sheet sheet, Map<Integer, String> titles
-    ,int row, int startRol, int maxCol, String dateformat) {
+    public static Map<String, Object> read(Sheet sheet, Map<Integer, String> titles
+            , int row, int startRol, int maxCol, String dateformat) {
         Map<String, Object> map = new HashMap<>();
         for (int rol = startRol; rol < maxCol; rol++) {
             Object o = CellReader.getCellValue(sheet, row, rol, dateformat);

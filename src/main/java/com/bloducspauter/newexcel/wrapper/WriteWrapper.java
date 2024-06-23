@@ -6,7 +6,7 @@ import lombok.Setter;
 
 /**
  * @author Bloduc Spauter
- *
+ * @version 1.19
  */
 @Setter
 @Builder

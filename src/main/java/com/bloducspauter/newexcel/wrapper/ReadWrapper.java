@@ -8,7 +8,7 @@ import lombok.Setter;
 /**
  * 读取文档设置的参数
  * @author Bloduc Spauter
- *
+ * @version 1.19
  */
 @Data
 @Builder

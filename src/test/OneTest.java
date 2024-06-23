@@ -6,6 +6,7 @@ import com.bloducspauter.newexcel.WrapperExcelUtil;
 import com.bloducspauter.newexcel.wrapper.ReadWrapper;
 import com.bloducspauter.text.TextService;
 import com.bloducspauter.text.TextUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -67,13 +68,34 @@ public class OneTest {
         ReadWrapper readWrapper = ReadWrapper.builder()
                 .path("D:\\upload\\Teacher.xlsx")
                 .password("123456")
-                .endRow(20)
-                .startRow(3)
                 .build();
        WrapperExcelUtil<Teacher> wrapperExcelUtil = new WrapperExcelUtil<>(Teacher.class,readWrapper);
-        List<Teacher> list = wrapperExcelUtil.readAll();
-        System.out.println(list.size());
+        long startTime = System.currentTimeMillis();
+        //Insert your code
+        List<Teacher> list = wrapperExcelUtil.readData();
+        long endTime = System.currentTimeMillis();
+        System.out.println("----cost time: " + (endTime - startTime) + "ms");
+        long startTime1 = System.currentTimeMillis();
+        //Insert your code
+        List<Teacher> list1 = wrapperExcelUtil.readAll();
+        long endTime1 = System.currentTimeMillis();
+        System.out.println("----cost time: " + (endTime1 - startTime1) + "ms");
+        Assert.assertEquals(list.size(), list1.size());
         list.forEach(System.out::println);
+    }
+    @Test
+    public void test7() throws Exception {
+        ReadWrapper readWrapper = ReadWrapper.builder()
+                .path("D:\\upload\\Teacher.xlsx")
+                .password("123456")
+                .build();
+        WrapperExcelUtil wrapperExcelUtil = new WrapperExcelUtil<>(null, readWrapper);
+        List<Map<String, Object>> readMap=wrapperExcelUtil.readToSimpleMap();
+        readMap.forEach(id->{
+            id.forEach((f,v)->{
+                System.out.println(f+"="+v);
+            });
+        });
     }
 }
 

@@ -19,8 +19,9 @@ import java.security.GeneralSecurityException;
 
 /**
  * @author Bloduc Spauter
+ * @version 1.19
  */
-public class WorkBookReader {
+public class WorkbookReader {
     private Workbook workbook;
     private Sheet sheet;
     ExcelTool excelTool = new ExcelTool();

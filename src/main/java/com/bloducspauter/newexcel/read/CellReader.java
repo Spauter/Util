@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 /**
  * 用于处理单元格数据的类
  * @author Bloduc Spauter
+ * @version 1.19
  */
 public class CellReader {
 

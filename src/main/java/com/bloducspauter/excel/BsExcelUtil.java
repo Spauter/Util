@@ -3,6 +3,7 @@ package com.bloducspauter.excel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.annotation.FiledProperty;
+import com.bloducspauter.newexcel.read.ReadDataByThreads;
 import com.bloducspauter.newexcel.read.RowDataReader;
 import com.bloducspauter.excel.task.ReadData;
 import com.bloducspauter.excel.task.ReadingDataTask;
@@ -72,17 +73,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
         List<T> entities = new ArrayList<>();
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(munCores);
         List<ReadingDataTask<T>> readingDataTasks = getReadingDataTasks(munCores, filePath);
-        List<Future<ReadData<T>>> futures = threadPoolExecutor.invokeAll(readingDataTasks);
-        //任务完成了,停止所有任务;
-        threadPoolExecutor.shutdown();
-        for (Future<ReadData<T>> future : futures) {
-            ReadData<T> readData = future.get();
-            entities.addAll(readData.getData());
-        }
-        ReadData<T> readData = new ReadData<>();
-        readData.setData(entities);
-        readData.setMaxRol(maxRow);
-        return readData;
+       return new ReadDataByThreads<T>().read(threadPoolExecutor,readingDataTasks,entities);
     }
 
     private List<ReadingDataTask<T>> getReadingDataTasks(int munCores, String filePath) throws Exception {

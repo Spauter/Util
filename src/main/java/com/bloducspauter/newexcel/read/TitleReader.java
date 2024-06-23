@@ -11,6 +11,7 @@ import java.util.Map;
 /**
  * 此类是用于读取标题并
  * @author Bloduc Spauter
+ * @version 1.19
  */
 public class TitleReader {
     /**
