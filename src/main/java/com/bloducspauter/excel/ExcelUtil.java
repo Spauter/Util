@@ -1,8 +1,8 @@
 package com.bloducspauter.excel;
 
 import com.bloducspauter.enums.ExcelType;
-import com.bloducspauter.excel.read.CellReader;
-import com.bloducspauter.excel.read.TitleReader;
+import com.bloducspauter.newexcel.read.CellReader;
+import com.bloducspauter.newexcel.read.TitleReader;
 import com.bloducspauter.excel.service.ExcelService;
 import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.excel.tool.ExcelValidationTool;

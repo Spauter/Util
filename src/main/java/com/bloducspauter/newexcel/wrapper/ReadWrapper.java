@@ -1,4 +1,4 @@
-package com.bloducspauter.origin.wrapper;
+package com.bloducspauter.newexcel.wrapper;
 
 import lombok.Builder;
 import lombok.NonNull;

@@ -1,9 +1,9 @@
-package com.bloducspauter.excel.read;
+package com.bloducspauter.newexcel.read;
 
 import com.bloducspauter.enums.ExcelType;
 import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
-import com.bloducspauter.origin.wrapper.ReadWrapper;
+import com.bloducspauter.newexcel.wrapper.ReadWrapper;
 import lombok.NonNull;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.crypt.Decryptor;
@@ -106,10 +106,20 @@ public class WorkBookReader {
         return decryptor.getDataStream(poifsFileSystem);
     }
 
+    /**
+     * 获取最大行数
+     *
+     * @return 最大行数
+     */
     public int getMaxRow() {
         return sheet.getLastRowNum();
     }
 
+    /**
+     *  获取最大列数
+     * @param index 行索引
+     * @return 最大列数
+     */
     public int getMaxColumn(int index) {
         return sheet.getRow(0).getLastCellNum();
     }
