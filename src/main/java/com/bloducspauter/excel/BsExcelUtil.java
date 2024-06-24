@@ -3,6 +3,7 @@ package com.bloducspauter.excel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.annotation.FiledProperty;
+import com.bloducspauter.enums.ExcelType;
 import com.bloducspauter.newexcel.read.ReadDataByThreads;
 import com.bloducspauter.newexcel.read.RowDataReader;
 import com.bloducspauter.excel.task.ReadData;
@@ -11,6 +12,7 @@ import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
+import com.bloducspauter.text.TextUtil2;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -116,12 +118,11 @@ public class BsExcelUtil<T> extends ExcelUtil {
             endWithRow = endWithRow == -1 ? maxRow : endWithRow;
             maxCol = sheet.getRow(titleLine).getLastCellNum();
         } catch (NotOLE2FileException e) {
-            System.out.println("This error may occur if you are using HSSFWorkbook to read CSV files," +
-                    " as HSSFWorkbook is primarily used to handle Excel file formats based on OLE2 (Object Linking and Embedding)," +
-                    " Instead of a plain text CSV file.\n" +
-                    "You should use Apache Commons CSV or direct Java file read operations to read CSV files, " +
-                    "which is much simpler and more efficient. ");
-            System.out.println(("Reading file failed"));
+            if (file.endsWith(ExcelType.CSV.suffix)) {
+                System.out.println("Reading the text csv file");
+                TextUtil2<T> t = new TextUtil2<>(entity);
+                return t.readAll(file);
+            }
             throw e;
         } catch (Exception e) {
             System.out.println(("Reading file failed"));

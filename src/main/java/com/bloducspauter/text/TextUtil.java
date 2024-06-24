@@ -18,11 +18,11 @@ public class TextUtil implements TextService {
 
     public static final String TXT_CSV_SEPARATOR = ",";
 
-    private String[] title;
+    protected String[] title;
 
-    private boolean first = true;
+    protected boolean first = true;
 
-    private final ValidationTool validationTool = new ValidationTool() {
+    protected final ValidationTool validationTool = new ValidationTool() {
         @Override
         public void checkSuffix(File file) throws UnsupportedFileException {
 
@@ -118,7 +118,7 @@ public class TextUtil implements TextService {
         }
     }
 
-    private Map<String, Object> checkData(String s, String separator) {
+    Map<String, Object> checkData(String s, String separator) throws NoSuchFieldException {
         separator = separator == null ? TXT_CSV_SEPARATOR : separator;
         Map<String, Object> map = new HashMap<>();
         String[] infos = s.split(separator);

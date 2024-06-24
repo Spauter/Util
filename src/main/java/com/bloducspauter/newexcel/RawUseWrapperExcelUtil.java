@@ -9,15 +9,18 @@ import com.bloducspauter.newexcel.wrapper.ReadWrapper;
 import com.bloducspauter.origin.init.TableDefinition;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 简单读取工具
+ *
  * @author Bloduc Spauter
- * @since 1.19
  * @see ExcelUtil
+ * @since 1.19
  */
 public class RawUseWrapperExcelUtil {
     TableDefinition tableDefinition = null;
@@ -66,7 +69,7 @@ public class RawUseWrapperExcelUtil {
         endRow = wrapper.getEndRow() == 0 ? maxRow : endRow;
     }
 
-    List<Map<String, Object>> readMap() throws NoSuchFieldException {
+    private List<Map<String, Object>> readMap() throws NoSuchFieldException {
         List<Map<String, Object>> objects = new ArrayList<>();
         String dateformat = wrapper.getDateformat();
         for (int row = startRow; row < endRow; row++) {
@@ -80,7 +83,10 @@ public class RawUseWrapperExcelUtil {
         return objects;
     }
 
-    public List<Map<String,Object>> readToSimpleMap() throws NoSuchFieldException {
+    /**
+     * 读取数据,返回的键值是单元格标题值
+     */
+    public List<Map<String, Object>> readToSimpleMap() throws NoSuchFieldException {
         return readMap();
     }
 }

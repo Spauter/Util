@@ -65,6 +65,9 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
         return objects;
     }
 
+    /**
+     *  读取数据，返回{@code Map<String,Object>},结果 Map 的键是类中字段的名字，需要验证和严格映射字段
+     */
     public List<Map<String,Object>>readFiledKeyMap() throws NoSuchFieldException {
         if (tableDefinition == null) {
             throw new NullPointerException("TableDefinition is null,please check your entity class");
