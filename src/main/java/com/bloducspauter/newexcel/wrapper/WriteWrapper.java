@@ -1,6 +1,7 @@
 package com.bloducspauter.newexcel.wrapper;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import lombok.Setter;
  * @author Bloduc Spauter
  * @version 1.19
  */
-@Setter
+@Getter
 @Builder
 public class WriteWrapper {
     private String sheetName;

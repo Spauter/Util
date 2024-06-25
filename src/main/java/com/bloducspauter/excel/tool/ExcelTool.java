@@ -21,4 +21,5 @@ public class ExcelTool extends ExcelValidationTool {
         String suffix=getSuffix(file.getName());
         ExcelType.forSuffix(suffix);
     }
+
 }

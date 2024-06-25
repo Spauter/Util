@@ -64,7 +64,7 @@ public class WorkbookReader {
     public Sheet getSheet(int index) {
         int max = workbook.getNumberOfSheets();
         if (index < 0) {
-            throw new IllegalArgumentException("No sheet");
+            throw new NullPointerException("No sheet");
         }
         if (index > max) {
             throw new IndexOutOfBoundsException("The index is out of range:" + index + "/" + max);
@@ -122,6 +122,6 @@ public class WorkbookReader {
      * @return 最大列数
      */
     public int getMaxColumn(int index) {
-        return sheet.getRow(0).getLastCellNum();
+        return sheet.getRow(index).getLastCellNum();
     }
 }
