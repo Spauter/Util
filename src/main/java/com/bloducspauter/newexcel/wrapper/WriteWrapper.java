@@ -18,5 +18,5 @@ public class WriteWrapper {
 
     private String fileName;
 
-    private String passWord;
+    private String password;
 }

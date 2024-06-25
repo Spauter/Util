@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,17 +70,22 @@ public class RawUseWrapperExcelUtil {
         endRow = wrapper.getEndRow() == 0 ? maxRow : endRow;
     }
 
-    private List<Map<String, Object>> readMap() throws NoSuchFieldException {
+    private List<Map<String, Object>> readMap() {
         List<Map<String, Object>> objects = new ArrayList<>();
         String dateformat = wrapper.getDateformat();
         for (int row = startRow; row < endRow; row++) {
             if (row == wrapper.getTitleLine()) {
                 continue;
             }
-            Map<String, Object> map = RowDataReader.read(sheet, titleMap,
-                    row, startColumn, maxColumn, dateformat);
-            objects.add(map);
+            try {
+                Map<String, Object> map = RowDataReader.read(sheet, titleMap, row, startColumn, maxColumn, dateformat);
+                objects.add(map);
+            } catch (Exception e) {
+                System.out.println("Loading info failed in line " + row + ": " + e.getMessage());
+            }
         }
+        startRow = 0;
+        endRow = maxRow;
         return objects;
     }
 
@@ -88,5 +94,13 @@ public class RawUseWrapperExcelUtil {
      */
     public List<Map<String, Object>> readToSimpleMap() throws NoSuchFieldException {
         return readMap();
+    }
+
+    public void close() {
+        try{
+            workbook.close();
+        } catch (IOException e) {
+            System.out.println("Close workbook error");
+        }
     }
 }

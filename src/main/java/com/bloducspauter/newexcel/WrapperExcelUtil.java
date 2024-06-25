@@ -41,23 +41,24 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
     @SuppressWarnings("unchecked")
     private List<T> read() throws NoSuchFieldException {
         if (tableDefinition == null) {
-            throw new NullPointerException("TableDefinition is null,please check your entity class");
+            throw new NullPointerException("TableDefinition is null, please check your entity class");
         }
-        Class<?> entity = tableDefinition.getClassName();
+
         List<T> objects = new ArrayList<>();
         String dateformat = wrapper.getDateformat();
+
         for (int row = startRow; row < endRow; row++) {
             if (row == wrapper.getTitleLine()) {
-                continue;
+                continue; // Skip the title line
             }
-            Map<String, Object> map = RowDataReader.read(sheet, tableDefinition, titleMap,
-                    row, startColumn, maxColumn, dateformat);
-            String jsonString = JSON.toJSONString(map);
-            Object o = JSONObject.parseObject(jsonString, entity);
+
             try {
-                objects.add((T) o);
-            } catch (ClassCastException e) {
-                System.out.println("Loading info failed in line " + row);
+                Map<String, Object> map = RowDataReader.read(sheet, tableDefinition, titleMap, row, startColumn, maxColumn, dateformat);
+                String jsonString = JSON.toJSONString(map);
+                T entity = (T) JSONObject.parseObject(jsonString, tableDefinition.getClassName());
+                objects.add(entity);
+            } catch (Exception e) {
+                System.out.println("Loading info failed in line " + row + ": " + e.getMessage());
             }
         }
         startRow = 0;
@@ -70,7 +71,7 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
      */
     public List<Map<String,Object>>readFiledKeyMap() throws NoSuchFieldException {
         if (tableDefinition == null) {
-            throw new NullPointerException("TableDefinition is null,please check your entity class");
+            throw new NullPointerException("TableDefinition is null because entity class is null.Please check your entity class");
         }
         List<Map<String,Object>>objects=new ArrayList<>();
         String dateformat = wrapper.getDateformat();

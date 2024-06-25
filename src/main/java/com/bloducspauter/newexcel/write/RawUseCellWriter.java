@@ -15,7 +15,7 @@ import java.util.TreeMap;
  *
  */
 public class RawUseCellWriter {
-    private static Row row;
+    static Row row;
 
     public static Row createContent(WorkbookWriter workbookWriter, WriteWrapper writeWrapper,
                          int rowNum, int cloumnNum,
@@ -32,18 +32,6 @@ public class RawUseCellWriter {
        row = workbookWriter.getSheet(writeWrapper).createRow(0);
         for (int i = 0; i < title.size(); i++) {
             row.createCell(i).setCellValue(title.get(i));
-        }
-    }
-
-    public static void createTitle(WorkbookWriter workbookWriter, WriteWrapper writeWrapper, TableDefinition tableDefinition) {
-        row = workbookWriter.getSheet(writeWrapper).createRow(0);
-        TreeMap<Integer, Field> fieldTreeMap = tableDefinition.getIndexForCellName();
-        int cellIndex = 0;
-        for (Map.Entry<Integer, Field> entry : fieldTreeMap.entrySet()) {
-            Field field = entry.getValue();
-            FiledProperty excelField = field.getAnnotation(FiledProperty.class);
-            String title = (excelField != null && !excelField.value().isEmpty()) ? excelField.value() : field.getName();
-            row.createCell(cellIndex++).setCellValue(title);
         }
     }
 

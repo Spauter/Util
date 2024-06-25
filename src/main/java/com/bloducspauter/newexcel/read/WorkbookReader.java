@@ -51,6 +51,11 @@ public class WorkbookReader {
             default:
                 throw new IllegalArgumentException("Unsupported file type");
         }
+        try {
+            in.close();
+        } catch (IOException e) {
+            System.out.println("Input stream close error");
+        }
         return workbook;
     }
 
@@ -81,7 +86,7 @@ public class WorkbookReader {
      * @throws GeneralSecurityException 加密异常
      * @throws IllegalArgumentException 密码错误
      */
-    public InputStream verify(ReadWrapper readWrapper) throws IOException, GeneralSecurityException {
+    private InputStream verify(ReadWrapper readWrapper) throws IOException, GeneralSecurityException {
         // 创建一个输入流，用于读取要解密的文件
         InputStream in = new FileInputStream(readWrapper.getPath());
         // 创建一个 POIFSFileSystem 对象，用于读取 POIFS 文件系统
@@ -102,7 +107,7 @@ public class WorkbookReader {
             if (openPassword == null) {
                 throw new IllegalArgumentException("The document is encrypted, please enter the password");
             }
-            throw new IllegalArgumentException("The password is wrong");
+            throw new IllegalArgumentException("The password is wrong,please check the password");
         }
         return decryptor.getDataStream(poifsFileSystem);
     }
