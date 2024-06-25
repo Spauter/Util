@@ -124,16 +124,24 @@ public abstract class ValidationTool {
     }
 
 
+    /**
+     * 检查给定的行列坐标是否有效
+     * @throws IndexOutOfBoundsException 当行列坐标无效时
+     */
     public void checkRowCol(int startRow, int startCol, int endWithRow, int endWithCol, int maxRow, int maxCol) {
+        // 如果起始行或列小于0，则抛出 IndexOutOfBoundsException 异常
         if (startCol < 0 || startRow < 0 || endWithRow < 0 || endWithCol < 0) {
             throw new IndexOutOfBoundsException(-1);
         }
+        // 如果起始行或列大于终止行或列，则抛出 IndexOutOfBoundsException 异常
         if (startCol > endWithCol || startRow > endWithRow) {
             throw new IndexOutOfBoundsException(startCol > endWithCol ? startCol : startRow);
         }
+        // 如果起始行或列大于最大行或列，则抛出 IndexOutOfBoundsException 异常
         if (startCol > maxCol || startRow > maxRow) {
             throw new IndexOutOfBoundsException(startCol > maxCol ? startCol : startRow);
         }
+        // 如果终止行或列大于最大行或列，则抛出 IndexOutOfBoundsException 异常
         if (endWithCol > maxCol || endWithRow > maxRow) {
             throw new IndexOutOfBoundsException(endWithCol > maxCol ? endWithCol : endWithRow);
         }

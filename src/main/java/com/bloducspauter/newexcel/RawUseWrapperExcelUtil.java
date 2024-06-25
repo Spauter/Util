@@ -3,13 +3,10 @@ package com.bloducspauter.newexcel;
 import com.bloducspauter.excel.ExcelUtil;
 import com.bloducspauter.excel.tool.ExcelTool;
 import com.bloducspauter.newexcel.read.RowDataReader;
+import com.bloducspauter.newexcel.read.SheetReader;
 import com.bloducspauter.newexcel.read.TitleReader;
-import com.bloducspauter.newexcel.read.WorkbookReader;
 import com.bloducspauter.newexcel.wrapper.ReadWrapper;
 import com.bloducspauter.origin.init.TableDefinition;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,8 +23,7 @@ import java.util.Map;
 public class RawUseWrapperExcelUtil {
     TableDefinition tableDefinition = null;
     final ExcelTool excelTool = new ExcelTool();
-    Workbook workbook;
-    Sheet sheet;
+    SheetReader sheetReader;
     int maxRow;
     int maxColumn;
     int startRow;
@@ -55,19 +51,19 @@ public class RawUseWrapperExcelUtil {
         String suffix = excelTool.getSuffix(path);
         excelTool.checkSuffix(suffix);
         wrapper = readWrapper;
-        int sheetNum = readWrapper.getReadSheetAt();
-        WorkbookReader workBookReader = new WorkbookReader();
-        workbook = workBookReader.getWorkbook(readWrapper);
-        sheet = workBookReader.getSheet(sheetNum);
-        maxRow = workBookReader.getMaxRow();
-        maxColumn = workBookReader.getMaxColumn(readWrapper.getTitleLine());
+        sheetReader = new SheetReader();
+        sheetReader.getWorkbookReader().getWorkbook(readWrapper);
+        sheetReader.getSheet(readWrapper);
+        maxRow = sheetReader.getMaxRow();
+        maxColumn = sheetReader.getMaxColumn(readWrapper.getTitleLine());
         endRow = readWrapper.getEndRow() == 0 ? maxRow : readWrapper.getEndRow();
         endColumn = readWrapper.getEndColumn() == 0 ? maxColumn : readWrapper.getEndColumn();
         excelTool.checkRowCol(startRow, startColumn, endRow, endColumn, maxRow, maxColumn);
-        titleMap = TitleReader.readTitle(sheet, sheetNum, startColumn, endColumn, excelTool);
         startRow = wrapper.getStartRow();
         startColumn = wrapper.getStartColumn();
         endRow = wrapper.getEndRow() == 0 ? maxRow : endRow;
+        titleMap = TitleReader.readTitle(sheetReader.getSheet(wrapper.getSheetIndex()),
+                readWrapper.getSheetIndex(), startColumn, endColumn, excelTool);
     }
 
     private List<Map<String, Object>> readMap() {
@@ -78,7 +74,8 @@ public class RawUseWrapperExcelUtil {
                 continue;
             }
             try {
-                Map<String, Object> map = RowDataReader.read(sheet, titleMap, row, startColumn, maxColumn, dateformat);
+                Map<String, Object> map = RowDataReader.read(sheetReader.getSheet(wrapper.getSheetIndex()),
+                        titleMap, row, startColumn, maxColumn, dateformat);
                 objects.add(map);
             } catch (Exception e) {
                 System.out.println("Loading info failed in line " + row + ": " + e.getMessage());
@@ -97,8 +94,8 @@ public class RawUseWrapperExcelUtil {
     }
 
     public void close() {
-        try{
-            workbook.close();
+        try {
+            sheetReader.getWorkbookReader().getWorkbook().close();
         } catch (IOException e) {
             System.out.println("Close workbook error");
         }

@@ -12,7 +12,6 @@ import lombok.Setter;
  */
 @Data
 @Builder
-@Setter
 public class ReadWrapper {
     /**
      * 文件路径
@@ -50,7 +49,7 @@ public class ReadWrapper {
      * 读取的sheet
      *
      */
-    private int readSheetAt;
+    private int sheetIndex;
 
     /**
      * 密码

@@ -59,8 +59,9 @@ public class OneTest {
         ReadWrapper readWrapper = ReadWrapper.builder()
                 .path("D:\\upload\\Teacher.xlsx")
                 .password("123456")
+                .sheetIndex(0)
                 .build();
-       WrapperExcelUtil<Teacher> wrapperExcelUtil = new WrapperExcelUtil<>(Teacher.class,readWrapper);
+        WrapperExcelUtil<Teacher> wrapperExcelUtil = new WrapperExcelUtil<>(Teacher.class, readWrapper);
         long startTime = System.currentTimeMillis();
         //Insert your code
         List<Teacher> list = wrapperExcelUtil.readData();
@@ -73,10 +74,10 @@ public class OneTest {
         System.out.println("----cost time: " + (endTime1 - startTime1) + "ms");
         Assert.assertEquals(list.size(), list1.size());
         list.forEach(System.out::println);
-        List<Map<String, Object>> readMap=wrapperExcelUtil.readFiledKeyMap();
-        readMap.forEach(id->{
-            id.forEach((f,v)->{
-                System.out.println(f+"="+v);
+        List<Map<String, Object>> readMap = wrapperExcelUtil.readFiledKeyMap();
+        readMap.forEach(id -> {
+            id.forEach((f, v) -> {
+                System.out.println(f + "=" + v);
             });
         });
     }

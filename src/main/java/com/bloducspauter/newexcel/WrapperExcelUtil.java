@@ -10,6 +10,7 @@ import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
 import com.bloducspauter.origin.init.TableDefinition;
 import com.bloducspauter.newexcel.wrapper.ReadWrapper;
 import com.bloducspauter.newexcel.wrapper.WriteWrapper;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,21 +44,20 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
         if (tableDefinition == null) {
             throw new NullPointerException("TableDefinition is null, please check your entity class");
         }
-
         List<T> objects = new ArrayList<>();
         String dateformat = wrapper.getDateformat();
 
         for (int row = startRow; row < endRow; row++) {
             if (row == wrapper.getTitleLine()) {
-                continue; // Skip the title line
+                continue;
             }
-
             try {
-                Map<String, Object> map = RowDataReader.read(sheet, tableDefinition, titleMap, row, startColumn, maxColumn, dateformat);
+                Map<String, Object> map = RowDataReader.read(sheetReader.getSheet(wrapper.getSheetIndex()),
+                        tableDefinition, titleMap, row, startColumn, maxColumn, dateformat);
                 String jsonString = JSON.toJSONString(map);
                 T entity = (T) JSONObject.parseObject(jsonString, tableDefinition.getClassName());
                 objects.add(entity);
-            } catch (Exception e) {
+            } catch (ClassCastException | IOException e) {
                 System.out.println("Loading info failed in line " + row + ": " + e.getMessage());
             }
         }
@@ -69,7 +69,7 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
     /**
      *  读取数据，返回{@code Map<String,Object>},结果 Map 的键是类中字段的名字，需要验证和严格映射字段
      */
-    public List<Map<String,Object>>readFiledKeyMap() throws NoSuchFieldException {
+    public List<Map<String,Object>>readFiledKeyMap() throws NoSuchFieldException, IOException {
         if (tableDefinition == null) {
             throw new NullPointerException("TableDefinition is null because entity class is null.Please check your entity class");
         }
@@ -79,8 +79,11 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
             if (row == wrapper.getTitleLine()) {
                 continue;
             }
-            Map<String, Object> map = RowDataReader.read(sheet, tableDefinition, titleMap,
-                    row, startColumn, maxColumn, dateformat);
+            Map<String, Object> map = RowDataReader.read(
+                    sheetReader.getSheet(wrapper.getSheetIndex()),
+                    tableDefinition, titleMap,
+                    row, startColumn, maxColumn,
+                    dateformat);
             objects.add(map);
         }
         startRow = 0;

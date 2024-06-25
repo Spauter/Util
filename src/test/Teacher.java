@@ -23,7 +23,7 @@ public class Teacher {
     private Date time;
     @FiledProperty(value = "联系电话",index = 4)
     private String tel;
-    @FiledProperty(value = "性别",index = 65537)
+    @FiledProperty(value = "性别",index = 1)
     private String sex;
     private String address;
     @FiledProperty(isExists = false)
