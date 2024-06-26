@@ -1,12 +1,11 @@
 package com.bloducspauter.excelutil.ewxce;
 
+import com.bloducspauter.excelutil.ewxce.read.RowDataReader;
 import com.bloducspauter.excelutil.ewxce.read.SheetReader;
 import com.bloducspauter.excelutil.ewxce.read.TitleReader;
 import com.bloducspauter.excelutil.ewxce.wrapper.ReadWrapper;
 import com.bloducspauter.excelutil.origin.ExcelUtil;
 import com.bloducspauter.excelutil.origin.tool.ExcelTool;
-import com.bloducspauter.excelutil.ewxce.read.RowDataReader;
-import com.bloducspauter.excelutil.base.init.TableDefinition;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.Map;
  * @since 1.19
  */
 public class RawUseWrapperExcelUtil {
-    TableDefinition tableDefinition = null;
     final ExcelTool excelTool = new ExcelTool();
     SheetReader sheetReader;
     int maxRow;
@@ -34,39 +32,42 @@ public class RawUseWrapperExcelUtil {
     ReadWrapper wrapper;
 
     public RawUseWrapperExcelUtil(ReadWrapper readWrapper) throws Exception {
-        init(readWrapper);
+        wrapper = readWrapper;
     }
 
-    void init(ReadWrapper readWrapper) throws Exception {
-        String path = readWrapper.getPath();
+    void init() throws Exception {
+        if (sheetReader!=null) {
+            return;
+        }
+        String path = wrapper.getPath();
         if (!excelTool.checkFileExists(path)) {
             throw new FileNotFoundException("File not found: " + path);
         }
         if (excelTool.checkIsDirectory(path)) {
             throw new IllegalArgumentException("Path is a directory: " + path);
         }
-        if (readWrapper.getDateformat() == null) {
-            readWrapper.setDateformat("yyyy-MM-dd");
+        if (wrapper.getDateformat() == null) {
+            wrapper.setDateformat("yyyy-MM-dd");
         }
         String suffix = excelTool.getSuffix(path);
         excelTool.checkSuffix(suffix);
-        wrapper = readWrapper;
         sheetReader = new SheetReader();
-        sheetReader.getWorkbookReader().getWorkbook(readWrapper);
-        sheetReader.getSheet(readWrapper);
+        sheetReader.getWorkbookReader().getWorkbook(wrapper);
+        sheetReader.getSheet(wrapper);
         maxRow = sheetReader.getMaxRow();
-        maxColumn = sheetReader.getMaxColumn(readWrapper.getTitleLine());
-        endRow = readWrapper.getEndRow() == 0 ? maxRow : readWrapper.getEndRow();
-        endColumn = readWrapper.getEndColumn() == 0 ? maxColumn : readWrapper.getEndColumn();
+        maxColumn = sheetReader.getMaxColumn(wrapper.getTitleLine());
+        endRow = wrapper.getEndRow() == 0 ? maxRow : wrapper.getEndRow();
+        endColumn = wrapper.getEndColumn() == 0 ? maxColumn : wrapper.getEndColumn();
         excelTool.checkRowCol(startRow, startColumn, endRow, endColumn, maxRow, maxColumn);
         startRow = wrapper.getStartRow();
         startColumn = wrapper.getStartColumn();
         endRow = wrapper.getEndRow() == 0 ? maxRow : endRow;
         titleMap = TitleReader.readTitle(sheetReader.getSheet(wrapper.getSheetIndex()),
-                readWrapper.getSheetIndex(), startColumn, endColumn, excelTool);
+                wrapper.getSheetIndex(), startColumn, endColumn, excelTool);
     }
 
-    private List<Map<String, Object>> readMap() {
+    private List<Map<String, Object>> readMap() throws Exception {
+        init();
         List<Map<String, Object>> objects = new ArrayList<>();
         String dateformat = wrapper.getDateformat();
         for (int row = startRow; row < endRow; row++) {
@@ -89,7 +90,7 @@ public class RawUseWrapperExcelUtil {
     /**
      * 读取数据,返回的键值是单元格标题值
      */
-    public List<Map<String, Object>> readToSimpleMap() throws NoSuchFieldException {
+    public List<Map<String, Object>> readToSimpleMap() throws Exception {
         return readMap();
     }
 

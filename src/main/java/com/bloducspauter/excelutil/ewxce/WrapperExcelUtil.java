@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since 1.19
  */
 public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
-
+    TableDefinition tableDefinition = null;
     /**
      * 初始化实体类,使用{@link MyAnnotationConfigApplicationContext#getTableDefinition(Class)}
      * <p>
@@ -40,7 +40,8 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
     }
 
     @SuppressWarnings("unchecked")
-    private List<T> read() throws NoSuchFieldException {
+    private List<T> read() throws Exception {
+        super.init();
         if (tableDefinition == null) {
             throw new NullPointerException("TableDefinition is null, please check your entity class");
         }
@@ -69,7 +70,8 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
     /**
      *  读取数据，返回{@code Map<String,Object>},结果 Map 的键是类中字段的名字，需要验证和严格映射字段
      */
-    public List<Map<String,Object>>readFiledKeyMap() throws NoSuchFieldException, IOException {
+    public List<Map<String,Object>>readFiledKeyMap() throws Exception {
+        super.init();
         if (tableDefinition == null) {
             throw new NullPointerException("TableDefinition is null because entity class is null.Please check your entity class");
         }
