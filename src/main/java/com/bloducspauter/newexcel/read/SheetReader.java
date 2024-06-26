@@ -12,8 +12,8 @@ import java.security.GeneralSecurityException;
 /**
  * @author Bloduc Spauter
  */
+@Setter
 public class SheetReader {
-    @Setter
     private WorkbookReader workbookReader;
 
     /**
@@ -47,21 +47,6 @@ public class SheetReader {
         return getSheet(wrapper.getSheetIndex());
     }
 
-    public Sheet getSheet(String path) throws GeneralSecurityException, IOException {
-        ReadWrapper readWrapper = ReadWrapper.builder().path(path).build();
-        return getSheet(readWrapper);
-    }
-
-    public Sheet getSheet(String path, String password) throws GeneralSecurityException, IOException {
-        ReadWrapper readWrapper = ReadWrapper.builder().path(path).password(password).build();
-        return getSheet(readWrapper);
-    }
-
-    public Sheet getSheet(String path, String password, int sheetIndex) throws GeneralSecurityException, IOException {
-        ReadWrapper readWrapper = ReadWrapper.builder().path(path).password(password).sheetIndex(sheetIndex).build();
-        return getSheet(readWrapper);
-    }
-
     /**
      * 获取最大行数
      *
@@ -82,5 +67,4 @@ public class SheetReader {
         Sheet sheet = getWorkbookReader().getWorkbook().getSheetAt(0);
         return sheet.getRow(index).getLastCellNum();
     }
-
 }

@@ -6,7 +6,7 @@
 
     <groupId>com.bloducspauter</groupId>
     <artifactId>Util</artifactId>
-    <version>1.18.2</version>
+    <version>1.18.3</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
