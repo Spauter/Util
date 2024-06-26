@@ -2,8 +2,8 @@
 
 import com.bloducspauter.excelutil.origin.BsExcelUtil;
 import com.bloducspauter.excelutil.origin.ExcelUtil;
-import com.bloducspauter.newexcel.WrapperExcelUtil;
-import com.bloducspauter.newexcel.wrapper.ReadWrapper;
+import com.bloducspauter.excelutil.ewxce.WrapperExcelUtil;
+import com.bloducspauter.excelutil.ewxce.wrapper.ReadWrapper;
 import com.bloducspauter.text.TextService;
 import com.bloducspauter.text.TextUtil;
 import org.junit.Assert;

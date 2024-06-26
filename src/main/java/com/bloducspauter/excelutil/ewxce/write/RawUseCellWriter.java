@@ -1,6 +1,6 @@
-package com.bloducspauter.newexcel.write;
+package com.bloducspauter.excelutil.ewxce.write;
 
-import com.bloducspauter.newexcel.wrapper.WriteWrapper;
+import com.bloducspauter.excelutil.ewxce.wrapper.WriteWrapper;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 

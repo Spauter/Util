@@ -1,9 +1,8 @@
-package com.bloducspauter.newexcel.wrapper;
+package com.bloducspauter.excelutil.ewxce.wrapper;
 
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Data;
-import lombok.Setter;
 
 /**
  * 读取文档设置的参数

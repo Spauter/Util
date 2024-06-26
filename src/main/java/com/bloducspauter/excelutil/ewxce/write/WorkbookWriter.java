@@ -1,8 +1,8 @@
-package com.bloducspauter.newexcel.write;
+package com.bloducspauter.excelutil.ewxce.write;
 
 import com.bloducspauter.excelutil.enums.ExcelType;
 import com.bloducspauter.excelutil.origin.tool.ExcelTool;
-import com.bloducspauter.newexcel.wrapper.WriteWrapper;
+import com.bloducspauter.excelutil.ewxce.wrapper.WriteWrapper;
 import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;

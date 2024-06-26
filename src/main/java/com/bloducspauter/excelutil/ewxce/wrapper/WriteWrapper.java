@@ -1,4 +1,4 @@
-package com.bloducspauter.newexcel.wrapper;
+package com.bloducspauter.excelutil.ewxce.wrapper;
 
 import lombok.*;
 
