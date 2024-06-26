@@ -1,6 +1,6 @@
 package com.bloducspauter.enums;
 
-import com.bloducspauter.origin.exceptions.UnsupportedFileException;
+import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;
 
 import java.util.Arrays;
 

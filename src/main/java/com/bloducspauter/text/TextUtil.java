@@ -1,7 +1,7 @@
 package com.bloducspauter.text;
 
-import com.bloducspauter.origin.exceptions.UnsupportedFileException;
-import com.bloducspauter.origin.service.ValidationTool;
+import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;
+import com.bloducspauter.excelutil.base.service.ValidationTool;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

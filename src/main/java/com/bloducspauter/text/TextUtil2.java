@@ -2,8 +2,8 @@ package com.bloducspauter.text;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;
-import com.bloducspauter.origin.init.TableDefinition;
+import com.bloducspauter.excelutil.base.init.MyAnnotationConfigApplicationContext;
+import com.bloducspauter.excelutil.base.init.TableDefinition;
 
 import java.io.*;
 import java.lang.reflect.Field;

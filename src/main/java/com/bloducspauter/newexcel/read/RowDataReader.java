@@ -1,6 +1,6 @@
 package com.bloducspauter.newexcel.read;
 
-import com.bloducspauter.origin.init.TableDefinition;
+import com.bloducspauter.excelutil.base.init.TableDefinition;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import java.lang.reflect.Field;

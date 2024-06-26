@@ -2,7 +2,7 @@ package com.bloducspauter.newexcel.read;
 
 import com.bloducspauter.enums.ExcelType;
 import com.bloducspauter.excelutil.origin.tool.ExcelTool;
-import com.bloducspauter.origin.exceptions.UnsupportedFileException;
+import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;
 import com.bloducspauter.newexcel.wrapper.ReadWrapper;
 import lombok.NonNull;
 import lombok.Setter;

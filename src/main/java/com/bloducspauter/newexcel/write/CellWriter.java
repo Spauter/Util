@@ -2,7 +2,7 @@ package com.bloducspauter.newexcel.write;
 
 import com.bloducspauter.annotation.FiledProperty;
 import com.bloducspauter.newexcel.wrapper.WriteWrapper;
-import com.bloducspauter.origin.init.TableDefinition;
+import com.bloducspauter.excelutil.base.init.TableDefinition;
 
 
 import java.lang.reflect.Field;

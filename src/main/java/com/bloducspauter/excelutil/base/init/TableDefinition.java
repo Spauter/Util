@@ -1,4 +1,4 @@
-package com.bloducspauter.origin.init;
+package com.bloducspauter.excelutil.base.init;
 
 
 import lombok.Data;

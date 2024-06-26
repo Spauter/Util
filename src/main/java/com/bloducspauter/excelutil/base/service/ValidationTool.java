@@ -1,6 +1,6 @@
-package com.bloducspauter.origin.service;
+package com.bloducspauter.excelutil.base.service;
 
-import com.bloducspauter.origin.exceptions.UnsupportedFileException;
+import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public abstract class ValidationTool {
     /**
      * 通过文件路径检查文件名的方法
      * @param path 文件路径
-     * @throws com.bloducspauter.origin.exceptions.UnsupportedFileException 当文件参数不合法时
+     * @throws UnsupportedFileException 当文件参数不合法时
      */
     public void checkSuffix(String path) throws UnsupportedFileException {
         File file = new File(path);
@@ -28,7 +28,7 @@ public abstract class ValidationTool {
     /**
      * 检查文件名的方法
      * @param file 文件
-     * @throws com.bloducspauter.origin.exceptions.UnsupportedFileException 当文件参数不合法时
+     * @throws UnsupportedFileException 当文件参数不合法时
      */
     public abstract void checkSuffix(File file) throws UnsupportedFileException;
 

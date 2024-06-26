@@ -1,6 +1,6 @@
 package com.bloducspauter.newexcel.read;
 
-import com.bloducspauter.origin.exceptions.WrongPasswordException;
+import com.bloducspauter.excelutil.base.exceptions.WrongPasswordException;
 import org.apache.poi.poifs.crypt.Decryptor;
 import org.apache.poi.poifs.crypt.EncryptionInfo;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;

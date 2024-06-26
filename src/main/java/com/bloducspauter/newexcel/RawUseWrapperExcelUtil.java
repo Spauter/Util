@@ -6,7 +6,7 @@ import com.bloducspauter.newexcel.read.RowDataReader;
 import com.bloducspauter.newexcel.read.SheetReader;
 import com.bloducspauter.newexcel.read.TitleReader;
 import com.bloducspauter.newexcel.wrapper.ReadWrapper;
-import com.bloducspauter.origin.init.TableDefinition;
+import com.bloducspauter.excelutil.base.init.TableDefinition;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
