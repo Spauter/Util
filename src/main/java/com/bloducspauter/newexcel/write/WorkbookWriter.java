@@ -1,7 +1,7 @@
 package com.bloducspauter.newexcel.write;
 
 import com.bloducspauter.enums.ExcelType;
-import com.bloducspauter.excel.tool.ExcelTool;
+import com.bloducspauter.excelutil.origin.tool.ExcelTool;
 import com.bloducspauter.newexcel.wrapper.WriteWrapper;
 import com.bloducspauter.origin.exceptions.UnsupportedFileException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;

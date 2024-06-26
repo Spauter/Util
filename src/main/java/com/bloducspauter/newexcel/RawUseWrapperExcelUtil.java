@@ -1,7 +1,7 @@
 package com.bloducspauter.newexcel;
 
-import com.bloducspauter.excel.ExcelUtil;
-import com.bloducspauter.excel.tool.ExcelTool;
+import com.bloducspauter.excelutil.origin.ExcelUtil;
+import com.bloducspauter.excelutil.origin.tool.ExcelTool;
 import com.bloducspauter.newexcel.read.RowDataReader;
 import com.bloducspauter.newexcel.read.SheetReader;
 import com.bloducspauter.newexcel.read.TitleReader;

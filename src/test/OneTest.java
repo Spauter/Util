@@ -1,7 +1,7 @@
 
 
-import com.bloducspauter.excel.BsExcelUtil;
-import com.bloducspauter.excel.ExcelUtil;
+import com.bloducspauter.excelutil.origin.BsExcelUtil;
+import com.bloducspauter.excelutil.origin.ExcelUtil;
 import com.bloducspauter.newexcel.WrapperExcelUtil;
 import com.bloducspauter.newexcel.wrapper.ReadWrapper;
 import com.bloducspauter.text.TextService;

@@ -2,8 +2,8 @@ package com.bloducspauter.newexcel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bloducspauter.excel.task.ReadData;
-import com.bloducspauter.excel.task.ReadingDataTask;
+import com.bloducspauter.excelutil.origin.task.ReadData;
+import com.bloducspauter.excelutil.origin.task.ReadingDataTask;
 import com.bloducspauter.newexcel.read.ReadDataByThreads;
 import com.bloducspauter.newexcel.read.RowDataReader;
 import com.bloducspauter.origin.init.MyAnnotationConfigApplicationContext;

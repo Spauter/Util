@@ -1,7 +1,7 @@
 package com.bloducspauter.newexcel.read;
 
-import com.bloducspauter.excel.task.ReadData;
-import com.bloducspauter.excel.task.ReadingDataTask;
+import com.bloducspauter.excelutil.origin.task.ReadData;
+import com.bloducspauter.excelutil.origin.task.ReadingDataTask;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
