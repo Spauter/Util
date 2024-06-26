@@ -1,4 +1,4 @@
-package com.bloducspauter.enums;
+package com.bloducspauter.excelutil.enums;
 
 import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;
 

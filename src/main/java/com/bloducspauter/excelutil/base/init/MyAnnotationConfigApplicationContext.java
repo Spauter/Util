@@ -1,6 +1,6 @@
 package com.bloducspauter.excelutil.base.init;
 
-import com.bloducspauter.annotation.FiledProperty;
+import com.bloducspauter.excelutil.annotation.FiledProperty;
 
 
 import java.lang.reflect.Field;

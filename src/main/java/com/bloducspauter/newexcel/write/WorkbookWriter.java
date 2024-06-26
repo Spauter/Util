@@ -1,6 +1,6 @@
 package com.bloducspauter.newexcel.write;
 
-import com.bloducspauter.enums.ExcelType;
+import com.bloducspauter.excelutil.enums.ExcelType;
 import com.bloducspauter.excelutil.origin.tool.ExcelTool;
 import com.bloducspauter.newexcel.wrapper.WriteWrapper;
 import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;

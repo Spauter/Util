@@ -2,7 +2,7 @@
 
 import java.util.Date;
 
-import com.bloducspauter.annotation.FiledProperty;
+import com.bloducspauter.excelutil.annotation.FiledProperty;
 import lombok.Getter;
 import lombok.Setter;
 

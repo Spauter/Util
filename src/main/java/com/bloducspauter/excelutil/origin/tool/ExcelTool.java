@@ -3,7 +3,7 @@ package com.bloducspauter.excelutil.origin.tool;
 
 import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;
 import java.io.File;
-import com.bloducspauter.enums.ExcelType;
+import com.bloducspauter.excelutil.enums.ExcelType;
 
 /**
  * 表格文档检查工具

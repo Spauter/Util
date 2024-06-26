@@ -1,6 +1,6 @@
 package com.bloducspauter.newexcel.write;
 
-import com.bloducspauter.annotation.FiledProperty;
+import com.bloducspauter.excelutil.annotation.FiledProperty;
 import com.bloducspauter.newexcel.wrapper.WriteWrapper;
 import com.bloducspauter.excelutil.base.init.TableDefinition;
 
