@@ -11,7 +11,7 @@ import java.util.*;
  * @author Bloduc Spauter
  * @version 1.18
  */
-public class MyAnnotationConfigApplicationContext {
+public class FiledPropertyLoader {
 
     private static final int MAX_VALUE=0x10000;
 

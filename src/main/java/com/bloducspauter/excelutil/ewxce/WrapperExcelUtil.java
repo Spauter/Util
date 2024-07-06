@@ -7,7 +7,7 @@ import com.bloducspauter.excelutil.origin.task.ReadData;
 import com.bloducspauter.excelutil.origin.task.ReadingDataTask;
 import com.bloducspauter.excelutil.ewxce.read.ReadDataByThreads;
 import com.bloducspauter.excelutil.ewxce.read.RowDataReader;
-import com.bloducspauter.excelutil.base.init.MyAnnotationConfigApplicationContext;
+import com.bloducspauter.excelutil.base.init.FiledPropertyLoader;
 import com.bloducspauter.excelutil.base.init.TableDefinition;
 import com.bloducspauter.excelutil.ewxce.wrapper.WriteWrapper;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
     TableDefinition tableDefinition = null;
     /**
-     * 初始化实体类,使用{@link MyAnnotationConfigApplicationContext#getTableDefinition(Class)}
+     * 初始化实体类,使用{@link FiledPropertyLoader#getTableDefinition(Class)}
      * <p>
      * 将相关结果存入{@link TableDefinition}
      *
@@ -36,7 +36,7 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
         if (entity == null) {
             return;
         }
-        tableDefinition = MyAnnotationConfigApplicationContext.getTableDefinition(entity);
+        tableDefinition = FiledPropertyLoader.getTableDefinition(entity);
     }
 
     @SuppressWarnings("unchecked")
@@ -151,7 +151,7 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
         if (index == wrapper.getTitleLine()) {
             throw new IllegalArgumentException("Don't know how to turn title line" + " into class " + tableDefinition.getClassName().getSimpleName());
         }
-        return read().get(0);
+        return read().get(index);
     }
 
     public void write(WriteWrapper wrapper, List<T> entities) {

@@ -10,14 +10,13 @@ import com.bloducspauter.excelutil.origin.tool.ExcelTool;
 import com.bloducspauter.excelutil.ewxce.read.ReadDataByThreads;
 import com.bloducspauter.excelutil.ewxce.read.RowDataReader;
 import com.bloducspauter.excelutil.base.exceptions.UnsupportedFileException;
-import com.bloducspauter.excelutil.base.init.MyAnnotationConfigApplicationContext;
+import com.bloducspauter.excelutil.base.init.FiledPropertyLoader;
 import com.bloducspauter.excelutil.base.init.TableDefinition;
 import com.bloducspauter.text.TextUtil2;
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,14 +42,14 @@ public class BsExcelUtil<T> extends ExcelUtil {
     private final TableDefinition entityTableDefinition;
 
     /**
-     * 初始化实体类,使用{@link MyAnnotationConfigApplicationContext#getTableDefinition(Class)}
+     * 初始化实体类,使用{@link FiledPropertyLoader#getTableDefinition(Class)}
      * <p>
      * 将相关结果存入{@link TableDefinition}
      *
      * @param entity 实体类
      */
     public BsExcelUtil(Class<?> entity) {
-        entityTableDefinition = MyAnnotationConfigApplicationContext.getTableDefinition(entity);
+        entityTableDefinition = FiledPropertyLoader.getTableDefinition(entity);
     }
 
     /**

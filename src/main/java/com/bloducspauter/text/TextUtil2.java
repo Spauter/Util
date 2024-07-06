@@ -2,7 +2,7 @@ package com.bloducspauter.text;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bloducspauter.excelutil.base.init.MyAnnotationConfigApplicationContext;
+import com.bloducspauter.excelutil.base.init.FiledPropertyLoader;
 import com.bloducspauter.excelutil.base.init.TableDefinition;
 
 import java.io.*;
@@ -19,7 +19,7 @@ public class TextUtil2<T> extends TextUtil {
     private final TableDefinition tableDefinition;
 
     public TextUtil2(Class<?> entity) {
-        tableDefinition = MyAnnotationConfigApplicationContext.getTableDefinition(entity);
+        tableDefinition = FiledPropertyLoader.getTableDefinition(entity);
     }
 
     private List<T> read(String path, String separator) throws IOException, NoSuchFieldException {

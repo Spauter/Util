@@ -30,7 +30,8 @@ public class SheetReader {
 
     public Sheet getSheet(int sheetIndex) throws IOException {
         Workbook workbook = getWorkbookReader().getWorkbook();
-        if (sheetIndex < 0 || sheetIndex > workbook.getNumberOfSheets()) {
+        int max=workbook.getNumberOfSheets();
+        if (sheetIndex < 0 || sheetIndex >= max) {
             workbook.close();
             throw new IllegalArgumentException("The index is out of range:" + sheetIndex + "/" + workbook.getNumberOfSheets());
         }
@@ -52,8 +53,8 @@ public class SheetReader {
      *
      * @return 最大行数
      */
-    public int getMaxRow() {
-        Sheet sheet = getWorkbookReader().getWorkbook().getSheetAt(0);
+    public int getMaxRow(int index) {
+        Sheet sheet = getWorkbookReader().getWorkbook().getSheetAt(index);
         return sheet.getLastRowNum();
     }
 

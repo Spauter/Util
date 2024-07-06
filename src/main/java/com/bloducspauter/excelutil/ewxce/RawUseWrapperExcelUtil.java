@@ -54,7 +54,7 @@ public class RawUseWrapperExcelUtil {
         sheetReader = new SheetReader();
         sheetReader.getWorkbookReader().getWorkbook(wrapper);
         sheetReader.getSheet(wrapper);
-        maxRow = sheetReader.getMaxRow();
+        maxRow = sheetReader.getMaxRow(wrapper.getSheetIndex());
         maxColumn = sheetReader.getMaxColumn(wrapper.getTitleLine());
         endRow = wrapper.getEndRow() == 0 ? maxRow : wrapper.getEndRow();
         endColumn = wrapper.getEndColumn() == 0 ? maxColumn : wrapper.getEndColumn();

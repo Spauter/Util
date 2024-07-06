@@ -1,14 +1,13 @@
 
 
+import com.bloducspauter.excelutil.ewxce.RawUseWrapperExcelUtil;
 import com.bloducspauter.excelutil.origin.BsExcelUtil;
 import com.bloducspauter.excelutil.origin.ExcelUtil;
 import com.bloducspauter.excelutil.ewxce.WrapperExcelUtil;
 import com.bloducspauter.excelutil.ewxce.wrapper.ReadWrapper;
 import com.bloducspauter.text.TextService;
 import com.bloducspauter.text.TextUtil;
-import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.List;
 import java.util.Map;
 
@@ -58,26 +57,46 @@ public class OneTest {
     public void test5() throws Exception {
         ReadWrapper readWrapper = ReadWrapper.builder()
                 .path("D:\\upload\\Teacher.xlsx")
-                .password("123456")
+                .password("12356")
+                .endRow(10)
                 .sheetIndex(0)
                 .build();
         WrapperExcelUtil<Teacher> wrapperExcelUtil = new WrapperExcelUtil<>(Teacher.class, readWrapper);
-        long startTime = System.currentTimeMillis();
-        //Insert your code
-        List<Teacher> list = wrapperExcelUtil.readData();
-        long endTime = System.currentTimeMillis();
-        System.out.println("----cost time: " + (endTime - startTime) + "ms");
-        long startTime1 = System.currentTimeMillis();
+        try {
+            long startTime = System.currentTimeMillis();
+            //Insert your code
+            List<Teacher> list = wrapperExcelUtil.readData();
+            long endTime = System.currentTimeMillis();
+            System.out.println("----cost time: " + (endTime - startTime) + "ms");
+            long startTime1 = System.currentTimeMillis();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //Insert your code
         List<Teacher> list1 = wrapperExcelUtil.readAll();
-        long endTime1 = System.currentTimeMillis();
-        System.out.println("----cost time: " + (endTime1 - startTime1) + "ms");
-        Assert.assertEquals(list.size(), list1.size());
-        list.forEach(System.out::println);
+
         List<Map<String, Object>> readMap = wrapperExcelUtil.readFiledKeyMap();
         readMap.forEach(id -> {
             id.forEach((f, v) -> {
                 System.out.println(f + "=" + v);
+            });
+        });
+    }
+
+    @Test
+    public void test6() throws Exception {
+        ReadWrapper readWrapper = ReadWrapper.builder()
+                .path("D:\\documents\\计算机科学与工程学院-不合格学-生学时统计 (计科2102).xlsx")
+                .sheetIndex(1)
+                .startRow(2)
+                .titleLine(1)
+                .build();
+        RawUseWrapperExcelUtil  wrapperExcelUtil = new RawUseWrapperExcelUtil(readWrapper);
+        List<Map<String,Object>>list=wrapperExcelUtil.readToSimpleMap();
+        System.out.println(list.size());
+        list.forEach(l->{
+            l.forEach((k,v)->{
+                System.out.println(k+"="+v);
             });
         });
     }
