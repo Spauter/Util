@@ -19,7 +19,6 @@ public class WorkbookWriter {
 
     ExcelTool excelTool = new ExcelTool();
     private Workbook workbook;
-    private Sheet sheet;
 
     public File getOutputFile(WriteWrapper wrapper) throws FileAlreadyExistsException {
         String path = wrapper.getPath();
@@ -42,7 +41,8 @@ public class WorkbookWriter {
         return file;
     }
 
-    public Workbook getWorkbook(String path) {
+    public Workbook getWorkbook(WriteWrapper wrapper) {
+        String path= wrapper.getPath();
         String suffix = excelTool.getSuffix(path);
         switch (ExcelType.forSuffix(suffix)) {
             case XLS:
@@ -63,8 +63,7 @@ public class WorkbookWriter {
         }
         String sheetName = wrapper.getSheetName() == null ? "Sheet1" : wrapper.getSheetName();
         ;
-        sheet = workbook.createSheet(sheetName);
-        return sheet;
+        return workbook.createSheet(sheetName);
     }
 
 }

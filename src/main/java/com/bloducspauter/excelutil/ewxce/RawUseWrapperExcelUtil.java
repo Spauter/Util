@@ -4,8 +4,13 @@ import com.bloducspauter.excelutil.ewxce.read.RowDataReader;
 import com.bloducspauter.excelutil.ewxce.read.SheetReader;
 import com.bloducspauter.excelutil.ewxce.read.TitleReader;
 import com.bloducspauter.excelutil.ewxce.wrapper.ReadWrapper;
+import com.bloducspauter.excelutil.ewxce.wrapper.WriteWrapper;
+import com.bloducspauter.excelutil.ewxce.write.WorkbookWriter;
 import com.bloducspauter.excelutil.origin.ExcelUtil;
 import com.bloducspauter.excelutil.origin.tool.ExcelTool;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,5 +105,13 @@ public class RawUseWrapperExcelUtil {
         } catch (IOException e) {
             System.out.println("Close workbook error");
         }
+    }
+
+    private void write(WriteWrapper wrapper, List<Map<String, Object>> list) {
+        WorkbookWriter workbookWriter=new WorkbookWriter();
+        Workbook workbook= workbookWriter.getWorkbook(wrapper);
+        Sheet sheet= workbookWriter.getSheet(wrapper);
+
+
     }
 }
