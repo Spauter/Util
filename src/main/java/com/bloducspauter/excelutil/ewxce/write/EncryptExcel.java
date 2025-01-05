@@ -40,6 +40,8 @@ public class EncryptExcel {
                 break;
             case CSV:
                 throw new UnsupportedFileException("The CSV document is a text file");
+            default:
+                throw new UnsupportedFileException("Unsupported file type");
         }
     }
 

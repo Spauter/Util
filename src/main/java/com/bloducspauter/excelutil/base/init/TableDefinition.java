@@ -16,4 +16,5 @@ public class TableDefinition {
     private Class<?> className;
     private Map<String,Field> cellNameAndField;
     private TreeMap<Integer,Field> indexForCellName;
+    private boolean ignoreOtherCells;
 }

@@ -1,9 +1,11 @@
 import com.bloducspauter.excelutil.annotation.FiledProperty;
+import com.bloducspauter.excelutil.annotation.TableProperty;
 import lombok.Data;
 
 @Data
+@TableProperty(ignoreOtherCells = true)
 public class Student {
-    @FiledProperty("学号")
+    @FiledProperty(value = "学号")
     private String id;
     @FiledProperty("姓名")
     private String name;
@@ -13,6 +15,4 @@ public class Student {
     private String sex;
     @FiledProperty("联系电话")
     private String tel;
-    @FiledProperty("入学年份")
-    private String joinTime;
 }

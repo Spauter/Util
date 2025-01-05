@@ -16,6 +16,10 @@ import java.security.GeneralSecurityException;
  */
 public class DecryptExcel {
 
+    public DecryptExcel() {
+        throw new UnsupportedOperationException("This class is not allowed to be instantiated");
+    }
+
 
     private static boolean verifyPassword(String password, Decryptor decryptor) throws GeneralSecurityException {
         return decryptor.verifyPassword(password);
@@ -55,7 +59,10 @@ public class DecryptExcel {
      * @throws WrongPasswordException   密码错误
      */
     public static InputStream decrypt(String path, String password) throws IOException, GeneralSecurityException {
-        InputStream in = new FileInputStream(path);
+        FileInputStream in = new FileInputStream(path);
+        if (password == null || password.isEmpty()) {
+            return in;
+        }
         POIFSFileSystem poifsFileSystem = new POIFSFileSystem(in);
         // 创建一个 EncryptionInfo 对象，用于获取加密信息
         EncryptionInfo encInfo = new EncryptionInfo(poifsFileSystem);
@@ -67,10 +74,6 @@ public class DecryptExcel {
             // 关闭文件系统和输入流
             poifsFileSystem.close();
             in.close();
-            if (password == null) {
-                // 如果密码为空，则抛出 WrongPasswordException 异常，提示用户输入密码
-                throw new WrongPasswordException("The document is encrypted, please enter the password");
-            }
             // 如果密码不为空，但不正确，则抛出 WrongPasswordException 异常，提示用户检查密码
             throw new WrongPasswordException("The password is wrong,please check the password");
         }

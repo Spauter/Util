@@ -3,6 +3,7 @@
 import java.util.Date;
 
 import com.bloducspauter.excelutil.annotation.FiledProperty;
+import com.bloducspauter.excelutil.annotation.TableProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Teacher {
-	@FiledProperty(value = "教职工号",index = 0)
+    @FiledProperty(value = "教职工号",index = 0)
     private int id;
     @FiledProperty(value = "姓名",index = 1)
     private String name;

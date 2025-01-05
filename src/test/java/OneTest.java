@@ -7,6 +7,7 @@ import com.bloducspauter.excelutil.ewxce.WrapperExcelUtil;
 import com.bloducspauter.excelutil.ewxce.wrapper.ReadWrapper;
 import com.bloducspauter.text.TextService;
 import com.bloducspauter.text.TextUtil;
+import com.test.Enhancemement;
 import org.junit.Test;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class OneTest {
     public void test5() throws Exception {
         ReadWrapper readWrapper = ReadWrapper.builder()
                 .path("D:\\upload\\Teacher.xlsx")
-                .password("12356")
+                .password("123456")
                 .endRow(10)
                 .sheetIndex(0)
                 .build();
@@ -65,7 +66,7 @@ public class OneTest {
         try {
             long startTime = System.currentTimeMillis();
             //Insert your code
-            List<Teacher> list = wrapperExcelUtil.readData();
+            List<Teacher> list = wrapperExcelUtil.readAll();
             long endTime = System.currentTimeMillis();
             System.out.println("----cost time: " + (endTime - startTime) + "ms");
             long startTime1 = System.currentTimeMillis();
@@ -103,6 +104,20 @@ public class OneTest {
 
     @Test
     public void test7() throws Exception {
+        ReadWrapper readWrapper=ReadWrapper.builder()
+                .path("D:\\spauter\\JAVA\\Interships\\intership_students\\resources\\students.xlsx")
+                .build();
+        WrapperExcelUtil<Student>studentWrapperExcelUtil=new WrapperExcelUtil<>(Student.class,readWrapper);
+        List<Student>students=studentWrapperExcelUtil.readAll();
+        for (Student s : students) {
+            System.out.println(s);
+        }
+    }
 
+    @Test
+    public void test8() throws Exception {
+        BsExcelUtil<Enhancemement>bsExcelUtil=new BsExcelUtil<>(Enhancemement.class);
+        List<Enhancemement>list=bsExcelUtil.readAll("C:/users/32306/desktop/工作簿1111.xlsx");
+        list.forEach(System.out::println);
     }
 }

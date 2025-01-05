@@ -12,6 +12,10 @@ import java.util.Map;
  *
  */
 public class RawUseCellWriter {
+    public RawUseCellWriter(){
+        throw new  UnsupportedOperationException("This class is not allowed to be instantiated");
+    }
+
     static Row row;
 
     public static Row createContent(WorkbookWriter workbookWriter, WriteWrapper writeWrapper,

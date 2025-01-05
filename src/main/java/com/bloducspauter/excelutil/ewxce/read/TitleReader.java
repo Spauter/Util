@@ -14,6 +14,11 @@ import java.util.Map;
  * @version 1.19
  */
 public class TitleReader {
+
+    public TitleReader(){
+        throw new  UnsupportedOperationException("This class is not allowed to be instantiated");
+    }
+
     /**
      * 读取标题并以Mao返回
      */

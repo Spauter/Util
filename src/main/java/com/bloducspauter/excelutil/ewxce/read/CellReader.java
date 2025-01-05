@@ -15,6 +15,11 @@ import java.text.SimpleDateFormat;
  */
 public class CellReader {
 
+    public CellReader(){
+        throw new  UnsupportedOperationException("This class is not allowed to be instantiated");
+    }
+
+
     /**
      * 这段代码用于从单元格（Cell）中获取值，并根据单元格类型进行相应的处理。
      * @param dateformat 日期格式

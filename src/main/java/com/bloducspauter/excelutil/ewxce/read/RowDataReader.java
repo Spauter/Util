@@ -13,6 +13,11 @@ import java.util.Map;
  * @author Bloduc Spauter
  */
 public class RowDataReader {
+
+    public RowDataReader(){
+        throw new  UnsupportedOperationException("This class is not allowed to be instantiated");
+    }
+
     /**
      * 读取某一行的单元格
      */
@@ -23,13 +28,18 @@ public class RowDataReader {
             Object o = CellReader.getCellValue(sheet, row, rol, dateformat);
             String title = titles.get(rol);
             Field field = tableDefinition.getCellNameAndField().get(title);
-            if (field == null) {
+            if (field != null) {
+                String filedName = field.getName();
+                map.put(filedName, o);
+            } else  {
+                if (tableDefinition.isIgnoreOtherCells()) {
+                    continue;
+                }
                 String err = "The field \"" + title + "\" does not exists in this field in class:" +
                         tableDefinition.getClassName().getSimpleName();
                 throw new NoSuchFieldException(err);
             }
-            String filedName = field.getName();
-            map.put(filedName, o);
+
         }
         return map;
     }

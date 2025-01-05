@@ -11,6 +11,10 @@ import java.util.TreeMap;
 
 public class CellWriter<T> extends RawUseCellWriter{
 
+    public CellWriter(){
+        throw new  UnsupportedOperationException("This class is not allowed to be instantiated");
+    }
+
     public static void createTitle(WorkbookWriter workbookWriter, WriteWrapper writeWrapper, TableDefinition tableDefinition) {
         row = workbookWriter.getSheet(writeWrapper).createRow(0);
         TreeMap<Integer, Field> fieldTreeMap = tableDefinition.getIndexForCellName();

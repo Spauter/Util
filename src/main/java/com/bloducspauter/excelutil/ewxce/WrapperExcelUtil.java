@@ -10,6 +10,7 @@ import com.bloducspauter.excelutil.ewxce.read.RowDataReader;
 import com.bloducspauter.excelutil.base.init.FiledPropertyLoader;
 import com.bloducspauter.excelutil.base.init.TableDefinition;
 import com.bloducspauter.excelutil.ewxce.wrapper.WriteWrapper;
+import lombok.NonNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
      *
      * @param entity 实体类，可以为空
      */
-    public WrapperExcelUtil(Class<?> entity, ReadWrapper readWrapper) throws Exception {
+    public WrapperExcelUtil(Class<?> entity,@NonNull ReadWrapper readWrapper) throws Exception {
         super(readWrapper);
         if (entity == null) {
             return;
