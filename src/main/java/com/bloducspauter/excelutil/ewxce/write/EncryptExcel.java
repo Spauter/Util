@@ -75,4 +75,9 @@ public class EncryptExcel {
         fs.writeFilesystem(fos);
         fos.close();
     }
+
+    public static void encryptExcl(String path,String password) throws IOException, GeneralSecurityException, InvalidFormatException {
+        File file=new File(path);
+        encryptExcl(file,password);
+    }
 }

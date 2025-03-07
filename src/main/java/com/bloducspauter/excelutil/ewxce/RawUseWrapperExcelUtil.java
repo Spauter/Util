@@ -5,11 +5,10 @@ import com.bloducspauter.excelutil.ewxce.read.SheetReader;
 import com.bloducspauter.excelutil.ewxce.read.TitleReader;
 import com.bloducspauter.excelutil.ewxce.wrapper.ReadWrapper;
 import com.bloducspauter.excelutil.ewxce.wrapper.WriteWrapper;
-import com.bloducspauter.excelutil.ewxce.write.WorkbookWriter;
+import com.bloducspauter.excelutil.ewxce.write.EncryptExcel;
 import com.bloducspauter.excelutil.origin.ExcelUtil;
 import com.bloducspauter.excelutil.origin.tool.ExcelTool;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import lombok.Setter;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,11 +26,17 @@ import java.util.Map;
 public class RawUseWrapperExcelUtil {
     final ExcelTool excelTool = new ExcelTool();
     SheetReader sheetReader;
+    @Setter
     int maxRow;
+    @Setter
     int maxColumn;
+    @Setter
     int startRow;
+    @Setter
     int startColumn;
+    @Setter
     int endRow;
+    @Setter
     int endColumn;
     Map<Integer, String> titleMap;
     ReadWrapper wrapper;
@@ -106,12 +111,25 @@ public class RawUseWrapperExcelUtil {
             System.out.println("Close workbook error");
         }
     }
-//todo
-    private void write(WriteWrapper wrapper, List<Map<String, Object>> list) {
-        WorkbookWriter workbookWriter=new WorkbookWriter();
-        Workbook workbook= workbookWriter.getWorkbook(wrapper);
-        Sheet sheet= workbookWriter.getSheet(wrapper);
+
+    /**
+     *  读一列数据
+     * @param index 列数
+     */
+    public List<Object>readLine(int index) throws Exception {
+        startColumn=index;
+        endColumn=index+1;
+        List<Map<String,Object>>result=readToSimpleMap();
+        List<Object>list=new ArrayList<>();
+        result.forEach(map->list.add(map.get(titleMap.get(index))));
+        return list;
+    }
 
 
+    private void write(WriteWrapper wrapper, List<Map<String, Object>> list) throws Exception {
+        new ExcelUtil().output(list,wrapper.getPath());
+        if(wrapper.getPassword()!=null) {
+            EncryptExcel.encryptExcl(wrapper.getPath(),wrapper.getPassword());
+        }
     }
 }

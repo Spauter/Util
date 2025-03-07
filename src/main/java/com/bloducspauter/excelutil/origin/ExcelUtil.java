@@ -1,7 +1,7 @@
 package com.bloducspauter.excelutil.origin;
 
 import com.bloducspauter.excelutil.enums.ExcelType;
-import com.bloducspauter.excelutil.ewxce.read.CellReader;
+import com.bloducspauter.excelutil.ewxce.read.RowDataReader;
 import com.bloducspauter.excelutil.ewxce.read.TitleReader;
 import com.bloducspauter.excelutil.origin.service.ExcelService;
 import com.bloducspauter.excelutil.origin.tool.ExcelTool;
@@ -178,13 +178,7 @@ public class ExcelUtil implements ExcelService {
             if (row == titleLine) {
                 continue;
             }
-            Map<String, Object> map = new HashMap<>();
-            for (int rol = startCol; rol < endWithCol; rol++) {
-                Cell info = sheet.getRow(row).getCell(rol);
-                Object o = CellReader.getCellValue(sheet, row, rol, dateformat);
-                String title = titles.get(rol);
-                map.put(title, o);
-            }
+            Map<String, Object> map = RowDataReader.read(sheet, titles, row, startCol, endWithCol, dateformat);
             list.add(map);
         }
 

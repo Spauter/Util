@@ -70,8 +70,8 @@ public class FiledPropertyLoader {
             //判断index是否大于65535，因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据
             if (index > MAX_VALUE||index<0) {
                 String fieldName=  m.getValue().getName();
-                System.out.println("A error occurred at analyzing class:"+tableDefinition.getClassName());
-                System.out.println("@ExcelField(value=\""+cellName.value()+"\",index="+cellName.index()+")\n" +
+                System.err.println("A error occurred at analyzing class:"+tableDefinition.getClassName());
+                System.err.println("@ExcelField(value=\""+cellName.value()+"\",index="+cellName.index()+")\n" +
                                     m.getValue());
                 throw new IndexOutOfBoundsException("The field \""+fieldName+"\" annotation's index is out of range:"+index);
             }

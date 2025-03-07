@@ -20,27 +20,6 @@ public class WorkbookWriter {
     ExcelTool excelTool = new ExcelTool();
     private Workbook workbook;
 
-    public File getOutputFile(WriteWrapper wrapper) throws FileAlreadyExistsException {
-        String path = wrapper.getPath();
-        String fileName = wrapper.getFileName();
-        File file = new File(path);
-        if (excelTool.checkFileExists(file)) {
-            throw new FileAlreadyExistsException("File already exists");
-        }
-        if (fileName == null && excelTool.checkIsDirectory(file)) {
-            path = path + File.separator + UUID.randomUUID() + ".xlsx";
-        }
-        if (fileName != null && excelTool.checkIsDirectory(file)) {
-            String suffix = excelTool.getSuffix(fileName);
-            if (suffix.equals(fileName)) {
-                fileName = fileName + ".xlsx";
-            }
-            path = path + File.separator + fileName;
-            file = new File(path);
-        }
-        return file;
-    }
-
     public Workbook getWorkbook(WriteWrapper wrapper) {
         String path= wrapper.getPath();
         String suffix = excelTool.getSuffix(path);

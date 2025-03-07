@@ -3,6 +3,8 @@ package com.bloducspauter.excelutil.ewxce;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.excelutil.ewxce.wrapper.ReadWrapper;
+import com.bloducspauter.excelutil.ewxce.write.EncryptExcel;
+import com.bloducspauter.excelutil.origin.BsExcelUtil;
 import com.bloducspauter.excelutil.origin.task.ReadData;
 import com.bloducspauter.excelutil.origin.task.ReadingDataTask;
 import com.bloducspauter.excelutil.ewxce.read.ReadDataByThreads;
@@ -11,6 +13,7 @@ import com.bloducspauter.excelutil.base.init.FiledPropertyLoader;
 import com.bloducspauter.excelutil.base.init.TableDefinition;
 import com.bloducspauter.excelutil.ewxce.wrapper.WriteWrapper;
 import lombok.NonNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,8 +158,19 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
         return read().get(index);
     }
 
-    public void write(WriteWrapper wrapper, List<T> entities) {
+    public void write(WriteWrapper wrapper, List<T> entities) throws Exception {
         //todo
+        new BsExcelUtil<T>(tableDefinition.getClassName()).write(entities,wrapper.getPath());
+        if(wrapper.getPassword()!=null) {
+            EncryptExcel.encryptExcl(wrapper.getPath(),wrapper.getPassword());
+        }
     }
 
+    public void transform(WriteWrapper writeWrapper) throws Exception {
+        List<T> entities=readAll();
+        new BsExcelUtil<T>(tableDefinition.getClassName()).write(entities,writeWrapper.getPath());
+        if(writeWrapper.getPassword()!=null) {
+            EncryptExcel.encryptExcl(writeWrapper.getPath(),writeWrapper.getPassword());
+        }
+    }
 }
