@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -6,7 +7,7 @@
 
     <groupId>com.bloducspauter</groupId>
     <artifactId>ExcelUtil</artifactId>
-    <version>1.18.2</version>
+    <version>1.19</version>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -74,5 +75,68 @@
                 </executions>
             </plugin>
         </plugins>
+<!--        <plugins>-->
+
+            <!-- Copying Allatori configuration file to 'target' directory.
+                 The destination file will be filtered (Maven properties used in configuration file will be resolved). -->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-resources-plugin</artifactId>-->
+<!--                <version>2.6</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy-and-filter-allatori-config</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>copy-resources</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <useDefaultDelimiters>true</useDefaultDelimiters>-->
+<!--                            <outputDirectory>${basedir}/target</outputDirectory>-->
+<!--                            <resources>-->
+<!--                                <resource>-->
+<!--                                    <directory>${basedir}/allatori</directory>-->
+<!--                                    <includes>-->
+<!--                                        <include>allatori.xml</include>-->
+<!--                                        <include>proguard.txt</include>-->
+<!--                                    </includes>-->
+<!--                                    <filtering>true</filtering>-->
+<!--                                </resource>-->
+<!--                            </resources>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
+<!--            &lt;!&ndash; Running Allatori &ndash;&gt;-->
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <version>1.2.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>run-allatori</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>exec</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <executable>java</executable>-->
+<!--                    <arguments>-->
+<!--                        <argument>-Xms128m</argument>-->
+<!--                        <argument>-Xmx512m</argument>-->
+<!--                        <argument>-jar</argument>-->
+
+<!--                        &lt;!&ndash; Copy allatori.jar to 'allatori' directory to use the commented line &ndash;&gt;-->
+<!--                        <argument>${basedir}/allatori/lib/allatori.jar</argument>-->
+<!--                        <argument>${basedir}/target/allatori.xml</argument>-->
+<!--                    </arguments>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+
+<!--        </plugins>-->
+
     </build>
 </project>

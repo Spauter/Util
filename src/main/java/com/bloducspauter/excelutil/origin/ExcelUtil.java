@@ -244,7 +244,7 @@ public class ExcelUtil implements ExcelService {
 
 
     private void outputImpl(String sheetName, Object[][] obj, String[] title, File file) throws Exception {
-        if (obj == null || obj.length == 0 || title == null || title.length == 0) {
+        if (obj == null || obj.length == 0 ) {
             throw new NullPointerException("Unable to invoke an empty data. Did you forgot to read file or clean it?");
         }
         if (excelTool.checkIsDirectory(file)) {
@@ -316,6 +316,12 @@ public class ExcelUtil implements ExcelService {
 
     @Override
     public void output(String sheetName, List<Map<String, Object>> list, File file) throws Exception {
+        if(titles.isEmpty()){
+            titles=new HashMap<>();
+            for (int i = 0; i < list.get(list.size()-1).size(); i++) {
+                titles.put(i,list.get(list.size()-1).keySet().toArray()[i].toString());
+            }
+        }
         Object[][] obj = excelTool.conformity(list, titles);
         String[] title = new String[titles.size()];
         for (int i = 0; i < titles.size(); i++) {

@@ -159,18 +159,9 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
     }
 
     public void write(WriteWrapper wrapper, List<T> entities) throws Exception {
-        //todo
         new BsExcelUtil<T>(tableDefinition.getClassName()).write(entities,wrapper.getPath());
         if(wrapper.getPassword()!=null) {
             EncryptExcel.encryptExcl(wrapper.getPath(),wrapper.getPassword());
-        }
-    }
-
-    public void transform(WriteWrapper writeWrapper) throws Exception {
-        List<T> entities=readAll();
-        new BsExcelUtil<T>(tableDefinition.getClassName()).write(entities,writeWrapper.getPath());
-        if(writeWrapper.getPassword()!=null) {
-            EncryptExcel.encryptExcl(writeWrapper.getPath(),writeWrapper.getPassword());
         }
     }
 }

@@ -22,4 +22,13 @@ public class ExcelTool extends ExcelValidationTool {
         ExcelType.forSuffix(suffix);
     }
 
+    public boolean isExcel(String suffix){
+        try {
+            ExcelType.forSuffix(suffix);
+            return !ExcelType.CSV.suffix.equals(suffix);
+        } catch (UnsupportedFileException e) {
+            return false;
+        }
+    }
+
 }
