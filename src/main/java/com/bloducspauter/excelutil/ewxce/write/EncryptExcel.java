@@ -18,7 +18,6 @@ import java.io.*;
 import java.security.GeneralSecurityException;
 /**
  * 加密文档
- * @author Bloduc Spauter
  *
  */
 public class EncryptExcel {

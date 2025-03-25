@@ -48,21 +48,14 @@ public class RawUseWrapperExcelUtil implements ExcelService {
         wrapper = readWrapper;
     }
 
-    /**
-     * <p>这个是为了实现接口{@link ExcelService}提供的无参构造，初始化后无法设置{@code sheetIndex},只会读取第一张工作表</p>
-     * <p>也无法设置读取范围</p>
-     * <p>建议使用{@link RawUseWrapperExcelUtil#RawUseWrapperExcelUtil(ReadWrapper)}有参构造</p>
-     */
-    public RawUseWrapperExcelUtil() {
 
+    public RawUseWrapperExcelUtil() {
+        wrapper = ReadWrapper.builder().sheetIndex(0).build();
     }
 
     protected void init() throws Exception {
         if (wrapper == null) {
             throw new NullPointerException("ReadWrapper is null, please check your ReadWrapper");
-        }
-        if (sheetReader != null) {
-            return;
         }
         String path = wrapper.getPath();
         if (!excelTool.checkFileExists(path)) {
@@ -81,9 +74,10 @@ public class RawUseWrapperExcelUtil implements ExcelService {
         sheetReader.getSheet(wrapper);
         maxRow = sheetReader.getMaxRow(wrapper.getSheetIndex());
         maxColumn = sheetReader.getMaxColumn(wrapper.getTitleLine());
+        updateReadRange();
     }
 
-   protected void updateReadRange() throws IOException {
+    protected void updateReadRange() throws IOException {
         endRow = wrapper.getEndRow() == 0 ? maxRow : wrapper.getEndRow();
         endColumn = wrapper.getEndColumn() == 0 ? maxColumn : wrapper.getEndColumn();
         excelTool.checkRowCol(startRow, startColumn, endRow, endColumn, maxRow, maxColumn);
@@ -166,8 +160,8 @@ public class RawUseWrapperExcelUtil implements ExcelService {
 
     @Override
     public List<Map<String, Object>> readToList(String path) throws Exception {
-        this.wrapper = ReadWrapper.builder().path(path).build();
-        init();
+        wrapper.setPath(path);
+        updateReadRange();
         return readToSimpleMap();
     }
 
@@ -194,7 +188,7 @@ public class RawUseWrapperExcelUtil implements ExcelService {
     @SneakyThrows
     @Override
     public void readSheetAt(int index) {
-        if(wrapper.getSheetIndex()!=index) {
+        if (wrapper.getSheetIndex() != index) {
             wrapper.setSheetIndex(index);
             init();
         }
