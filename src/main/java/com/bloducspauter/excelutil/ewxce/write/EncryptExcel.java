@@ -56,7 +56,7 @@ public class EncryptExcel {
     }
 
     private static void encryptFor2007Excel(File file, String password) throws InvalidFormatException, GeneralSecurityException, IOException {
-        // 设置密 码 保 护 ·
+        // 设置密 码 保 护
         POIFSFileSystem fs = new POIFSFileSystem();
         EncryptionInfo info = new EncryptionInfo(EncryptionMode.standard);
         Encryptor enc = info.getEncryptor();
