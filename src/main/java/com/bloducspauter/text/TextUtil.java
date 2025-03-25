@@ -179,5 +179,30 @@ public class TextUtil implements TextService {
         outputImpl(file.getAbsolutePath(), obj, null);
     }
 
+    @Override
+    public void setStartRow(int startRow) {
+
+    }
+
+    @Override
+    public void setEndWithRow(int endRow) {
+
+    }
+
+    @Override
+    public void setStartColumn(int startColumn) {
+
+    }
+
+    @Override
+    public void setEndWithColumn(int endColumn) {
+
+    }
+
+    @Override
+    public void readSheetAt(int index) {
+
+    }
+
 
 }
