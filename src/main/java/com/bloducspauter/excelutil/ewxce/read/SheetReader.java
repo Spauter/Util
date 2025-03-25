@@ -63,6 +63,7 @@ public class SheetReader {
      *
      * @param index 行索引
      * @return 最大列数
+     * @throws IndexOutOfBoundsException 工作表索引超出范围
      */
     public int getMaxColumn(int index) {
         Sheet sheet = getWorkbookReader().getWorkbook().getSheetAt(0);

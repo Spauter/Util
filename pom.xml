@@ -53,60 +53,79 @@
 
     </dependencies>
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.kbdct.swing.frame.panelSysAuth.test.TestMainSecond</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
 <!--        <plugins>-->
-
-            <!-- Copying Allatori configuration file to 'target' directory.
-                 The destination file will be filtered (Maven properties used in configuration file will be resolved). -->
 <!--            <plugin>-->
 <!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-resources-plugin</artifactId>-->
-<!--                <version>2.6</version>-->
+<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                <version>2.10.4</version>-->
+<!--                <configuration>-->
+<!--                    <encoding>UTF-8</encoding>-->
+<!--                    <aggregate>true</aggregate>-->
+<!--                    <charset>UTF-8</charset>-->
+<!--                    <docencoding>UTF-8</docencoding>-->
+<!--                </configuration>-->
 <!--                <executions>-->
 <!--                    <execution>-->
-<!--                        <id>copy-and-filter-allatori-config</id>-->
+<!--                        <id>attach-javadocs</id>-->
+<!--                        <goals>-->
+<!--                            <goal>jar</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>2.4.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
 <!--                        <phase>package</phase>-->
 <!--                        <goals>-->
-<!--                            <goal>copy-resources</goal>-->
+<!--                            <goal>shade</goal>-->
 <!--                        </goals>-->
 <!--                        <configuration>-->
-<!--                            <useDefaultDelimiters>true</useDefaultDelimiters>-->
-<!--                            <outputDirectory>${basedir}/target</outputDirectory>-->
-<!--                            <resources>-->
-<!--                                <resource>-->
-<!--                                    <directory>${basedir}/allatori</directory>-->
-<!--                                    <includes>-->
-<!--                                        <include>allatori.xml</include>-->
-<!--                                        <include>proguard.txt</include>-->
-<!--                                    </includes>-->
-<!--                                    <filtering>true</filtering>-->
-<!--                                </resource>-->
-<!--                            </resources>-->
+<!--                            <transformers>-->
+<!--                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
+<!--                                    <mainClass>com.kbdct.swing.frame.panelSysAuth.test.TestMainSecond</mainClass>-->
+<!--                                </transformer>-->
+<!--                            </transformers>-->
 <!--                        </configuration>-->
 <!--                    </execution>-->
 <!--                </executions>-->
 <!--            </plugin>-->
+<!--        </plugins>-->
+        <plugins>
+
+            <!-- Copying Allatori configuration file to 'target' directory.
+                 The destination file will be filtered (Maven properties used in configuration file will be resolved). -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-and-filter-allatori-config</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <useDefaultDelimiters>true</useDefaultDelimiters>
+                            <outputDirectory>${basedir}/target</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/allatori</directory>
+                                    <includes>
+                                        <include>allatori.xml</include>
+                                        <include>proguard.txt</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
 <!--            &lt;!&ndash; Running Allatori &ndash;&gt;-->
 <!--            <plugin>-->
@@ -136,7 +155,7 @@
 <!--                </configuration>-->
 <!--            </plugin>-->
 
-<!--        </plugins>-->
+        </plugins>
 
     </build>
 </project>

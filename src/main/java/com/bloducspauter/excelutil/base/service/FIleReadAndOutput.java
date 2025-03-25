@@ -89,4 +89,13 @@ public interface FIleReadAndOutput {
         output(obj, title, file);
     }
 
+    void setStartRow(int startRow);
+
+    void setEndWithRow(int endRow);
+
+    void setStartColumn(int startColumn);
+
+    void setEndWithColumn(int endColumn);
+
+    void readSheetAt(int index);
 }

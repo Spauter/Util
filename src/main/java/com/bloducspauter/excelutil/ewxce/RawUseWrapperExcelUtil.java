@@ -10,6 +10,7 @@ import com.bloducspauter.excelutil.origin.ExcelUtil;
 import com.bloducspauter.excelutil.origin.service.ExcelService;
 import com.bloducspauter.excelutil.origin.tool.ExcelTool;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,7 +49,6 @@ public class RawUseWrapperExcelUtil implements ExcelService {
     }
 
     /**
-     *
      * <p>这个是为了实现接口{@link ExcelService}提供的无参构造，初始化后无法设置{@code sheetIndex},只会读取第一张工作表</p>
      * <p>也无法设置读取范围</p>
      * <p>建议使用{@link RawUseWrapperExcelUtil#RawUseWrapperExcelUtil(ReadWrapper)}有参构造</p>
@@ -57,7 +57,7 @@ public class RawUseWrapperExcelUtil implements ExcelService {
 
     }
 
-    void init() throws Exception {
+    protected void init() throws Exception {
         if (wrapper == null) {
             throw new NullPointerException("ReadWrapper is null, please check your ReadWrapper");
         }
@@ -81,6 +81,9 @@ public class RawUseWrapperExcelUtil implements ExcelService {
         sheetReader.getSheet(wrapper);
         maxRow = sheetReader.getMaxRow(wrapper.getSheetIndex());
         maxColumn = sheetReader.getMaxColumn(wrapper.getTitleLine());
+    }
+
+   protected void updateReadRange() throws IOException {
         endRow = wrapper.getEndRow() == 0 ? maxRow : wrapper.getEndRow();
         endColumn = wrapper.getEndColumn() == 0 ? maxColumn : wrapper.getEndColumn();
         excelTool.checkRowCol(startRow, startColumn, endRow, endColumn, maxRow, maxColumn);
@@ -152,7 +155,7 @@ public class RawUseWrapperExcelUtil implements ExcelService {
     @Override
     public void output(String sheetName, List<Map<String, Object>> list, File file) throws Exception {
         WriteWrapper wrapper = WriteWrapper.builder().path(file.getAbsolutePath()).sheetName(sheetName).build();
-        write(wrapper,list);
+        write(wrapper, list);
     }
 
     @Override
@@ -172,5 +175,28 @@ public class RawUseWrapperExcelUtil implements ExcelService {
     public Object[][] readToArray(String path) throws Exception {
         List<Map<String, Object>> mapList = readToList(path);
         return excelTool.conformity(mapList, titleMap);
+    }
+
+    @SneakyThrows
+    @Override
+    public void setEndWithRow(int endRow) {
+        wrapper.setEndRow(endRow);
+        updateReadRange();
+    }
+
+    @SneakyThrows
+    @Override
+    public void setEndWithColumn(int endColumn) {
+        wrapper.setEndColumn(endColumn);
+        updateReadRange();
+    }
+
+    @SneakyThrows
+    @Override
+    public void readSheetAt(int index) {
+        if(wrapper.getSheetIndex()!=index) {
+            wrapper.setSheetIndex(index);
+            init();
+        }
     }
 }

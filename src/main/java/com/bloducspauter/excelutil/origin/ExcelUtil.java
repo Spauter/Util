@@ -304,6 +304,16 @@ public class ExcelUtil implements ExcelService {
     }
 
     @Override
+    public void setStartColumn(int startColumn) {
+        setStartCol(startColumn);
+    }
+
+    @Override
+    public void setEndWithColumn(int endColumn) {
+        setEndWithCol(endColumn);
+    }
+
+    @Override
     public void output(String sheetName, Object[][] obj, String[] title, File file) throws Exception {
         outputImpl(sheetName, obj, title, file);
     }

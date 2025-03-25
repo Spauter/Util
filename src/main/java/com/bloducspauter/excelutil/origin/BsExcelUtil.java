@@ -29,9 +29,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * 拓展的输入输出工具
  * <p>
- * 存储数据时建议使用{@code List<E>}接收数据,不论{@code E}是{@code Map<String,Object>}还是一个实体类
+ * 存储数据时建议使用{@code List<E>}接收数据
  * <p>
- * 输出文档时，使用{@code Object[][]}作为参数不支持文档加密
+ *  如果需要对文档加密,请使用{@link com.bloducspauter.excelutil.ewxce.WrapperExcelUtil}和{@link com.bloducspauter.excelutil.ewxce.RawUseWrapperExcelUtil}
  *
  * @author Bloduc Spauter
  * @see ExcelUtil
@@ -222,6 +222,12 @@ public class BsExcelUtil<T> extends ExcelUtil {
         System.out.println(("This method is deprecated in the class,"));
     }
 
+    /**
+     * 将文档的内容读取为List<Map<String,Object>>形式
+     * 与{@link ExcelUtil#readToList(String)}不同的是，此方法需要验证和严格映射字段,K为实体类的成员属性
+     * @param file 文件
+     * @throws Exception
+     */
     @Override
     public List<Map<String, Object>> readToList(File file) throws Exception {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -243,6 +249,11 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return list;
     }
 
+    /**
+     * 将文档的内容读取为List<Map<String,Object>>形式
+     * 与{@link ExcelUtil#readToArray(String)}不同的是，此方法需要验证和严格映射字段,K为实体类的成员属性
+     * @param path 文件路径
+     */
     @Override
     public Object[][] readToArray(String path) throws Exception {
         Object[][] objects = new Object[endWithRow - startRow][maxCol];
