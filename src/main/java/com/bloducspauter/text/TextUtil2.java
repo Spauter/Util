@@ -38,7 +38,7 @@ public class TextUtil2<T> extends TextUtil {
             }
             Map<String,Object>map=checkData(info,separator);
             String jsonString = JSON.toJSONString(map);
-            Object o = JSONObject.parseObject(jsonString, tableDefinition.getClassName());
+            Object o = JSONObject.parseObject(jsonString, tableDefinition.className());
             try {
                 list.add((T) o);
             } catch (ClassCastException e) {
@@ -54,7 +54,7 @@ public class TextUtil2<T> extends TextUtil {
         Map<String, Object> map = new HashMap<>();
         String[] infos = s.split(separator);
         for (int i = 0; i < title.length; i++) {
-            Field field = tableDefinition.getCellNameAndField().get(title[i]);
+            Field field = tableDefinition.cellNameAndField().get(title[i]);
             if (field == null) {
                throw new NoSuchFieldException("No fields found");
             }

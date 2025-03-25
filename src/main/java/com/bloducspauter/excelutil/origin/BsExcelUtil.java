@@ -108,7 +108,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      */
     @SuppressWarnings("unchecked")
     private List<T> readImpl(String file) throws Exception {
-        Class<?> entity = entityTableDefinition.getClassName();
+        Class<?> entity = entityTableDefinition.className();
         List<T> objects = new ArrayList<>();
         try {
             sheet = sheet == null ? super.getSheet(file) : sheet;
@@ -160,7 +160,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
         super.getOutputWorkbook(file);
         Workbook wb = getOutputWorkbook(file);
         Sheet sheet = wb.createSheet(sheetName);
-        TreeMap<Integer, Field> fieldTreeMap = entityTableDefinition.getIndexForCellName();
+        TreeMap<Integer, Field> fieldTreeMap = entityTableDefinition.indexForCellName();
         // 写入标题行
         Row titleRow = sheet.createRow(0);
         int cellIndex = 0;
@@ -226,14 +226,13 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * 将文档的内容读取为List<Map<String,Object>>形式
      * 与{@link ExcelUtil#readToList(String)}不同的是，此方法需要验证和严格映射字段,K为实体类的成员属性
      * @param file 文件
-     * @throws Exception
      */
     @Override
     public List<Map<String, Object>> readToList(File file) throws Exception {
         List<Map<String, Object>> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
         List<T> entities = getReadData(file);
-        Field[] fields = entityTableDefinition.getFields();
+        Field[] fields = entityTableDefinition.fields();
         for (T entity : entities) {
             for (Field field : fields) {
                 try {
@@ -258,7 +257,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
     public Object[][] readToArray(String path) throws Exception {
         Object[][] objects = new Object[endWithRow - startRow][maxCol];
         List<T> entities = getReadData(path);
-        Field[] fields = entityTableDefinition.getFields();
+        Field[] fields = entityTableDefinition.fields();
         for (int i = startRow; i < endWithRow; i++) {
             for (int j = 0; j < maxCol; j++) {
                 try {
@@ -333,7 +332,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
      */
     public T readOne(String filePath, int index) throws Exception {
         if (index == titleLine) {
-            throw new IllegalArgumentException("Don't know how to turn title line" + " into class " + entityTableDefinition.getClassName().getSimpleName());
+            throw new IllegalArgumentException("Don't know how to turn title line" + " into class " + entityTableDefinition.className().getSimpleName());
         }
         super.setStartRow(index);
         super.setEndWithRow(index + 1);

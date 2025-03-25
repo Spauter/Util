@@ -60,7 +60,7 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
                 Map<String, Object> map = RowDataReader.read(sheetReader.getSheet(wrapper.getSheetIndex()),
                         tableDefinition, titleMap, row, startColumn, maxColumn, dateformat);
                 String jsonString = JSON.toJSONString(map);
-                T entity = (T) JSONObject.parseObject(jsonString, tableDefinition.getClassName());
+                T entity = (T) JSONObject.parseObject(jsonString, tableDefinition.className());
                 objects.add(entity);
             } catch (ClassCastException | IOException e) {
                 System.out.println("Loading info failed in line " + row + ": " + e.getMessage());
@@ -153,13 +153,13 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
      */
     public T readOne(int index) throws Exception {
         if (index == wrapper.getTitleLine()) {
-            throw new IllegalArgumentException("Don't know how to turn title line" + " into class " + tableDefinition.getClassName().getSimpleName());
+            throw new IllegalArgumentException("Don't know how to turn title line" + " into class " + tableDefinition.className().getSimpleName());
         }
         return read().get(index);
     }
 
     public void write(WriteWrapper wrapper, List<T> entities) throws Exception {
-        new BsExcelUtil<T>(tableDefinition.getClassName()).write(entities,wrapper.getPath());
+        new BsExcelUtil<T>(tableDefinition.className()).write(entities,wrapper.getPath());
         if(wrapper.getPassword()!=null) {
             EncryptExcel.encryptExcl(wrapper.getPath(),wrapper.getPassword());
         }

@@ -27,16 +27,16 @@ public class RowDataReader {
         for (int rol = startRol; rol < maxCol; rol++) {
             Object o = CellReader.getCellValue(sheet, row, rol, dateformat);
             String title = titles.get(rol);
-            Field field = tableDefinition.getCellNameAndField().get(title);
+            Field field = tableDefinition.cellNameAndField().get(title);
             if (field != null) {
                 String filedName = field.getName();
                 map.put(filedName, o);
             } else  {
-                if (tableDefinition.isIgnoreOtherCells()) {
+                if (tableDefinition.ignoreOtherCells()) {
                     continue;
                 }
                 String err = "The field \"" + title + "\" does not exists in this field in class:" +
-                        tableDefinition.getClassName().getSimpleName();
+                        tableDefinition.className().getSimpleName();
                 throw new NoSuchFieldException(err);
             }
 

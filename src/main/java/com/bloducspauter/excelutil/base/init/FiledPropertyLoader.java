@@ -23,13 +23,9 @@ public class FiledPropertyLoader {
      * @return TableDefinition {@link TableDefinition}
      */
     public static TableDefinition getTableDefinition(Class<?> configClass) {
-        TableDefinition tableDefinition = new TableDefinition();
         TableProperty tableProperty=configClass.getAnnotation(TableProperty.class);
         boolean ignoreOtherCells= tableProperty != null && tableProperty.ignoreOtherCells();
-        tableDefinition.setIgnoreOtherCells(ignoreOtherCells);
         Field[] fields = configClass.getDeclaredFields();
-        tableDefinition.setFields(fields);
-        tableDefinition.setClassName(configClass);
         Map<String, Field> map = new HashMap<>();
         for (Field f : fields) {
             FiledProperty cellName = f.getAnnotation(FiledProperty.class);
@@ -47,22 +43,21 @@ public class FiledPropertyLoader {
                 }
             }
         }
-        tableDefinition.setCellNameAndField(map);
-        TreeMap<Integer, Field> treeMap = integerStringTreeMap(tableDefinition);
-        tableDefinition.setIndexForCellName(treeMap);
-        return tableDefinition;
+        TreeMap<Integer, Field> treeMap = new TreeMap<>();
+        TableDefinition tableDefinition= new TableDefinition(fields,configClass,map,treeMap,ignoreOtherCells);
+        treeMap=integerStringTreeMap(tableDefinition);
+        return new TableDefinition(fields,configClass,map,treeMap,ignoreOtherCells);
     }
 
 
     /**
-     * 进一步获取TreeMap后存入{@link TableDefinition#setIndexForCellName(TreeMap)}
      * @param tableDefinition {@link  TableDefinition}
      * @return {@link TreeMap}
      * @throws IndexOutOfBoundsException 因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据,如果{@link FiledProperty#index() }大于此值抛出异常
      */
     public static TreeMap<Integer, Field> integerStringTreeMap(TableDefinition tableDefinition) {
         TreeMap<Integer, Field> treeMap = new TreeMap<>();
-        Map<String, Field> fieldMap = tableDefinition.getCellNameAndField();
+        Map<String, Field> fieldMap = tableDefinition.cellNameAndField();
         int i = 0;
         for (Map.Entry<String, Field> m : fieldMap.entrySet()) {
             FiledProperty cellName = m.getValue().getAnnotation(FiledProperty.class);
@@ -70,10 +65,7 @@ public class FiledPropertyLoader {
             //判断index是否大于65535，因为XSSFWorkbook和HSSFWorkbook最大能读取65535行数据
             if (index > MAX_VALUE||index<0) {
                 String fieldName=  m.getValue().getName();
-                System.err.println("A error occurred at analyzing class:"+tableDefinition.getClassName());
-                System.err.println("@ExcelField(value=\""+cellName.value()+"\",index="+cellName.index()+")\n" +
-                                    m.getValue());
-                throw new IndexOutOfBoundsException("The field \""+fieldName+"\" annotation's index is out of range:"+index);
+                throw new IndexOutOfBoundsException("The index of field "+fieldName+" is out of bounds");
             }
             if(treeMap.get(index)==null){
                 if (index !=MAX_VALUE) {
