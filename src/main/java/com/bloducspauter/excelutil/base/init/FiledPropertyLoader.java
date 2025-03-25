@@ -2,8 +2,6 @@ package com.bloducspauter.excelutil.base.init;
 
 import com.bloducspauter.excelutil.annotation.FiledProperty;
 import com.bloducspauter.excelutil.annotation.TableProperty;
-
-
 import java.lang.reflect.Field;
 import java.util.*;
 
