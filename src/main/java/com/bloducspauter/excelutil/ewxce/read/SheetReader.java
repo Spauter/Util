@@ -15,7 +15,7 @@ import java.security.GeneralSecurityException;
 @Setter
 public class SheetReader {
     private WorkbookReader workbookReader;
-
+    private int sheetIndex;
     /**
      * 获取WorkbookReader
      *
@@ -35,6 +35,7 @@ public class SheetReader {
             workbook.close();
             throw new IllegalArgumentException("The index is out of range:" + sheetIndex + "/" + workbook.getNumberOfSheets());
         }
+        this.sheetIndex = sheetIndex;
         return getWorkbookReader().getWorkbook().getSheetAt(sheetIndex);
     }
 
@@ -66,7 +67,7 @@ public class SheetReader {
      * @throws IndexOutOfBoundsException 工作表索引超出范围
      */
     public int getMaxColumn(int index) {
-        Sheet sheet = getWorkbookReader().getWorkbook().getSheetAt(0);
+        Sheet sheet = getWorkbookReader().getWorkbook().getSheetAt(sheetIndex);
         return sheet.getRow(index).getLastCellNum();
     }
 }

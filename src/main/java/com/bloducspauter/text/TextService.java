@@ -12,70 +12,70 @@ import java.util.Map;
 public interface TextService extends FIleReadAndOutput {
 
     /**
-     * ¶ÁÈ¡ÎÄµµÂ·¾¶,½«½á¹û´æ´¢µ½List¼¯ºÏÖĞ
-     * @param path ÎÄ¼şÂ·¾¶
-     * @param separator ·Ö¸ô·ûÈç¹ûÊÇCSVÎÄ¼ş·Ö¸ô·ûÎª¡±£¬¡°
+     * è¯»å–æ–‡æ¡£è·¯å¾„,å°†ç»“æœå­˜å‚¨åˆ°Listé›†åˆä¸­
+     * @param path æ–‡ä»¶è·¯å¾„
+     * @param separator åˆ†éš”ç¬¦å¦‚æœæ˜¯CSVæ–‡ä»¶åˆ†éš”ç¬¦ä¸ºâ€ï¼Œâ€œ
      */
-     List<Map<String,Object>> readToList(String path,String separator) throws Exception;
+    List<Map<String,Object>> readToList(String path,String separator) throws Exception;
 
     /**
-     *  ¶ÁÈ¡ÎÄµµÂ·¾¶,½«½á¹û´æ´¢µ½List¼¯ºÏÖĞ
-     * @param file ÎÄ¼ş
-     * @param separator ·Ö¸ô·û
+     *  è¯»å–æ–‡æ¡£è·¯å¾„,å°†ç»“æœå­˜å‚¨åˆ°Listé›†åˆä¸­
+     * @param file æ–‡ä»¶
+     * @param separator åˆ†éš”ç¬¦
      */
-     default  List<Map<String,Object>> readToList(File file, String separator) throws Exception {
-         return readToList(file.getAbsolutePath(),separator);
-     }
+    default  List<Map<String,Object>> readToList(File file, String separator) throws Exception {
+        return readToList(file.getAbsolutePath(),separator);
+    }
 
     /**
-     *  ¶ÁÈ¡ÎÄµµÂ·¾¶,½«½á¹û´æ´¢µ½LÒ»¸ö¶şÎ»Êı×é
-     * @param path ÎÄ¼şÂ·¾¶
-     * @param separator ·Ö¸ô·û
+     *  è¯»å–æ–‡æ¡£è·¯å¾„,å°†ç»“æœå­˜å‚¨åˆ°Lä¸€ä¸ªäºŒä½æ•°ç»„
+     * @param path æ–‡ä»¶è·¯å¾„
+     * @param separator åˆ†éš”ç¬¦
      */
-     Object[][] readToArray(String path,String separator) throws Exception;
+    Object[][] readToArray(String path,String separator) throws Exception;
 
     /**
-     *  ¶ÁÈ¡ÎÄµµÂ·¾¶,½«½á¹û´æ´¢µ½LÒ»¸ö¶şÎ»Êı×é
-     * @param file ÎÄ¼ş
-     * @param separator ·Ö¸ô·û
+     *  è¯»å–æ–‡æ¡£è·¯å¾„,å°†ç»“æœå­˜å‚¨åˆ°Lä¸€ä¸ªäºŒä½æ•°ç»„
+     * @param file æ–‡ä»¶
+     * @param separator åˆ†éš”ç¬¦
      */
-     default  Object[][] readToArray(File file,String separator) throws Exception {
-         return readToArray(file.getAbsolutePath(),separator);
-     }
+    default  Object[][] readToArray(File file,String separator) throws Exception {
+        return readToArray(file.getAbsolutePath(),separator);
+    }
 
     /**
-     *  Êä³ö´¿ÎÄ±¾ÎÄ¼ş
-     * @param list Êı¾İ¼¯ºÏ
-     * @param path ÎÄ¼şÂ·¾¶
-     * @param separator ·Ö¸ô·û
+     *  è¾“å‡ºçº¯æ–‡æœ¬æ–‡ä»¶
+     * @param list æ•°æ®é›†åˆ
+     * @param path æ–‡ä»¶è·¯å¾„
+     * @param separator åˆ†éš”ç¬¦
      */
     void output(List<Map<String, Object>> list, String path,String separator) throws Exception;
 
     /**
-     *  Êä³ö´¿ÎÄ±¾ÎÄ¼ş
-     * @param list Êı¾İ¼¯ºÏ
-     * @param file ÎÄ¼ş
+     *  è¾“å‡ºçº¯æ–‡æœ¬æ–‡ä»¶
+     * @param list æ•°æ®é›†åˆ
+     * @param file æ–‡ä»¶
      */
-     default void output(List<Map<String, Object>> list, File file,String separator) throws Exception {
-         output(list,file.getAbsolutePath(),separator);
-     }
+    default void output(List<Map<String, Object>> list, File file,String separator) throws Exception {
+        output(list,file.getAbsolutePath(),separator);
+    }
 
     /**
-     *  Êä³ö´¿ÎÄ±¾ÎÄ¼ş
-     * @param obj ¶şÎ¬Êı×é
-     * @param path ÎÄ¼şÂ·¾¶
-     * @param separator ·Ö¸ô·û
+     *  è¾“å‡ºçº¯æ–‡æœ¬æ–‡ä»¶
+     * @param obj äºŒç»´æ•°ç»„
+     * @param path æ–‡ä»¶è·¯å¾„
+     * @param separator åˆ†éš”ç¬¦
      */
     void output(Object[][] obj, String path,String separator) throws Exception;
 
     /**
-     *  Êä³ö´¿ÎÄ±¾ÎÄ¼ş
-     * @param obj ¶şÎ¬Êı×é
-     * @param file ÎÄ¼ş
+     *  è¾“å‡ºçº¯æ–‡æœ¬æ–‡ä»¶
+     * @param obj äºŒç»´æ•°ç»„
+     * @param file æ–‡ä»¶
      */
-     default void output(Object[][] obj, File file,String separator) throws Exception{
-         output(obj, file.getAbsolutePath(),separator);
-     }
+    default void output(Object[][] obj, File file,String separator) throws Exception{
+        output(obj, file.getAbsolutePath(),separator);
+    }
 
     String[] getTitle();
 }

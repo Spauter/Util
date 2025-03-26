@@ -50,7 +50,7 @@ public class RawUseWrapperExcelUtil implements ExcelService {
 
 
     public RawUseWrapperExcelUtil() {
-        wrapper = ReadWrapper.builder().sheetIndex(0).build();
+        wrapper = ReadWrapper.builder().sheetIndex(0).path("C:\\Users\\").build();
     }
 
     protected void init() throws Exception {
@@ -161,7 +161,6 @@ public class RawUseWrapperExcelUtil implements ExcelService {
     @Override
     public List<Map<String, Object>> readToList(String path) throws Exception {
         wrapper.setPath(path);
-        updateReadRange();
         return readToSimpleMap();
     }
 
@@ -175,14 +174,12 @@ public class RawUseWrapperExcelUtil implements ExcelService {
     @Override
     public void setEndWithRow(int endRow) {
         wrapper.setEndRow(endRow);
-        updateReadRange();
     }
 
     @SneakyThrows
     @Override
     public void setEndWithColumn(int endColumn) {
         wrapper.setEndColumn(endColumn);
-        updateReadRange();
     }
 
     @SneakyThrows
@@ -190,7 +187,6 @@ public class RawUseWrapperExcelUtil implements ExcelService {
     public void readSheetAt(int index) {
         if (wrapper.getSheetIndex() != index) {
             wrapper.setSheetIndex(index);
-            init();
         }
     }
 }
