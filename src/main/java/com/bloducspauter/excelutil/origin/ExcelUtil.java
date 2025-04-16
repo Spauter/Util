@@ -178,7 +178,7 @@ public class ExcelUtil implements ExcelService {
             if (row == titleLine) {
                 continue;
             }
-            Map<String, Object> map = RowDataReader.read(sheet, titles, row, startCol, endWithCol, dateformat);
+            Map<String, Object> map = RowDataReader.readToSimpleKeyMap(sheet, titles, row, startCol, endWithCol, dateformat);
             list.add(map);
         }
 

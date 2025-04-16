@@ -1,7 +1,5 @@
 package com.bloducspauter.excelutil.origin;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.excelutil.annotation.FiledProperty;
 import com.bloducspauter.excelutil.enums.ExcelType;
 import com.bloducspauter.excelutil.origin.task.ReadData;
@@ -106,7 +104,6 @@ public class BsExcelUtil<T> extends ExcelUtil {
      * @throws NoSuchFieldException 如果找不到单元格对应的成员属性,也就是{@code   entityTableDefinition.getCellNameAndField().get(title)}为null时抛出此异常。
      *                              需要考虑{@link FiledProperty}
      */
-    @SuppressWarnings("unchecked")
     private List<T> readImpl(String file) throws Exception {
         Class<?> entity = entityTableDefinition.getClassName();
         List<T> objects = new ArrayList<>();
@@ -133,11 +130,9 @@ public class BsExcelUtil<T> extends ExcelUtil {
             if (row == titleLine) {
                 continue;
             }
-            Map<String, Object> map = RowDataReader.read(sheet,entityTableDefinition,titles,row,0,maxCol,dateformat);
-            String jsonString = JSON.toJSONString(map);
-            Object o = JSONObject.parseObject(jsonString, entity);
+            T t= RowDataReader.readToEntity(sheet,entityTableDefinition,titles,row,0,maxCol,dateformat);
             try {
-                objects.add((T) o);
+                objects.add(t);
             } catch (ClassCastException e) {
                 System.out.println("Loading info failed in line " + row);
             }
@@ -249,11 +244,7 @@ public class BsExcelUtil<T> extends ExcelUtil {
         return list;
     }
 
-    /**
-     * 将文档的内容读取为List<Map<String,Object>>形式
-     * 与{@link ExcelUtil#readToArray(String)}不同的是，此方法需要验证和严格映射字段,K为实体类的成员属性
-     * @param path 文件路径
-     */
+
     @Override
     public Object[][] readToArray(String path) throws Exception {
         Object[][] objects = new Object[endWithRow - startRow][maxCol];

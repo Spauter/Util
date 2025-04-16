@@ -1,7 +1,5 @@
 package com.bloducspauter.excelutil.ewxce;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.bloducspauter.excelutil.ewxce.wrapper.ReadWrapper;
 import com.bloducspauter.excelutil.ewxce.write.EncryptExcel;
 import com.bloducspauter.excelutil.origin.BsExcelUtil;
@@ -43,7 +41,6 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
         tableDefinition = FiledPropertyLoader.getTableDefinition(entity);
     }
 
-    @SuppressWarnings("unchecked")
     private List<T> read() throws Exception {
         super.init();
         if (tableDefinition == null) {
@@ -57,10 +54,7 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
                 continue;
             }
             try {
-                Map<String, Object> map = RowDataReader.read(sheetReader.getSheet(wrapper.getSheetIndex()),
-                        tableDefinition, titleMap, row, startColumn, maxColumn, dateformat);
-                String jsonString = JSON.toJSONString(map);
-                T entity = (T) JSONObject.parseObject(jsonString, tableDefinition.getClassName());
+                T entity= RowDataReader.readToEntity(sheetReader.getSheet(wrapper.getSheetIndex()),tableDefinition,titleMap,row,startColumn,maxColumn,dateformat);
                 objects.add(entity);
             } catch (ClassCastException | IOException e) {
                 System.out.println("Loading info failed in line " + row + ": " + e.getMessage());
@@ -85,7 +79,7 @@ public class WrapperExcelUtil<T> extends RawUseWrapperExcelUtil{
             if (row == wrapper.getTitleLine()) {
                 continue;
             }
-            Map<String, Object> map = RowDataReader.read(
+            Map<String, Object> map = RowDataReader.readToFieldKeyMap(
                     sheetReader.getSheet(wrapper.getSheetIndex()),
                     tableDefinition, titleMap,
                     row, startColumn, maxColumn,

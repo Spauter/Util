@@ -97,7 +97,7 @@ public class RawUseWrapperExcelUtil implements ExcelService {
                 continue;
             }
             try {
-                Map<String, Object> map = RowDataReader.read(sheetReader.getSheet(wrapper.getSheetIndex()),
+                Map<String, Object> map = RowDataReader.readToSimpleKeyMap(sheetReader.getSheet(wrapper.getSheetIndex()),
                         titleMap, row, startColumn, maxColumn, dateformat);
                 objects.add(map);
             } catch (Exception e) {
